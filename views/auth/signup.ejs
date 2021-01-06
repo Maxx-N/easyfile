@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription</title>
-</head>
-<body>
+  <head>
+    <%- include('../includes/head') %>
+  </head>
+  <body>
     <form action="">
-        <div><label for="">E-Mail</label><input type="text"></div>
-        <div><label for="">Mot de passe</label><input type="text"></div>
-        <div><label for="">Confirmation du mot de passe</label><input type="text"></div>
-        <div>
-            <label for="">Je suis</label>
-            <select name="" id="">
-                <option value="">Client</option>
-                <option value="">Banque</option>
-            </select>
-        </div>
-        <button>Je m'inscris !</button>
+      <div>
+        <label class="text-primary" for="">E-Mail</label><input type="text" />
+      </div>
+      <div><label for="">Mot de passe</label><input type="text" /></div>
+      <div>
+        <label for="">Confirmation du mot de passe</label><input type="text" />
+      </div>
+      <div>
+        <label for="">Je suis</label>
+        <select name="" id="">
+          <option value="">Client</option>
+          <option value="">Banque</option>
+        </select>
+      </div>
+      <button>Je m'inscris !</button>
     </form>
-
-</body>
+  </body>
 </html>
