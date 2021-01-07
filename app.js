@@ -2,9 +2,12 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const MONGODB_URI = require('./private').MONGODB_URI;
+const User = require('./models/user');
 
 //
 
@@ -20,8 +23,10 @@ app.use('/auth', authRoutes);
 
 app.use(userRoutes);
 
-app.use('/', (req, res, next) => {
+app.use('/', async (req, res, next) => {
   res.redirect('/auth');
 });
 
-app.listen(3000);
+mongoose.connect(MONGODB_URI).then(() => {
+  app.listen(3000);
+});
