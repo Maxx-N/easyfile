@@ -15,12 +15,10 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res, next) => {
-  console.log(req.url);
-  req.url += 'auth';
-  next();
-});
-
 app.use('/auth', authRoutes);
+
+app.use('/', (req, res, next) => {
+  res.redirect('/auth')
+});
 
 app.listen(3000);
