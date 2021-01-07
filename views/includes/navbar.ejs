@@ -14,14 +14,19 @@
 
   <div class="collapse navbar-collapse" id="navbarColor02">
     <ul class="navbar-nav mr-auto">
-
       <li class="nav-item">
-        <a class="nav-link" href="/documents">Mes documents</a>
+        <a
+          class="<%= path === '/documents' ? 'nav-link active' : 'nav-link' %>"
+          href="/documents"
+          >Mes documents</a
+        >
       </li>
     </ul>
 
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item dropdown">
+      <li
+        class="<%= path === '/login' || path === '/signup' ? 'nav-item dropdown active' : 'nav-item dropdown' %>"
+      >
         <a
           class="nav-link dropdown-toggle"
           data-toggle="dropdown"
@@ -32,9 +37,17 @@
           >Utilisateur</a
         >
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="/auth/login">Connexion</a>
+          <a
+            class="<%= path === '/login' ? 'dropdown-item active' : 'dropdown-item' %>"
+            href="/auth/login"
+            >Connexion</a
+          >
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="/auth/signup">Inscription</a>
+          <a
+            class="<%= path === '/signup' ? 'dropdown-item active' : 'dropdown-item' %>"
+            href="/auth/signup"
+            >Inscription</a
+          >
         </div>
       </li>
     </ul>
