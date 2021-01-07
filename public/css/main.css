@@ -1,3 +1,12 @@
 main {
   padding: 2rem;
 }
+
+.center-half {
+  width: 50%;
+  margin: auto;
+}
+
+.pointer {
+  cursor: pointer;
+}
