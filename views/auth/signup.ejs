@@ -4,22 +4,25 @@
     <%- include('../includes/head') %>
   </head>
   <body>
-    <form action="">
-      <div>
-        <label class="text-primary" for="">E-Mail</label><input type="text" />
-      </div>
-      <div><label for="">Mot de passe</label><input type="text" /></div>
-      <div>
-        <label for="">Confirmation du mot de passe</label><input type="text" />
-      </div>
-      <div>
-        <label for="">Je suis</label>
-        <select name="" id="">
-          <option value="">Client</option>
-          <option value="">Banque</option>
-        </select>
-      </div>
-      <button>Je m'inscris !</button>
-    </form>
+    <%- include('../includes/navbar') %>
+    <main>
+      <form action="">
+        <div><label for="">E-Mail</label><input type="text" /></div>
+        <div><label for="">Mot de passe</label><input type="text" /></div>
+        <div>
+          <label for="">Confirmation du mot de passe</label
+          ><input type="text" />
+        </div>
+        <div>
+          <label for="">Je suis</label>
+          <select name="" id="">
+            <option value="">Client</option>
+            <option value="">Banque</option>
+          </select>
+        </div>
+        <button>Je m'inscris !</button>
+      </form>
+    </main>
+    <%- include('../includes/scripts') %>
   </body>
 </html>
