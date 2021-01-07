@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-// const GendersEnum = require('../enums/genders');
-
 //
 
 const Schema = mongoose.Schema;
