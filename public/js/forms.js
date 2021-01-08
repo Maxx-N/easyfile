@@ -7,3 +7,11 @@ for (let option of options) {
     option.removeAttribute('selected');
   }
 }
+
+const checkbox = document.getElementById('statusCheckbox');
+
+if (checkbox.value === '1') {
+  checkbox.checked = true;
+} else {
+  checkbox.checked = false;
+}

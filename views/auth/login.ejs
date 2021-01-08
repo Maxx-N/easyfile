@@ -7,15 +7,18 @@
   <body>
     <%- include('../includes/navbar') %>
     <main>
-      <form class="text-center center-half">
+      <%- include('../includes/error-feedback') %>
+      <form class="text-center center-half" method="POST" action="/auth/login">
         <fieldset>
           <legend>Connexion</legend>
           <div class="form-group">
             <label for="email">Mon e-mail</label>
             <input
               type="email"
-              class="form-control text-center"
+              name="email"
               id="email"
+              value="<%= oldInput.email %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'email') ? 'invalid' : '' %>"
               aria-describedby="emailHelp"
             />
           </div>
@@ -23,22 +26,33 @@
             <label for="password">Mon mot de passe</label>
             <input
               type="password"
-              class="form-control text-center"
+              name="password"
               id="password"
+              value="<%= oldInput.password %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'password') ? 'invalid' : '' %>"
             />
           </div>
-          <fieldset class="form-group ">
-            <div class="form-check ">
+          <fieldset class="form-group">
+            <div class="form-check">
               <label class="form-check-label pointer">
-                <input class="form-check-input pointer" type="checkbox" value="">
+                <input
+                  class="form-check-input pointer"
+                  type="checkbox"
+                  name="isBank"
+                  id="statusCheckbox"
+                  value="<%= oldInput.isBank %>"
+                />
                 Je suis la banque.
               </label>
             </div>
           </fieldset>
-          <button type="submit" class="btn btn-primary">Je me connecte !</button>
+          <button type="submit" class="btn btn-primary">
+            Je me connecte !
+          </button>
         </fieldset>
       </form>
     </main>
     <%- include('../includes/scripts') %>
+    <script src="/js/forms.js"></script>
   </body>
 </html>

@@ -50,4 +50,10 @@ router.post(
 
 router.get('/login', authController.getLogin);
 
+router.post(
+  '/login',
+  [body('email').normalizeEmail(), body('password').trim()],
+  authController.postLogin
+);
+
 module.exports = router;

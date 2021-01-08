@@ -62,6 +62,63 @@ exports.postSignup = async (req, res, next) => {
   res.redirect('/auth/signup');
 };
 
-exports.getLogin = async (req, res, next) => {
-  res.render('auth/login', { pageTitle: 'Connexion', path: '/login' });
+exports.getLogin = (req, res, next) => {
+  res.render('auth/login', {
+    pageTitle: 'Connexion',
+    path: '/login',
+    errorMessages: [],
+    oldInput: {
+      email: '',
+      password: '',
+      isBank: '0',
+    },
+    validationErrors: [],
+  });
+};
+
+exports.postLogin = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const isClient = !req.body.isBank;
+
+  try {
+    const user = await User.findOne({ email: email });
+    const errorsArray = [];
+    if (!user) {
+      errorsArray.push({
+        param: 'email',
+        msg: 'Cet e-mail ne correspond à aucun utilisateur.',
+      });
+    } else {
+      const doMatch = await bcrypt.compare(password, user.password);
+      if (!doMatch) {
+        errorsArray.push({ param: 'password', msg: 'Mot de passe invalide.' });
+      }
+    }
+
+    if (errorsArray.length > 0) {
+      const errorMessages = errorsArray.map((err) => {
+        return err.msg;
+      });
+      return res.render('auth/login', {
+        pageTitle: 'Connexion',
+        path: '/login',
+        errorMessages: errorMessages,
+        oldInput: {
+          email: email,
+          password: password,
+          isBank: isClient ? '0' : '1',
+        },
+        validationErrors: errorsArray,
+      });
+    }
+    req.session.user = user;
+  } catch (err) {
+    err.message =
+      "L'authentification a échoué. Nous vous remercions de bien vouloir nous excuser et vous invitons à réessayer plus tard.";
+    return next(err);
+  }
+
+  console.log('AUTH CONTROLLER : ', req.session.user.email);
+  res.redirect('/documents');
 };

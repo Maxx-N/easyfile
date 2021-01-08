@@ -3,15 +3,19 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const MONGODB_URI = require('./private').MONGODB_URI;
+const SECRET_SESSION = require('./private').SECRET_SESSION;
 const User = require('./models/user');
 
 //
 
 const app = express();
+const store = new MongoDBStore({ uri: MONGODB_URI, collection: 'sessions' });
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -19,11 +23,45 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/auth', authRoutes);
+// app.use(
+//   session({
+//     secret: SECRET_SESSION,
+//     resave: false,
+//     saveUninitialized: false,
+//     store: store,
+//   })
+// );
+app.use(
+  session({
+    secret: SECRET_SESSION,
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+  })
+);
 
+app.use(async (req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+  console.log('APP JS : ',req.session.user.email);
+  try {
+    const user = await User.findById(req.session.user._id);
+    if (!user) {
+      return next();
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+app.use('/auth', authRoutes);
 app.use(userRoutes);
 
-app.use('/', async (req, res, next) => {
+app.use('/', (req, res, next) => {
   res.redirect('/auth');
 });
 
