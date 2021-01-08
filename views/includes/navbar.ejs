@@ -16,7 +16,7 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a
-          class="<%= path === '/documents' ? 'nav-link active' : 'nav-link' %>"
+          class="nav-link <%= path === '/documents' ? 'active' : '' %>"
           href="/documents"
           >Mes documents</a
         >
@@ -25,7 +25,7 @@
 
     <ul class="navbar-nav ml-auto">
       <li
-        class="<%= path === '/login' || path === '/signup' ? 'nav-item dropdown active' : 'nav-item dropdown' %>"
+        class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>"
       >
         <a
           class="nav-link dropdown-toggle"
@@ -38,14 +38,14 @@
         >
         <div class="dropdown-menu">
           <a
-            class="<%= path === '/login' ? 'dropdown-item active' : 'dropdown-item' %>"
+            class="dropdown-item <%= path === '/login' ? 'active' : '' %>"
             href="/auth/login"
             >Connexion</a
           >
           <div class="dropdown-divider"></div>
           <a
-            class="<%= path === '/signup' ? 'dropdown-item active' : 'dropdown-item' %>"
-            href="/auth/signup"
+          class="dropdown-item <%= path === '/signup' ? 'active' : '' %>"
+          href="/auth/signup"
             >Inscription</a
           >
         </div>
