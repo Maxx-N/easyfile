@@ -57,11 +57,11 @@ exports.postSignup = async (req, res, next) => {
       return res.redirect('/documents');
     }
   } catch (err) {
-    console.log(err.message);
+    return next(err);
   }
   res.redirect('/auth/signup');
 };
 
-exports.getLogin = (req, res, next) => {
+exports.getLogin = async (req, res, next) => {
   res.render('auth/login', { pageTitle: 'Connexion', path: '/login' });
 };

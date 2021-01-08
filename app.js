@@ -27,6 +27,22 @@ app.use('/', async (req, res, next) => {
   res.redirect('/auth');
 });
 
+app.use((err, req, res, next) => {
+  if (!err.statusCode) {
+    err.statusCode = 500;
+  }
+  if (!err.message) {
+    err.message =
+      'Le serveur a rencontré un problème. Nous travaillons à le résoudre et vous prions de nous excuser pour ce désagrément.';
+  }
+  res.status(err.statusCode).render('error-page', {
+    pageTitle: `Erreur ${err.statusCode}`,
+    path: '/error',
+    errorStatus: err.statusCode,
+    errorMessage: err.message,
+  });
+});
+
 mongoose.connect(MONGODB_URI).then(() => {
-  app.listen(3000);
+  app.listen(3000, { useNewUrlParser: true });
 });
