@@ -9,3 +9,7 @@ legend {
 .form-group {
   padding-bottom: 1rem;
 }
+
+input.invalid {
+  border: 1px red solid;
+}

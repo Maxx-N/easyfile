@@ -10,3 +10,28 @@ main {
 .pointer {
   cursor: pointer;
 }
+
+/* alerts */
+
+.user-messages {
+  /* border: 1px solid var(--fifth-color); */
+  color: var(--fifth-color);
+  /* background-color: var(--first-color); */
+  text-align: center;
+  border-radius: 5px;
+  width: 80%;
+  margin: 1rem auto;
+  padding: 0.5rem 0;
+}
+
+.user-messages li {
+  list-style: inside;
+}
+
+.user-messages__error {
+  /* border: 1px solid var(--first-red-color); */
+  border: 1px solid red;
+  /* color: var(--first-red-color); */
+  color: red;
+  /* background-color: var(--third-red-color); */
+}
