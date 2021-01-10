@@ -100,7 +100,7 @@ exports.postLogin = async (req, res, next) => {
       const errorMessages = errorsArray.map((err) => {
         return err.msg;
       });
-      return res.render('auth/login', {
+      return res.status(422).render('auth/login', {
         pageTitle: 'Connexion',
         path: '/login',
         errorMessages: errorMessages,
@@ -113,12 +113,15 @@ exports.postLogin = async (req, res, next) => {
       });
     }
     req.session.user = user;
+    return req.session.save((err) => {
+      if (err) {
+        throw err;
+      }
+      res.redirect('/documents');
+    });
   } catch (err) {
     err.message =
       "L'authentification a échoué. Nous vous remercions de bien vouloir nous excuser et vous invitons à réessayer plus tard.";
     return next(err);
   }
-
-  console.log('AUTH CONTROLLER : ', req.session.user.email);
-  res.redirect('/documents');
 };

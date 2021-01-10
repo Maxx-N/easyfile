@@ -23,19 +23,11 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use(
-//   session({
-//     secret: SECRET_SESSION,
-//     resave: false,
-//     saveUninitialized: false,
-//     store: store,
-//   })
-// );
 app.use(
   session({
     secret: SECRET_SESSION,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: store,
   })
 );
@@ -44,7 +36,6 @@ app.use(async (req, res, next) => {
   if (!req.session.user) {
     return next();
   }
-  console.log('APP JS : ',req.session.user.email);
   try {
     const user = await User.findById(req.session.user._id);
     if (!user) {
@@ -56,7 +47,6 @@ app.use(async (req, res, next) => {
     next(err);
   }
 });
-
 
 app.use('/auth', authRoutes);
 app.use(userRoutes);
