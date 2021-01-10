@@ -125,3 +125,14 @@ exports.postLogin = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.postLogout = (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      err.message = "Nous n'avons pas réussi à vous déconnecter";
+      return next(err);
+    }
+    console.log(req.session);
+    res.redirect('/');
+  });
+};
