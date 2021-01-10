@@ -33,7 +33,8 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  res.locals.isLoggedIn = !!req.session.user;
+  res.locals.isAuthenticated = !!req.session.user;
+  res.locals.user = req.session.user;
   next();
 });
 

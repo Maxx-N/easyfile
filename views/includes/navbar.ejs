@@ -24,7 +24,7 @@
     </ul>
 
     <ul class="navbar-nav ml-auto">
-      <% if (!isLoggedIn) { %>
+      <% if (!isAuthenticated) { %>
       <li
         class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>"
       >
@@ -60,7 +60,7 @@
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          >Utilisateur</a
+          ><%= user.email %></a
         >
         <div class="dropdown-menu">
           <a class="dropdown-item" href="#">Profil</a>

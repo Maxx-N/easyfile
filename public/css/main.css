@@ -11,16 +11,6 @@ main {
   cursor: pointer;
 }
 
-.nav-item .btn-link {
-  color: rgba(255, 255, 255, 0.5);
-  font-family: inherit;
-}
-
-.nav-item .btn-link:hover {
-  text-decoration: none;
-  color: white;
-}
-
 /* alerts */
 
 .user-messages {
