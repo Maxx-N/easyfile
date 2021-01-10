@@ -54,12 +54,17 @@ exports.postSignup = async (req, res, next) => {
         password: hashedPassword,
       });
       await user.save();
-      return res.redirect('/documents');
+      req.session.user = user;
+      return req.session.save((err) => {
+        if (err) {
+          throw err;
+        }
+        res.redirect('/documents');
+      });
     }
   } catch (err) {
     return next(err);
   }
-  res.redirect('/signup');
 };
 
 exports.getLogin = (req, res, next) => {
