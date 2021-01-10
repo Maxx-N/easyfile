@@ -54,11 +54,11 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.use('/auth', authRoutes);
+app.use(authRoutes);
 app.use(userRoutes);
 
 app.use('/', (req, res, next) => {
-  res.redirect('/auth');
+  res.redirect('/login');
 });
 
 app.use((err, req, res, next) => {

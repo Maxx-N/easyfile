@@ -42,13 +42,13 @@
         <div class="dropdown-menu">
           <a
             class="dropdown-item <%= path === '/login' ? 'active' : '' %>"
-            href="/auth/login"
+            href="/login"
             >Connexion</a
           >
           <div class="dropdown-divider"></div>
           <a
             class="dropdown-item <%= path === '/signup' ? 'active' : '' %>"
-            href="/auth/signup"
+            href="/signup"
             >Inscription</a
           >
         </div>
@@ -67,7 +67,7 @@
         <div class="dropdown-menu">
           <a class="dropdown-item" href="#">Profil</a>
           <div class="dropdown-divider"></div>
-          <form method="POST" action="/auth/logout">
+          <form method="POST" action="/logout">
             <button class="dropdown-item">Déconnexion</button>
           </form>
         </div>

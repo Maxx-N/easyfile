@@ -59,7 +59,7 @@ exports.postSignup = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-  res.redirect('/auth/signup');
+  res.redirect('/signup');
 };
 
 exports.getLogin = (req, res, next) => {
