@@ -132,7 +132,6 @@ exports.postLogout = (req, res, next) => {
       err.message = "Nous n'avons pas réussi à vous déconnecter";
       return next(err);
     }
-    console.log(req.session);
     res.redirect('/');
   });
 };
