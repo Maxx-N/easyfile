@@ -58,6 +58,9 @@ app.use(authRoutes);
 app.use(userRoutes);
 
 app.use('/', (req, res, next) => {
+  if (!!req.session.user) {
+    return res.redirect('/documents');
+  }
   res.redirect('/login');
 });
 
