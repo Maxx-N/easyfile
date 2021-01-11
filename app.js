@@ -12,6 +12,7 @@ const userRoutes = require('./routes/user');
 
 const MONGODB_URI = require('./private').MONGODB_URI;
 const SECRET_SESSION = require('./private').SECRET_SESSION;
+const ADMIN_EMAIL = require('./private').ADMIN_EMAIL;
 const User = require('./models/user');
 
 //
@@ -37,6 +38,8 @@ app.use(
 app.use((req, res, next) => {
   res.locals.isAuthenticated = !!req.session.user;
   res.locals.user = req.session.user;
+  res.locals.isAdmin =
+    !!req.session.user && req.session.user.email === ADMIN_EMAIL;
   next();
 });
 
