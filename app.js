@@ -6,8 +6,10 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 
+const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+
 const MONGODB_URI = require('./private').MONGODB_URI;
 const SECRET_SESSION = require('./private').SECRET_SESSION;
 const User = require('./models/user');
@@ -54,6 +56,7 @@ app.use(async (req, res, next) => {
   }
 });
 
+app.use('/admin', adminRoutes);
 app.use(authRoutes);
 app.use(userRoutes);
 

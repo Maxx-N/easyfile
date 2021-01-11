@@ -18,7 +18,7 @@ router.post(
   '/signup',
   [
     body('email')
-      .normalizeEmail()
+      .normalizeEmail({gmail_remove_dots: false})
       .isEmail()
       .withMessage('Merci de saisir un e-mail valide.')
       .custom((value) => {
@@ -52,7 +52,7 @@ router.get('/login', authController.getLogin);
 
 router.post(
   '/login',
-  [body('email').normalizeEmail(), body('password').trim()],
+  [body('email').normalizeEmail({gmail_remove_dots: false}), body('password').trim()],
   authController.postLogin
 );
 

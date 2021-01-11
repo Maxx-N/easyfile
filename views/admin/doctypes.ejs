@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+    <link rel="stylesheet" href="/css/forms.css" />
+  </head>
+  <body>
+    <%- include('../includes/navbar') %>
+    <main>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Périodicité</th>
+                <th scope="col">Unique</th>
+                <th scope="col">Date d'émission</th>
+                <th scope="col">Date d'expiration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-primary pointer">
+                <th scope="row">Carte d'identité</th>
+                <td>Aucune</td>
+                <td>Oui</td>
+                <td>Oui</td>
+                <td>Oui</td>
+              </tr>
+              <tr class="table-primary pointer">
+                <th scope="row">Bulletin de salaire</th>
+                <td>Mois</td>
+                <td>Non</td>
+                <td>Non</td>
+                <td>Non</td>
+              </tr>
+              <tr class="table-primary pointer">
+                <th scope="row">Avis d'imposition</th>
+                <td>Année</td>
+                <td>Non</td>
+                <td>Oui</td>
+                <td>Non</td>
+              </tr>
+            </tbody>
+          </table>
+    </main>
+    <%- include('../includes/scripts') %>
+    <script src="/js/forms.js"></script>
+  </body>
+</html>
