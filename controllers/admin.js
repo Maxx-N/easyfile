@@ -4,3 +4,10 @@ exports.getDoctypes = (req, res, next) => {
     path: '/admin/doctypes',
   });
 };
+
+exports.getAddDoctype = (req, res, next) => {
+  res.render('admin/add-doctype', {
+    pageTitle: 'Nouveau Doctype',
+    path: '/admin/doctypes',
+  });
+};

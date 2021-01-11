@@ -8,4 +8,6 @@ const router = express.Router();
 
 router.get('/doctypes', adminController.getDoctypes);
 
+router.get('/add-doctype', adminController.getAddDoctype);
+
 module.exports = router;
