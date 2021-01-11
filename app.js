@@ -14,6 +14,7 @@ const MONGODB_URI = require('./private').MONGODB_URI;
 const SECRET_SESSION = require('./private').SECRET_SESSION;
 const ADMIN_EMAIL = require('./private').ADMIN_EMAIL;
 const User = require('./models/user');
+const isAdmin = require('./middleware/is-admin');
 
 //
 
@@ -59,7 +60,7 @@ app.use(async (req, res, next) => {
   }
 });
 
-app.use('/admin', adminRoutes);
+app.use('/admin', isAdmin, adminRoutes);
 app.use(authRoutes);
 app.use(userRoutes);
 

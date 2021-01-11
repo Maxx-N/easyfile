@@ -1,16 +1,19 @@
 const express = require('express');
 
 const adminController = require('../controllers/admin');
-const isAdmin = require('../middleware/is-admin');
 
 //
 
 const router = express.Router();
 
-router.get('/doctypes', isAdmin, adminController.getDoctypes);
+router.get('/', (req, res, next) => {
+  res.redirect('/admin/doctypes');
+});
 
-router.get('/add-doctype', isAdmin, adminController.getAddDoctype);
+router.get('/doctypes', adminController.getDoctypes);
 
-router.post('/add-doctype', isAdmin, adminController.postDoctype);
+router.get('/add-doctype', adminController.getAddDoctype);
+
+router.post('/add-doctype', adminController.postDoctype);
 
 module.exports = router;
