@@ -7,7 +7,11 @@
   <body>
     <%- include('../includes/navbar') %>
     <main>
-      <form class="text-center center-half">
+      <form
+        class="text-center center-half"
+        method="POST"
+        action="/admin/add-doctype"
+      >
         <fieldset>
           <legend>Type de document</legend>
           <div class="form-group">
@@ -16,18 +20,22 @@
               type="text"
               class="form-control text-center"
               id="title"
+              name="title"
               aria-describedby="emailHelp"
               placeholder="Ex : ''Carte d'identité''"
             />
-  
           </div>
 
           <div class="form-group">
             <label for="periodicity">Périodicité</label>
-            <select class="form-control text-center pointer" id="periodicity">
-              <option>Aucune</option>
-              <option>Mois</option>
-              <option>Année</option>
+            <select
+              class="form-control text-center pointer"
+              id="periodicity"
+              name="periodicity"
+            >
+              <option value="none">Aucune</option>
+              <option value="month">Mois</option>
+              <option value="year">Année</option>
             </select>
           </div>
 
@@ -37,7 +45,8 @@
                 <input
                   class="form-check-input pointer"
                   type="checkbox"
-                  value=""
+                  name="isUnique"
+                  value="1"
                   checked
                 />
                 Un utilisateur ne peut avoir qu'un seul document de ce type.
@@ -45,13 +54,24 @@
             </div>
             <div class="form-check disabled">
               <label class="form-check-label pointer">
-                <input class="form-check-input pointer" type="checkbox" value="" checked />
+                <input
+                  class="form-check-input pointer"
+                  type="checkbox"
+                  name="hasIssuanceDate"
+                  value="1"
+                  checked
+                />
                 Ce type de document doit être daté.
               </label>
             </div>
             <div class="form-check disabled">
               <label class="form-check-label pointer">
-                <input class="form-check-input pointer" type="checkbox" value="" />
+                <input
+                  class="form-check-input pointer"
+                  type="checkbox"
+                  name="hasExpirationDate"
+                  value="1"
+                />
                 Ce type de document doit avoir une date d'expiration.
               </label>
             </div>
