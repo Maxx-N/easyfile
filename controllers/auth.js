@@ -21,7 +21,7 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postSignup = async (req, res, next) => {
-  const isClient = req.body.isBank === '0';
+  const isClient = req.body.isBank !== '1';
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;

@@ -23,6 +23,7 @@
               name="title"
               aria-describedby="emailHelp"
               placeholder="Ex : ''Carte d'identité''"
+              value="<%= oldInput.title %>"
             />
           </div>
 
@@ -46,8 +47,7 @@
                   class="form-check-input pointer"
                   type="checkbox"
                   name="isUnique"
-                  value="1"
-                  checked
+                  value="<%= oldInput.isUnique %>"
                 />
                 Un utilisateur ne peut avoir qu'un seul document de ce type.
               </label>
@@ -58,8 +58,7 @@
                   class="form-check-input pointer"
                   type="checkbox"
                   name="hasIssuanceDate"
-                  value="1"
-                  checked
+                  value="<%= oldInput.hasIssuanceDate %>"
                 />
                 Ce type de document doit être daté.
               </label>
@@ -70,7 +69,7 @@
                   class="form-check-input pointer"
                   type="checkbox"
                   name="hasExpirationDate"
-                  value="1"
+                  value="<%= oldInput.hasExpirationDate %>"
                 />
                 Ce type de document doit avoir une date d'expiration.
               </label>

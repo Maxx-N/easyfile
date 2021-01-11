@@ -8,10 +8,21 @@ for (let option of options) {
   }
 }
 
-const checkbox = document.getElementById('statusCheckbox');
+const checkboxes = document.querySelectorAll('input[type=checkbox]');
 
-if (checkbox.value === '1') {
-  checkbox.checked = true;
-} else {
-  checkbox.checked = false;
-}
+checkboxes.forEach((checkbox) => {
+  if (checkbox.value === '1') {
+    checkbox.checked = true;
+  } else {
+    checkbox.checked = false;
+  }
+
+  checkbox.addEventListener('click', () => {
+    if (checkbox.checked) {
+      checkbox.value = '1';
+    } else {
+      checkbox.value = '0';
+    }
+
+  });
+});

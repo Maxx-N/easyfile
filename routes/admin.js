@@ -1,4 +1,5 @@
 const express = require('express');
+const { body } = require('express-validator');
 
 const adminController = require('../controllers/admin');
 
@@ -14,6 +15,14 @@ router.get('/doctypes', adminController.getDoctypes);
 
 router.get('/add-doctype', adminController.getAddDoctype);
 
-router.post('/add-doctype', adminController.postDoctype);
+router.post(
+  '/add-doctype',
+  [
+    body('title', 'Le titre doit contenir entre 4 et 80 caractères')
+      .trim()
+      .isLength({ min: '4', max: '80' }),
+  ],
+  adminController.postDoctype
+);
 
 module.exports = router;
