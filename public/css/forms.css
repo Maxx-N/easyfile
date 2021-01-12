@@ -10,6 +10,7 @@ legend {
   padding-bottom: 1rem;
 }
 
-input.invalid {
+input.invalid,
+select.invalid {
   border: 1px red solid;
 }

@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 
@@ -17,6 +19,8 @@ exports.getAddDocument = async (req, res, next) => {
       pageTitle: 'Nouveau document',
       path: '/documents',
       doctypes: doctypes,
+      validationErrors: [],
+      errorMessages: [],
     });
   } catch (err) {
     err.message =
@@ -37,31 +41,42 @@ exports.postAddDocument = async (req, res, next) => {
   const month = req.body.month ? parseInt(req.body.month.split('-')[1]) : null;
   const title = req.body.title ? req.body.title : null;
 
-  console.log(fileUrl);
-  console.log(issuanceDate);
-  console.log(expirationDate);
-  console.log(month);
-  console.log(title);
-
-  let year;
-  if (req.body.month) {
-    year = parseInt(req.body.month.split('-')[0]);
-  } else if (req.body.year) {
-    year = parseInt(req.body.year);
-  }
-
-  const document = new Document({
-    userId: req.user._id,
-    doctypeId: doctypeId,
-    fileUrl: fileUrl,
-    issuanceDate: issuanceDate,
-    expirationDate: expirationDate,
-    month: month,
-    year: year,
-    title: title,
-  });
+  const errors = validationResult(req);
 
   try {
+    if (!errors.isEmpty()) {
+      console.log(errors.array());
+      const validationErrors = errors.array();
+      const errorMessages = validationErrors.map((err) => err.msg);
+      const doctypes = await Doctype.find();
+      return res.status(422).render('user/add-document', {
+        pageTitle: 'Nouveau document',
+        path: '/documents',
+        doctypes: doctypes,
+        validationErrors: validationErrors,
+        errorMessages: errorMessages,
+      });
+    }
+
+    let year;
+    if (req.body.month) {
+      year = parseInt(req.body.month.split('-')[0]);
+    } else if (req.body.year) {
+      year = parseInt(req.body.year);
+    }
+
+    const document = new Document({
+      userId: req.user._id,
+      doctypeId: doctypeId,
+      fileUrl: fileUrl,
+    });
+
+    if (issuanceDate) document.issuanceDate = issuanceDate;
+    if (expirationDate) document.expirationDate = expirationDate;
+    if (month) document.month = month;
+    if (year) document.year = year;
+    if (title) document.title = title;
+
     await document.save();
     res.redirect('/documents');
   } catch (err) {

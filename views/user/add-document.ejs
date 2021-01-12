@@ -7,6 +7,7 @@
   <body>
     <%- include('../includes/navbar') %>
     <main>
+      <%- include('../includes/error-feedback') %>
       <form
         class="text-center center-half"
         method="POST"
@@ -18,7 +19,7 @@
             <label for="fileUrl">Fichier</label>
             <input
               type="text"
-              class="form-control text-center pointer"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'fileUrl') ? 'invalid' : '' %>"
               id="fileUrl"
               name="fileUrl"
               aria-describedby="emailHelp"
@@ -28,7 +29,7 @@
             <label for="doctypeId">Type</label>
             <select
               lastChoice=""
-              class="form-control text-center pointer"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'doctypeId') ? 'invalid' : '' %>"
               id="doctypeId"
               name="doctypeId"
             >
