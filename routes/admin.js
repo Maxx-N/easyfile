@@ -22,7 +22,7 @@ router.post(
       .trim()
       .isLength({ min: '4', max: '80' }),
   ],
-  adminController.postDoctype
+  adminController.postAddDoctype
 );
 
 module.exports = router;

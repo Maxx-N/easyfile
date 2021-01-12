@@ -4,11 +4,19 @@ const Doctype = require('../models/doctype');
 
 //
 
-exports.getDoctypes = (req, res, next) => {
-  res.render('admin/doctypes', {
-    pageTitle: 'Doc Types',
-    path: '/admin/doctypes',
-  });
+exports.getDoctypes = async (req, res, next) => {
+  try {
+    const doctypes = await Doctype.find();
+    res.render('admin/doctypes', {
+      pageTitle: 'Doc Types',
+      path: '/admin/doctypes',
+      doctypes: doctypes,
+    });
+  } catch (err) {
+    err.message =
+      'Un problème est survenu lors de la recherche des types de document sur le serveur.';
+    next(err);
+  }
 };
 
 exports.getAddDoctype = (req, res, next) => {
@@ -27,7 +35,7 @@ exports.getAddDoctype = (req, res, next) => {
   });
 };
 
-exports.postDoctype = async (req, res, next) => {
+exports.postAddDoctype = async (req, res, next) => {
   const title = req.body.title;
   const periodicity = req.body.periodicity;
   const isUnique = req.body.isUnique === '1';

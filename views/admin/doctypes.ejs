@@ -6,7 +6,7 @@
   <body>
     <%- include('../includes/navbar') %>
     <main class="text-center">
-        <a class="btn btn-info" href="/admin/add-doctype">Ajouter</a>
+      <a class="btn btn-info" href="/admin/add-doctype">Ajouter</a>
       <table class="table table-hover">
         <thead>
           <tr>
@@ -18,27 +18,15 @@
           </tr>
         </thead>
         <tbody>
+          <% for (let doctype of doctypes) { %>
           <tr class="table-primary pointer">
-            <th scope="row">Carte d'identité</th>
-            <td>Aucune</td>
-            <td>Oui</td>
-            <td>Oui</td>
-            <td>Oui</td>
+            <td><%= doctype.title %></td>
+            <td><%= doctype.periodicity === 'none' ? 'Aucune' : doctype.periodicity === 'month' ? 'Mois' : 'Année' %></td>
+            <td><%= doctype.isUnique ? 'Oui' : 'Non' %></td>
+            <td><%= doctype.hasIssuanceDate ? 'Oui' : 'Non' %></td>
+            <td><%= doctype.hasExpirationDate ? 'Oui' : 'Non' %></td>
           </tr>
-          <tr class="table-primary pointer">
-            <th scope="row">Bulletin de salaire</th>
-            <td>Mois</td>
-            <td>Non</td>
-            <td>Non</td>
-            <td>Non</td>
-          </tr>
-          <tr class="table-primary pointer">
-            <th scope="row">Avis d'imposition</th>
-            <td>Année</td>
-            <td>Non</td>
-            <td>Oui</td>
-            <td>Non</td>
-          </tr>
+          <% } %>
         </tbody>
       </table>
     </main>
