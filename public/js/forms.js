@@ -1,6 +1,6 @@
-const select = document.getElementById('selectStatus');
-const options = document.querySelectorAll('#selectStatus>option');
+const options = document.querySelectorAll('option');
 for (let option of options) {
+  const select = option.parentElement;
   if (select.getAttribute('lastChoice') === option.value) {
     option.setAttribute('selected', 'selected');
   } else {
@@ -23,6 +23,5 @@ checkboxes.forEach((checkbox) => {
     } else {
       checkbox.value = '0';
     }
-
   });
 });
