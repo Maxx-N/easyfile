@@ -9,4 +9,6 @@ const router = express.Router();
 
 router.get('/documents', isAuth, userController.getDocuments);
 
+router.get('/add-document', isAuth, userController.getAddDocument);
+
 module.exports = router;
