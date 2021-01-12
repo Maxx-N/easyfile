@@ -7,45 +7,94 @@
   <body>
     <%- include('../includes/navbar') %>
     <main>
-
-        <form class="text-center center-half">
-            <fieldset>
-              <legend>Nouveau document</legend>
-              <div class="form-group">
-                <label for="file">Fichier</label>
-                <input type="text" class="form-control text-center" id="file" aria-describedby="emailHelp">
-              </div>
-              <div class="form-group">
-                <label for="doctype">Example select</label>
-                <select class="form-control text-center" id="doctype">
-                  <option>Type 1</option>
-                  <option>Type 2</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="title">Titre</label>
-                <input type="text" class="form-control text-center" id="title" aria-describedby="emailHelp">
-              </div>
-              <div class="form-group">
-                <label for="issuanceDate">Date d'émission</label>
-                <input type="date" class="form-control text-center" id="issuanceDate" aria-describedby="emailHelp">
-              </div>
-              <div class="form-group">
-                <label for="expirationDate">Date d'expiration</label>
-                <input type="date" class="form-control text-center" id="expirationDate" aria-describedby="emailHelp">
-              </div>
-              <div class="form-group">
-                <label for="month">Mois</label>
-                <input type="month" class="form-control text-center" id="month" aria-describedby="emailHelp">
-              </div>
-              <div class="form-group">
-                <label for="year">Année</label>
-                <input type="number" max="2021" min="1900" class="form-control text-center" id="year" aria-describedby="emailHelp">
-              </div>
-              <button type="submit" class="btn btn-primary">Ajouter !</button>
-            </fieldset>
-          </form>
-
+      <form
+        class="text-center center-half"
+        method="POST"
+        action="/add-document"
+      >
+        <fieldset>
+          <legend>Nouveau document</legend>
+          <div class="form-group">
+            <label for="fileUrl">Fichier</label>
+            <input
+              type="text"
+              class="form-control text-center pointer"
+              id="fileUrl"
+              name="fileUrl"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="form-group">
+            <label for="doctypeId">Type</label>
+            <select
+              lastChoice=""
+              class="form-control text-center pointer"
+              id="doctypeId"
+              name="doctypeId"
+            >
+              <option value="" disabled selected>
+                Sélectionner un type de document ...
+              </option>
+              <% for (let doctype of doctypes) { %>
+              <option value="<%= doctype._id %>"><%= doctype.title %></option>
+              <% } %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="title">Titre</label>
+            <input
+              type="text"
+              class="form-control text-center"
+              id="title"
+              name="title"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="form-group">
+            <label for="issuanceDate">Date d'émission</label>
+            <input
+              type="date"
+              class="form-control text-center pointer"
+              id="issuanceDate"
+              name="issuanceDate"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="form-group">
+            <label for="expirationDate">Date d'expiration</label>
+            <input
+              type="date"
+              class="form-control text-center pointer"
+              id="expirationDate"
+              name="expirationDate"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="form-group">
+            <label for="month">Mois</label>
+            <input
+              type="month"
+              class="form-control text-center pointer"
+              id="month"
+              name="month"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <div class="form-group">
+            <label for="year">Année</label>
+            <input
+              type="number"
+              max="2021"
+              min="1900"
+              class="form-control text-center pointer"
+              id="year"
+              name="year"
+              aria-describedby="emailHelp"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Ajouter !</button>
+        </fieldset>
+      </form>
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>

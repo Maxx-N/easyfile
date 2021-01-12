@@ -11,4 +11,6 @@ router.get('/documents', isAuth, userController.getDocuments);
 
 router.get('/add-document', isAuth, userController.getAddDocument);
 
+router.post('/add-document', isAuth, userController.postAddDocument);
+
 module.exports = router;

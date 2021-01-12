@@ -49,7 +49,7 @@ exports.postAddDoctype = async (req, res, next) => {
       return err.msg;
     });
 
-    return res.render('admin/add-doctype', {
+    return res.status(422).render('admin/add-doctype', {
       pageTitle: 'Nouveau Doctype',
       path: '/admin/doctypes',
       validationErrors: errors.array(),
