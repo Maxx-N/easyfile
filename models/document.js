@@ -30,6 +30,9 @@ const documentSchema = new Schema({
     type: Number,
     max: new Date().getFullYear(),
   },
+  title: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model('Document', documentSchema);
