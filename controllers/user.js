@@ -81,6 +81,9 @@ exports.postAddDocument = async (req, res, next) => {
     if (!doctype.isUnique) document.title = title;
 
     await document.save();
+    req.user.documentIds.push(document._id);
+    await req.user.save();
+
     res.redirect('/documents');
   } catch (err) {
     err.message =

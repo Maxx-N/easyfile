@@ -21,6 +21,7 @@ const userSchema = new Schema({
     enum: ['male', 'female', 'other'],
   },
   address: String,
+  documentIds: [{ type: Schema.Types.ObjectId, ref: 'Document', required: true }],
 });
 
 module.exports = mongoose.model('User', userSchema);
