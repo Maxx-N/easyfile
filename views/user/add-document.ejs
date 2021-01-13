@@ -45,7 +45,7 @@
             <label for="title">Titre</label>
             <input
               type="text"
-              class="form-control text-center"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'title') ? 'invalid' : '' %>"
               id="title"
               name="title"
               aria-describedby="emailHelp"
@@ -55,7 +55,7 @@
             <label for="issuanceDate">Date d'émission</label>
             <input
               type="date"
-              class="form-control text-center pointer"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'issuanceDate') ? 'invalid' : '' %>"
               id="issuanceDate"
               name="issuanceDate"
               aria-describedby="emailHelp"
@@ -65,7 +65,7 @@
             <label for="expirationDate">Date d'expiration</label>
             <input
               type="date"
-              class="form-control text-center pointer"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'expirationDate') ? 'invalid' : '' %>"
               id="expirationDate"
               name="expirationDate"
               aria-describedby="emailHelp"
@@ -75,7 +75,7 @@
             <label for="month">Mois</label>
             <input
               type="month"
-              class="form-control text-center pointer"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'month') ? 'invalid' : '' %>"
               id="month"
               name="month"
               aria-describedby="emailHelp"
@@ -87,7 +87,7 @@
               type="number"
               max="2021"
               min="1900"
-              class="form-control text-center pointer"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'year') ? 'invalid' : '' %>"
               id="year"
               name="year"
               aria-describedby="emailHelp"

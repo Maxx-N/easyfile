@@ -18,7 +18,7 @@ router.get('/add-doctype', adminController.getAddDoctype);
 router.post(
   '/add-doctype',
   [
-    body('title', 'Le titre doit contenir entre 4 et 80 caractères')
+    body('title', 'Le titre doit contenir entre 4 et 80 caractères.')
       .trim()
       .isLength({ min: '4', max: '80' }),
   ],

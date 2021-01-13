@@ -58,24 +58,27 @@ exports.postAddDocument = async (req, res, next) => {
       });
     }
 
-    let year;
-    if (req.body.month) {
-      year = parseInt(req.body.month.split('-')[0]);
-    } else if (req.body.year) {
-      year = parseInt(req.body.year);
-    }
-
     const document = new Document({
       userId: req.user._id,
       doctypeId: doctypeId,
       fileUrl: fileUrl,
     });
 
-    if (issuanceDate) document.issuanceDate = issuanceDate;
-    if (expirationDate) document.expirationDate = expirationDate;
-    if (month) document.month = month;
-    if (year) document.year = year;
-    if (title) document.title = title;
+    const doctype = await Doctype.findById(document.doctypeId);
+
+    let year;
+    if (doctype.periodicity === 'month') {
+      year = req.body.month ? parseInt(req.body.month.split('-')[0]) : null;
+    } else if (doctype.periodicity === 'year') {
+      year = req.body.year ? parseInt(req.body.year) : null;
+    }
+
+    if (doctype.hasIssuanceDate) document.issuanceDate = issuanceDate;
+    if (doctype.hasExpirationDate) document.expirationDate = expirationDate;
+    if (doctype.periodicity === 'month') document.month = month;
+    if (doctype.periodicity === 'month' || doctype.periodicity === 'year')
+      document.year = year;
+    if (!doctype.isUnique) document.title = title;
 
     await document.save();
     res.redirect('/documents');
