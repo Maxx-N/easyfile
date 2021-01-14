@@ -35,7 +35,7 @@ router.post(
             ) {
               console.log('NAN !');
               return Promise.reject(
-                `Vous possédez déjà un document de type \"${doctype.title}\"`
+                `Votre ${doctype.title.toLowerCase()} est déjà en ligne.`
               );
             }
           }
@@ -49,7 +49,7 @@ router.post(
           if (!doctype.isUnique) {
             if (!value) {
               return Promise.reject(
-                'Merci de donner un titre à ce document : Un utilisateur peut en posséder plusieurs de ce type.'
+                `Merci de donner un titre à votre ${doctype.title.toLowerCase()} : Vous pouvez en posséder plusieurs.`
               );
             }
             if (value.length < 4 || value.length > 80) {
@@ -60,6 +60,16 @@ router.post(
           }
         }
       }),
+    body('issuanceDate').custom(async (value, { req }) => {
+      if (req.body.doctypeId) {
+        const doctype = await Doctype.findById(req.body.doctypeId);
+        if (doctype.hasIssuanceDate && !value) {
+          return Promise.reject(
+            `Votre ${doctype.title.toLowerCase()} doit avoir une date d'émission.`
+          );
+        }
+      }
+    }),
   ],
   userController.postAddDocument
 );
