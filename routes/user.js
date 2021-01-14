@@ -34,7 +34,7 @@ router.post(
               )
             ) {
               return Promise.reject(
-                `Votre ${doctype.title.toLowerCase()} est déjà en ligne.`
+                `Votre ${doctype.title.toLowerCase()} est un document unique que vous avez déjà mis en ligne.`
               );
             }
           }
@@ -84,6 +84,16 @@ router.post(
           }
         }
       }),
+    body('expirationDate').custom(async (value, { req }) => {
+      if (req.body.doctypeId) {
+        const doctype = await Doctype.findById(req.body.doctypeId);
+        if (doctype.hasExpirationDate && !value) {
+          return Promise.reject(
+            `Votre ${doctype.title.toLowerCase()} doit avoir une date d'expiration.`
+          );
+        }
+      }
+    }),
   ],
   userController.postAddDocument
 );
