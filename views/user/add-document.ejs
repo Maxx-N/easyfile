@@ -85,8 +85,6 @@
             <label for="year">Année</label>
             <input
               type="number"
-              max="2021"
-              min="1900"
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'year') ? 'invalid' : '' %>"
               id="year"
               name="year"

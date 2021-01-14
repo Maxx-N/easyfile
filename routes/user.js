@@ -124,24 +124,46 @@ router.post(
     body('month').custom(async (value, { req }) => {
       if (req.body.doctypeId) {
         const doctype = await Doctype.findById(req.body.doctypeId);
-        if (doctype.periodicity === 'month' && !value) {
-          return Promise.reject(
-            `Votre ${doctype.title.toLowerCase()} est un document mensuel qui doit avoir un mois et une année.`
-          );
-        }
-        if (doctype.periodicity === 'month' && value) {
-          const selectedYear = parseInt(value.split('-')[0]);
-          const selectedMonth = parseInt(value.split('-')[1]);
-          const currentYear = helpers.getCurrentDate().getFullYear();
-          const currentMonth = helpers.getCurrentDate().getMonth() + 1;
-
-          if (
-            selectedYear > currentYear ||
-            (selectedYear === currentYear && selectedMonth > currentMonth)
-          ) {
+        if (doctype.periodicity === 'month') {
+          if (!value) {
             return Promise.reject(
-              `Votre ${doctype.title.toLowerCase()} ne peut concerner un mois dans le futur.`
+              `Votre ${doctype.title.toLowerCase()} est un document mensuel qui doit avoir un mois et une année.`
             );
+          } else {
+            const selectedYear = parseInt(value.split('-')[0]);
+            const selectedMonth = parseInt(value.split('-')[1]);
+            const currentYear = helpers.getCurrentDate().getFullYear();
+            const currentMonth = helpers.getCurrentDate().getMonth() + 1;
+            
+            if (
+              selectedYear > currentYear ||
+              (selectedYear === currentYear && selectedMonth > currentMonth)
+            ) {
+              return Promise.reject(
+                `Votre ${doctype.title.toLowerCase()} ne peut concerner un mois futur.`
+              );
+            }
+          }
+        }
+      }
+    }),
+    body('year').custom(async (value, { req }) => {
+      if (req.body.doctypeId) {
+        const doctype = await Doctype.findById(req.body.doctypeId);
+        if (doctype.periodicity === 'year') {
+          if (!value) {
+            return Promise.reject(
+              `Votre ${doctype.title.toLowerCase()} est un document annuel qui doit avoir une année.`
+            );
+          } else {
+            const selectedYear = parseInt(value);
+            const currentYear = helpers.getCurrentDate().getFullYear();
+
+            if (selectedYear > currentYear) {
+              return Promise.reject(
+                `Votre ${doctype.title.toLowerCase()} ne peut concerner une année future.`
+              );
+            }
           }
         }
       }
