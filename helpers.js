@@ -30,3 +30,8 @@ exports.isFuture = (date) => {
   const today = this.getCurrentDate();
   return date > today;
 };
+
+exports.isPast = (date) => {
+  const today = this.getCurrentDate();
+  return date < today;
+};

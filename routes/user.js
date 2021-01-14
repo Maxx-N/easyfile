@@ -84,16 +84,43 @@ router.post(
           }
         }
       }),
-    body('expirationDate').custom(async (value, { req }) => {
-      if (req.body.doctypeId) {
-        const doctype = await Doctype.findById(req.body.doctypeId);
-        if (doctype.hasExpirationDate && !value) {
-          return Promise.reject(
-            `Votre ${doctype.title.toLowerCase()} doit avoir une date d'expiration.`
-          );
+    body('expirationDate')
+      .custom(async (value, { req }) => {
+        if (req.body.doctypeId) {
+          const doctype = await Doctype.findById(req.body.doctypeId);
+          if (doctype.hasExpirationDate && !value) {
+            return Promise.reject(
+              `Votre ${doctype.title.toLowerCase()} doit avoir une date d'expiration.`
+            );
+          }
         }
-      }
-    }),
+      })
+      .custom(async (value, { req }) => {
+        if (req.body.doctypeId) {
+          const doctype = await Doctype.findById(req.body.doctypeId);
+          if (doctype.hasExpirationDate && value && req.body.issuanceDate) {
+            if (value < req.body.issuanceDate) {
+              return Promise.reject(
+                `La date d'expiration de votre ${doctype.title.toLowerCase()} ne peut pas être antérieure à sa date d'émission.`
+              );
+            }
+          }
+        }
+      })
+      .custom(async (value, { req }) => {
+        if (req.body.doctypeId) {
+          const doctype = await Doctype.findById(req.body.doctypeId);
+          if (doctype.hasExpirationDate && value) {
+            const expirationDate = new Date(value);
+
+            if (helpers.isPast(expirationDate)) {
+              return Promise.reject(
+                `Si votre ${doctype.title.toLowerCase()} a déjà expiré, vous ne pouvez pas l'ajouter.`
+              );
+            }
+          }
+        }
+      }),
   ],
   userController.postAddDocument
 );
