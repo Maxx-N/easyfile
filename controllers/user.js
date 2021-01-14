@@ -45,7 +45,6 @@ exports.postAddDocument = async (req, res, next) => {
 
   try {
     if (!errors.isEmpty()) {
-      console.log(errors.array());
       const validationErrors = errors.array();
       const errorMessages = validationErrors.map((err) => err.msg);
       const doctypes = await Doctype.find();

@@ -33,7 +33,6 @@ router.post(
                 (docId) => docId.toString() === value.toString()
               )
             ) {
-              console.log('NAN !');
               return Promise.reject(
                 `Votre ${doctype.title.toLowerCase()} est déjà en ligne.`
               );
@@ -60,16 +59,31 @@ router.post(
           }
         }
       }),
-    body('issuanceDate').custom(async (value, { req }) => {
-      if (req.body.doctypeId) {
-        const doctype = await Doctype.findById(req.body.doctypeId);
-        if (doctype.hasIssuanceDate && !value) {
-          return Promise.reject(
-            `Votre ${doctype.title.toLowerCase()} doit avoir une date d'émission.`
-          );
+    body('issuanceDate')
+      .custom(async (value, { req }) => {
+        if (req.body.doctypeId) {
+          const doctype = await Doctype.findById(req.body.doctypeId);
+          if (doctype.hasIssuanceDate && !value) {
+            return Promise.reject(
+              `Votre ${doctype.title.toLowerCase()} doit avoir une date d'émission.`
+            );
+          }
         }
-      }
-    }),
+      })
+      .custom(async (value, { req }) => {
+        if (req.body.doctypeId) {
+          const doctype = await Doctype.findById(req.body.doctypeId);
+          if (doctype.hasIssuanceDate && value) {
+            const issuanceDate = new Date(value);
+
+            if (helpers.isFuture(issuanceDate)) {
+              return Promise.reject(
+                `Votre ${doctype.title.toLowerCase()} ne peut pas avoir été émis(e) dans le futur...`
+              );
+            }
+          }
+        }
+      }),
   ],
   userController.postAddDocument
 );

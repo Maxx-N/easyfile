@@ -11,3 +11,22 @@ exports.getUserDoctypeIds = async (user) => {
     return docId.doctypeId;
   });
 };
+
+exports.getCurrentDate = () => {
+  let todayString = new Date().toLocaleDateString();
+
+  const todayArray = [];
+  todayArray[0] = todayString.split('/')[2];
+  todayArray[1] = todayString.split('/')[1];
+  todayArray[2] = todayString.split('/')[0];
+
+  todayString = todayArray.join('-');
+  today = new Date(todayString);
+
+  return today;
+};
+
+exports.isFuture = (date) => {
+  const today = this.getCurrentDate();
+  return date > today;
+};
