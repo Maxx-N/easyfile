@@ -21,6 +21,15 @@ exports.getAddDocument = async (req, res, next) => {
       doctypes: doctypes,
       validationErrors: [],
       errorMessages: [],
+      oldInput: {
+        doctypeId: '',
+        fileUrl: '',
+        issuanceDate: '',
+        expirationDate: '',
+        month: '',
+        year: '',
+        title: '',
+      },
     });
   } catch (err) {
     err.message =
@@ -54,6 +63,15 @@ exports.postAddDocument = async (req, res, next) => {
         doctypes: doctypes,
         validationErrors: validationErrors,
         errorMessages: errorMessages,
+        oldInput: {
+          doctypeId: doctypeId,
+          fileUrl: fileUrl,
+          issuanceDate: req.body.issuanceDate,
+          expirationDate: req.body.expirationDate,
+          month: req.body.month,
+          year: req.body.year,
+          title: title,
+        },
       });
     }
 

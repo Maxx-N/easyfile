@@ -22,13 +22,13 @@
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'fileUrl') ? 'invalid' : '' %>"
               id="fileUrl"
               name="fileUrl"
-              aria-describedby="emailHelp"
+              value="<%= oldInput.fileUrl %>"
             />
           </div>
           <div class="form-group">
             <label for="doctypeId">Type</label>
             <select
-              lastChoice=""
+              lastChoice="<%= oldInput.doctypeId %>"
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'doctypeId') ? 'invalid' : '' %>"
               id="doctypeId"
               name="doctypeId"
@@ -48,7 +48,7 @@
               class="form-control text-center <%= validationErrors.some(err => err.param === 'title') ? 'invalid' : '' %>"
               id="title"
               name="title"
-              aria-describedby="emailHelp"
+              value="<%= oldInput.title %>"
             />
           </div>
           <div class="form-group">
@@ -58,7 +58,7 @@
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'issuanceDate') ? 'invalid' : '' %>"
               id="issuanceDate"
               name="issuanceDate"
-              aria-describedby="emailHelp"
+              value="<%= oldInput.issuanceDate %>"
             />
           </div>
           <div class="form-group">
@@ -68,7 +68,7 @@
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'expirationDate') ? 'invalid' : '' %>"
               id="expirationDate"
               name="expirationDate"
-              aria-describedby="emailHelp"
+              value="<%= oldInput.expirationDate %>"
             />
           </div>
           <div class="form-group">
@@ -78,7 +78,7 @@
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'month') ? 'invalid' : '' %>"
               id="month"
               name="month"
-              aria-describedby="emailHelp"
+              value="<%= oldInput.month %>"
             />
           </div>
           <div class="form-group">
@@ -88,7 +88,7 @@
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'year') ? 'invalid' : '' %>"
               id="year"
               name="year"
-              aria-describedby="emailHelp"
+              value="<%= oldInput.year %>"
             />
           </div>
           <button type="submit" class="btn btn-primary">Ajouter !</button>
