@@ -29,23 +29,32 @@
           <div class="form-group">
             <label for="doctypeId">Type</label>
             <select
-              lastChoice="<%= oldInput.doctypeId %>"
               class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'doctypeId') ? 'invalid' : '' %>"
               id="doctypeId"
               name="doctypeId"
+              lastChoice="<%= oldInput.doctypeId %>"
             >
               <option value="" disabled selected>
                 Sélectionner un type de document ...
               </option>
               <% for (let doctype of doctypes) { %>
-              <option value="<%= doctype._id %>"><%= doctype.title %></option>
+              <option
+                value="<%= doctype._id %>"
+                isUnique="<%= doctype.isUnique %>"
+                periodicity="<%= doctype.periodicity %>"
+                hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
+                hasExpirationDate="<%= doctype.hasExpirationDate %>"
+              >
+                <%= doctype.title %>
+              </option>
               <% } %>
             </select>
             <small class="form-text text-muted"
-            >Certains documents uniques (ex : Carte d'identité) ne peuvent avoir de doublon par utilisateur.</small
-          >
+              >Certains documents uniques (ex : Carte d'identité) ne peuvent
+              avoir de doublon par utilisateur.</small
+            >
           </div>
-          <div class="form-group">
+          <div class="form-group" id="titleGroup" visibility="hidden">
             <label for="title">Titre</label>
             <input
               type="text"
@@ -55,10 +64,10 @@
               value="<%= oldInput.title %>"
             />
             <small class="form-text text-muted"
-            >Entre 4 et 80 caractères.</small
-          >
+              >Entre 4 et 80 caractères.</small
+            >
           </div>
-          <div class="form-group">
+          <div class="form-group" id="issuanceDateGroup">
             <label for="issuanceDate">Date d'émission</label>
             <input
               type="date"
@@ -68,10 +77,10 @@
               value="<%= oldInput.issuanceDate %>"
             />
             <small class="form-text text-muted"
-            >Dans le passé ou le présent.</small
-          >
+              >Dans le passé ou le présent.</small
+            >
           </div>
-          <div class="form-group">
+          <div class="form-group" id="expirationDateGroup">
             <label for="expirationDate">Date d'expiration</label>
             <input
               type="date"
@@ -81,10 +90,10 @@
               value="<%= oldInput.expirationDate %>"
             />
             <small class="form-text text-muted"
-            >Dans le futur ou le présent.</small
-          >
+              >Dans le futur ou le présent.</small
+            >
           </div>
-          <div class="form-group">
+          <div class="form-group" id="monthGroup">
             <label for="month">Mois</label>
             <input
               type="month"
@@ -93,11 +102,9 @@
               name="month"
               value="<%= oldInput.month %>"
             />
-            <small class="form-text text-muted"
-            >Passé ou actuel.</small
-          >
+            <small class="form-text text-muted">Passé ou actuel.</small>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="yearGroup">
             <label for="year">Année</label>
             <input
               type="number"
@@ -106,9 +113,7 @@
               name="year"
               value="<%= oldInput.year %>"
             />
-            <small class="form-text text-muted"
-            >Passée ou actuelle.</small
-          >
+            <small class="form-text text-muted">Passée ou actuelle.</small>
           </div>
           <button type="submit" class="btn btn-primary">Ajouter !</button>
         </fieldset>
