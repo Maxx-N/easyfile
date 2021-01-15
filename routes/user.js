@@ -18,7 +18,6 @@ router.post(
   '/add-document',
   isAuth,
   [
-    body('fileUrl').not().isEmpty().withMessage("Merci d'ajouter un fichier."),
     body('doctypeId')
       .not()
       .isEmpty()

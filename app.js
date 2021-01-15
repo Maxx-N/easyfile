@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const multer = require('multer');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
@@ -21,11 +22,33 @@ const isAdmin = require('./middleware/is-admin');
 const app = express();
 const store = new MongoDBStore({ uri: MONGODB_URI, collection: 'sessions' });
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'files');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now().toString() + '-' + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('file')
+);
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/files', express.static(path.join(__dirname, 'files')));
 
 app.use(
   session({
@@ -84,6 +107,11 @@ app.use((err, req, res, next) => {
     path: '/error',
     errorStatus: err.statusCode,
     errorMessage: err.message,
+    isAdmin: req.locals && !!req.locals.isAdmin ? req.locals.isAdmin : false,
+    isAuthenticated:
+      req.locals && !!req.locals.isAuthenticated
+        ? req.locals.isAuthenticated
+        : false,
   });
 });
 

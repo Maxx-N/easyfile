@@ -12,17 +12,18 @@
         class="text-center center-half"
         method="POST"
         action="/add-document"
+        enctype="multipart/form-data"
       >
         <fieldset>
           <legend>Nouveau document</legend>
           <div class="form-group">
-            <label for="fileUrl">Fichier</label>
+            <label for="file">Fichier</label>
             <input
-              type="text"
-              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'fileUrl') ? 'invalid' : '' %>"
-              id="fileUrl"
-              name="fileUrl"
-              value="<%= oldInput.fileUrl %>"
+              type="file"
+              class="form-control text-center pointer <%= validationErrors.some(err => err.param === 'file') ? 'invalid' : '' %>"
+              id="file"
+              name="file"
+              accept="application/pdf"
             />
             <small class="form-text text-muted">Format PDF.</small>
           </div>
@@ -50,7 +51,8 @@
               <% } %>
             </select>
             <small class="form-text text-muted" id="doctypeHelper"
-              >Un utilisateur ne peut posséder qu'une seule fois ce type de document.</small
+              >Un utilisateur ne peut posséder qu'une seule fois ce type de
+              document.</small
             >
           </div>
           <div class="form-group" id="titleGroup" visibility="hidden">

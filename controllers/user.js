@@ -23,7 +23,6 @@ exports.getAddDocument = async (req, res, next) => {
       errorMessages: [],
       oldInput: {
         doctypeId: '',
-        fileUrl: '',
         issuanceDate: '',
         expirationDate: '',
         month: '',
@@ -40,7 +39,6 @@ exports.getAddDocument = async (req, res, next) => {
 
 exports.postAddDocument = async (req, res, next) => {
   const doctypeId = req.body.doctypeId;
-  const fileUrl = req.body.fileUrl;
   const issuanceDate = req.body.issuanceDate
     ? new Date(req.body.issuanceDate)
     : null;
@@ -49,6 +47,7 @@ exports.postAddDocument = async (req, res, next) => {
     : null;
   const month = req.body.month ? parseInt(req.body.month.split('-')[1]) : null;
   const title = req.body.title ? req.body.title : null;
+  const file = req.file;
 
   const errors = validationResult(req);
 
@@ -65,7 +64,6 @@ exports.postAddDocument = async (req, res, next) => {
         errorMessages: errorMessages,
         oldInput: {
           doctypeId: doctypeId,
-          fileUrl: fileUrl,
           issuanceDate: req.body.issuanceDate,
           expirationDate: req.body.expirationDate,
           month: req.body.month,
@@ -78,7 +76,7 @@ exports.postAddDocument = async (req, res, next) => {
     const document = new Document({
       userId: req.user._id,
       doctypeId: doctypeId,
-      fileUrl: fileUrl,
+      fileUrl: file.path,
     });
 
     const doctype = await Doctype.findById(document.doctypeId);
