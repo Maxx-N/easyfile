@@ -59,21 +59,15 @@ router.post(
           }
         }
       }),
-    body('issuanceDate')
-      .custom(async (value, { req }) => {
-        if (req.body.doctypeId) {
-          const doctype = await Doctype.findById(req.body.doctypeId);
-          if (doctype.hasIssuanceDate && !value) {
+    body('issuanceDate').custom(async (value, { req }) => {
+      if (req.body.doctypeId) {
+        const doctype = await Doctype.findById(req.body.doctypeId);
+        if (doctype.hasIssuanceDate) {
+          if (!value) {
             return Promise.reject(
               `Votre ${doctype.title.toLowerCase()} doit avoir une date d'émission.`
             );
-          }
-        }
-      })
-      .custom(async (value, { req }) => {
-        if (req.body.doctypeId) {
-          const doctype = await Doctype.findById(req.body.doctypeId);
-          if (doctype.hasIssuanceDate && value) {
+          } else {
             const issuanceDate = new Date(value);
 
             if (helpers.isFuture(issuanceDate)) {
@@ -83,35 +77,28 @@ router.post(
             }
           }
         }
-      }),
-    body('expirationDate')
-      .custom(async (value, { req }) => {
-        if (req.body.doctypeId) {
-          const doctype = await Doctype.findById(req.body.doctypeId);
-          if (doctype.hasExpirationDate && !value) {
+      }
+    }),
+    body('expirationDate').custom(async (value, { req }) => {
+      if (req.body.doctypeId) {
+        const doctype = await Doctype.findById(req.body.doctypeId);
+        if (doctype.hasExpirationDate) {
+          if (!value) {
             return Promise.reject(
               `Votre ${doctype.title.toLowerCase()} doit avoir une date d'expiration.`
             );
-          }
-        }
-      })
-      .custom(async (value, { req }) => {
-        if (req.body.doctypeId) {
-          const doctype = await Doctype.findById(req.body.doctypeId);
-          if (doctype.hasExpirationDate && value && req.body.issuanceDate) {
-            if (value < req.body.issuanceDate) {
-              return Promise.reject(
-                `La date d'expiration de votre ${doctype.title.toLowerCase()} ne peut pas être antérieure à sa date d'émission.`
-              );
-            }
-          }
-        }
-      })
-      .custom(async (value, { req }) => {
-        if (req.body.doctypeId) {
-          const doctype = await Doctype.findById(req.body.doctypeId);
-          if (doctype.hasExpirationDate && value) {
+          } else {
             const expirationDate = new Date(value);
+
+            if (doctype.hasIssuanceDate && req.body.issuanceDate) {
+              const issuanceDate = new Date(req.body.issuanceDate);
+
+              if (expirationDate < issuanceDate) {
+                return Promise.reject(
+                  `La date d'expiration de votre ${doctype.title.toLowerCase()} ne peut pas être antérieure à sa date d'émission.`
+                );
+              }
+            }
 
             if (helpers.isPast(expirationDate)) {
               return Promise.reject(
@@ -120,7 +107,8 @@ router.post(
             }
           }
         }
-      }),
+      }
+    }),
     body('month').custom(async (value, { req }) => {
       if (req.body.doctypeId) {
         const doctype = await Doctype.findById(req.body.doctypeId);
@@ -134,7 +122,7 @@ router.post(
             const selectedMonth = parseInt(value.split('-')[1]);
             const currentYear = helpers.getCurrentDate().getFullYear();
             const currentMonth = helpers.getCurrentDate().getMonth() + 1;
-            
+
             if (
               selectedYear > currentYear ||
               (selectedYear === currentYear && selectedMonth > currentMonth)
