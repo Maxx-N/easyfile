@@ -24,6 +24,7 @@
               name="fileUrl"
               value="<%= oldInput.fileUrl %>"
             />
+            <small class="form-text text-muted">Format PDF.</small>
           </div>
           <div class="form-group">
             <label for="doctypeId">Type</label>
@@ -40,6 +41,9 @@
               <option value="<%= doctype._id %>"><%= doctype.title %></option>
               <% } %>
             </select>
+            <small class="form-text text-muted"
+            >Certains documents uniques (ex : Carte d'identité) ne peuvent avoir de doublon par utilisateur.</small
+          >
           </div>
           <div class="form-group">
             <label for="title">Titre</label>
@@ -50,6 +54,9 @@
               name="title"
               value="<%= oldInput.title %>"
             />
+            <small class="form-text text-muted"
+            >Entre 4 et 80 caractères.</small
+          >
           </div>
           <div class="form-group">
             <label for="issuanceDate">Date d'émission</label>
@@ -60,6 +67,9 @@
               name="issuanceDate"
               value="<%= oldInput.issuanceDate %>"
             />
+            <small class="form-text text-muted"
+            >Dans le passé ou le présent.</small
+          >
           </div>
           <div class="form-group">
             <label for="expirationDate">Date d'expiration</label>
@@ -70,6 +80,9 @@
               name="expirationDate"
               value="<%= oldInput.expirationDate %>"
             />
+            <small class="form-text text-muted"
+            >Dans le futur ou le présent.</small
+          >
           </div>
           <div class="form-group">
             <label for="month">Mois</label>
@@ -80,6 +93,9 @@
               name="month"
               value="<%= oldInput.month %>"
             />
+            <small class="form-text text-muted"
+            >Passé ou actuel.</small
+          >
           </div>
           <div class="form-group">
             <label for="year">Année</label>
@@ -90,6 +106,9 @@
               name="year"
               value="<%= oldInput.year %>"
             />
+            <small class="form-text text-muted"
+            >Passée ou actuelle.</small
+          >
           </div>
           <button type="submit" class="btn btn-primary">Ajouter !</button>
         </fieldset>
