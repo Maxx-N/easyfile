@@ -32,6 +32,9 @@ checkboxes.forEach((checkbox) => {
 const doctypeSelect = document.getElementById('doctypeId');
 const doctypeOptions = [...document.querySelectorAll('#doctypeId > option')];
 
+// Doctype helper
+const doctypeHelper = document.getElementById('doctypeHelper');
+
 // Field names
 const title = document.getElementById('titleGroup');
 const issuanceDate = document.getElementById('issuanceDateGroup');
@@ -46,6 +49,7 @@ let selectedDoctypeOption = doctypeOptions.find((option) => {
 if (!!selectedDoctypeOption.value) {
   changeFields();
 } else {
+  doctypeHelper.style.display = 'none';
   title.style.display = 'none';
   issuanceDate.style.display = 'none';
   expirationDate.style.display = 'none';
@@ -72,8 +76,10 @@ function changeFields() {
 
   if (isUnique) {
     title.style.display = 'none';
+    doctypeHelper.style.display = 'block';
   } else {
     title.style.display = 'block';
+    doctypeHelper.style.display = 'none';
   }
   if (hasissuanceDate) {
     issuanceDate.style.display = 'block';
