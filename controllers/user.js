@@ -52,9 +52,21 @@ exports.postAddDocument = async (req, res, next) => {
   const errors = validationResult(req);
 
   try {
-    if (!errors.isEmpty()) {
-      const validationErrors = errors.array();
+    if (!errors.isEmpty() || !req.file) {
+      const validationErrors = [];
+      if (!errors.isEmpty()) {
+        validationErrors.push(...errors.array());
+      }
+      if (!req.file) {
+        validationErrors.push({
+          msg:
+            'Vous devez sélectionner un fichier au format PDF, correspondant à votre document.',
+          param: 'file',
+        });
+      }
+
       const errorMessages = validationErrors.map((err) => err.msg);
+
       const doctypes = await Doctype.find();
       return res.status(422).render('user/add-document', {
         pageTitle: 'Nouveau document',
