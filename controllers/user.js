@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
+const helpers = require('../helpers');
 
 //
 
@@ -52,12 +53,15 @@ exports.postAddDocument = async (req, res, next) => {
   const errors = validationResult(req);
 
   try {
-    if (!errors.isEmpty() || !req.file) {
+    if (!errors.isEmpty() || !file) {
       const validationErrors = [];
       if (!errors.isEmpty()) {
         validationErrors.push(...errors.array());
+        if (file) {
+          helpers.deleteFile(file.path);
+        }
       }
-      if (!req.file) {
+      if (!file) {
         validationErrors.push({
           msg:
             'Vous devez sélectionner un fichier au format PDF, correspondant à votre document.',

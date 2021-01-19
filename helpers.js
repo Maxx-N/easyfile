@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const User = require('./models/user');
 
 //
@@ -34,4 +36,12 @@ exports.isFuture = (date) => {
 exports.isPast = (date) => {
   const today = this.getCurrentDate();
   return date < today;
+};
+
+exports.deleteFile = (filePath) => {
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      throw err;
+    }
+  });
 };
