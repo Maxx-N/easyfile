@@ -45,3 +45,30 @@ exports.deleteFile = (filePath) => {
     }
   });
 };
+
+exports.monthToString = (monthNumber) => {
+  const monthsArray = [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
+  ];
+
+  return monthsArray[monthNumber - 1];
+};
+
+exports.displayDate = (date) => {
+  const day = date.getDate();
+  const month = this.monthToString(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
+};

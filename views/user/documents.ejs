@@ -5,9 +5,42 @@
   </head>
   <body>
     <%- include('../includes/navbar') %>
-    <main>
+    <main class="text-center">
       <a class="btn btn-info" href="/add-document">Nouveau</a>
       <h1>Mes documents</h1>
+      <ul class="list-group">
+        <% for (let document of documents) { %>
+          <li
+            class="list-group-item d-flex justify-content-between align-items-center pointer document-item"
+            title="<%= document.title?document.title:document.doctypeId.title %>"
+          >
+
+            
+            <% if (document.issuanceDate) { %>
+              <span class="badge badge-success badge-pill"
+                >Emis(e) le <%= displayDate(document.issuanceDate) %></span
+              >
+
+            <% } else { %>
+              <span></span>
+            <% } %> 
+
+            <%= document.doctypeId.title %> <%= document.month && document.year ?
+            ` - ${monthToString(document.month)} ${document.year}` : document.year?
+            ` - ${document.year}` : '' %> 
+            
+            <% if (document.expirationDate) { %>
+              <span class="badge badge-danger badge-pill"
+                >Expire le <%= displayDate(document.expirationDate) %></span
+              >
+
+            <% } else { %>
+              <span></span>
+            <% } %> 
+          
+        </li>
+        <% } %>
+      </ul>
     </main>
     <%- include('../includes/scripts') %>
   </body>

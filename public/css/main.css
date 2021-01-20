@@ -2,6 +2,11 @@ main {
   padding: 2rem;
 }
 
+.btn {
+  border-radius: 2rem;
+  margin: 1rem;
+}
+
 .center-half {
   width: 50%;
   margin: auto;
@@ -33,4 +38,17 @@ main {
   /* color: var(--first-red-color); */
   color: red;
   /* background-color: var(--third-red-color); */
+}
+
+/* document */
+
+.document-item {
+  border-radius: 10px;
+  /* border: 0.1rem solid #343a40; */
+}
+
+.document-item:hover {
+  color: white;
+  background-color: #343a40;
+  /* border: 0.2rem solid #1f9bcf; */
 }

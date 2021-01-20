@@ -6,11 +6,26 @@ const helpers = require('../helpers');
 
 //
 
-exports.getDocuments = (req, res, next) => {
-  res.render('user/documents', {
-    pageTitle: 'Mes documents',
-    path: '/documents',
-  });
+exports.getDocuments = async (req, res, next) => {
+  try {
+    const documents = await Document.find({ userId: req.user._id }).populate('doctypeId');
+    if (!documents) {
+      const error = new Error('Aucun document trouvé');
+      error.statusCode = 404;
+      throw error;
+    }
+    res.render('user/documents', {
+      pageTitle: 'Mes documents',
+      path: '/documents',
+      documents : documents,
+      monthToString : helpers.monthToString,
+      displayDate : helpers.displayDate,
+    });
+  } catch (err) {
+    err.message =
+      'Un problème est survenu lors de la récupération de vos documents. Merci de bien vouloir nous excuser et réessayer plus tard.';
+    next(err);
+  }
 };
 
 exports.getAddDocument = async (req, res, next) => {
@@ -57,14 +72,12 @@ exports.postAddDocument = async (req, res, next) => {
       const validationErrors = [];
       if (!errors.isEmpty()) {
         validationErrors.push(...errors.array());
-        if (file) {
-          helpers.deleteFile(file.path);
-        }
       }
-      if (!file) {
+      if (file) {
+        helpers.deleteFile(file.path);
+      } else {
         validationErrors.push({
-          msg:
-            'Vous devez sélectionner un fichier au format PDF, correspondant à votre document.',
+          msg: 'Vous devez sélectionner un fichier au format PDF.',
           param: 'file',
         });
       }

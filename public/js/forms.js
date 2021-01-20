@@ -27,7 +27,7 @@ checkboxes.forEach((checkbox) => {
   });
 });
 
-// Form to add a document (display fields depending on the selected doctype)
+// FORM TO ADD A DOCUMENT (display fields depending on the selected doctype)
 
 const doctypeSelect = document.getElementById('doctypeId');
 const doctypeOptions = [...document.querySelectorAll('#doctypeId > option')];
