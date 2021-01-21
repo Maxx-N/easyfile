@@ -43,12 +43,9 @@ main {
 /* document */
 
 .document-item {
-  border-radius: 10px;
-  /* border: 0.1rem solid #343a40; */
+  border-radius: 50px;
 }
 
 .document-item:hover {
-  color: white;
-  background-color: #343a40;
-  /* border: 0.2rem solid #1f9bcf; */
+  border: 0.2rem solid #1f9bcf;
 }

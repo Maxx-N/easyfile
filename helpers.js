@@ -28,14 +28,18 @@ exports.getCurrentDate = () => {
   return today;
 };
 
-exports.isFuture = (date) => {
-  const today = this.getCurrentDate();
-  return date > today;
-};
-
 exports.isPast = (date) => {
   const today = this.getCurrentDate();
   return date < today;
+};
+
+exports.isPresent = (date) => {
+  return !this.isPast(date) && !this.isFuture(date);
+};
+
+exports.isFuture = (date) => {
+  const today = this.getCurrentDate();
+  return date > today;
 };
 
 exports.deleteFile = (filePath) => {

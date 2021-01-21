@@ -8,7 +8,9 @@ const helpers = require('../helpers');
 
 exports.getDocuments = async (req, res, next) => {
   try {
-    const documents = await Document.find({ userId: req.user._id }).populate('doctypeId');
+    const documents = await Document.find({ userId: req.user._id }).populate(
+      'doctypeId'
+    );
     if (!documents) {
       const error = new Error('Aucun document trouvé');
       error.statusCode = 404;
@@ -17,9 +19,11 @@ exports.getDocuments = async (req, res, next) => {
     res.render('user/documents', {
       pageTitle: 'Mes documents',
       path: '/documents',
-      documents : documents,
-      monthToString : helpers.monthToString,
-      displayDate : helpers.displayDate,
+      documents: documents,
+      monthToString: helpers.monthToString,
+      displayDate: helpers.displayDate,
+      isPast: helpers.isPast,
+      isPresent: helpers.isPresent,
     });
   } catch (err) {
     err.message =
