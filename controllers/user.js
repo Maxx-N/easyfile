@@ -32,6 +32,40 @@ exports.getDocuments = async (req, res, next) => {
   }
 };
 
+exports.getDocument = async (req, res, next) => {
+  const documentId = req.param('documentId');
+  try {
+    const document = await Document.findById(documentId).populate(
+      'doctypeId',
+      'title'
+    );
+
+    if (!document) {
+      const error = new Error(
+        "Ce document n'a pas été trouvé. Merci de vérifier qu'il existe toujours."
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (document.userId.toString() !== req.user._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à accéder au document demandé."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
+    res.render('user/document', {
+      pageTitle: document.doctypeId.title,
+      path: '/documents',
+      document: document,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getAddDocument = async (req, res, next) => {
   try {
     const doctypes = await Doctype.find();

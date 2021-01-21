@@ -12,6 +12,8 @@ const router = express.Router();
 
 router.get('/documents', isAuth, userController.getDocuments);
 
+router.get('/documents/:documentId', isAuth, userController.getDocument);
+
 router.get('/add-document', isAuth, userController.getAddDocument);
 
 router.post(

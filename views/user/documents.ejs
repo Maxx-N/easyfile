@@ -1,61 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <%- include('../includes/head') %>
-  </head>
-  <body>
+</head>
+<body>
     <%- include('../includes/navbar') %>
-
-
     <main class="text-center">
-      <a class="btn btn-info" href="/add-document">Nouveau</a>
-      <% if (documents.length > 0) { %>
-          <table class="table table-hover">
-            <thead>
-              <tr class="table-primary">
-                <th scope="col">Type</th>
-                <th scope="col">Emis(e) le</th>
-                <th scope="col">Expire le</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (let document of documents) { %>
-              <tr class="pointer document-item table-light" title="<%= document.title ? document.title : document.doctypeId.title %>">
-                  <td>
-                      <%= document.doctypeId.title %> <%= document.month && document.year ?
-                      ` - ${monthToString(document.month)} ${document.year}` : document.year?
-                      ` - ${document.year}` : '' %>
-                  </td>
-                  <td>
-                      <% if (document.issuanceDate) { %>
-                          <span class="badge badge-secondary badge-pill">
-                              <%= displayDate(document.issuanceDate) %>
-                          </span>
-                      <% } else { %>
-                          <span> - </span>
-                      <% } %>
-                  </td>
-                  <td>
-                      <% if (document.expirationDate) { %>
-                          <span 
-                          class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
-                          : isPresent(document.expirationDate) ? 'badge-warning'
-                          : 'badge-success' %>">
-                              <%= displayDate(document.expirationDate) %>
-                          </span>
-                      <% } else { %>
-                          <span> - </span>
-                      <% } %> 
-                  </td>
-              </tr>
-              <% } %>
-            </tbody>
-          </table>
-      <% } else { %>
-          <div class="h3">Vous n'avez pas encore posté de document.</div>
-          <div class="h3"> Ajoutez-en un pour accéder à la liste !</div>
-      <% } %>
+        <a class="btn btn-info" href="/add-document">Nouveau</a>
+        <% if (documents.length > 0) { %>
+            <table class="table table-hover">
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">Type</th>
+                        <th scope="col">Emis(e) le</th>
+                        <th scope="col">Expire le</th>
+                    </tr>
+                </thead>
+              <tbody>
+                <% for (let document of documents) { %>
+                    <tr 
+                    class="pointer document-item table-light" 
+                    title="<%= document.title ? document.title : document.doctypeId.title %>"
+                    >
+                        <td>
+                            <a href="/documents/<%= document._id %>">
+                                <%= document.doctypeId.title %> <%= document.month && document.year ?
+                                ` - ${monthToString(document.month)} ${document.year}` : document.year?
+                                ` - ${document.year}` : '' %>
+                            </a>
+                        </td>
+                        <td>
+                            <% if (document.issuanceDate) { %>
+                                <span class="badge badge-secondary badge-pill">
+                                    <%= displayDate(document.issuanceDate) %>
+                                </span>
+                            <% } else { %>
+                                <span> - </span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (document.expirationDate) { %>
+                                <span 
+                                class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
+                                : isPresent(document.expirationDate) ? 'badge-warning'
+                                : 'badge-success' %>">
+                                    <%= displayDate(document.expirationDate) %>
+                                </span>
+                            <% } else { %>
+                                <span> - </span>
+                            <% } %> 
+                        </td>
+                    </tr>
+                <% } %>
+              </tbody>
+            </table>
+        <% } else { %>
+            <div class="h3">Vous n'avez pas encore posté de document.</div>
+            <div class="h3"> Ajoutez-en un pour accéder à la liste !</div>
+        <% } %>
     </main>
     <%- include('../includes/scripts') %>
-  </body>
+</body>
 </html>

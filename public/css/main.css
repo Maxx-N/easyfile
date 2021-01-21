@@ -16,6 +16,11 @@ main {
   cursor: pointer;
 }
 
+a:hover {
+  text-decoration: none;
+  color: #1f9bcf;
+}
+
 /* alerts */
 
 .user-messages {
