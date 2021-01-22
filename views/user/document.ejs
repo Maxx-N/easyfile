@@ -6,7 +6,10 @@
   <body>
     <%- include('../includes/navbar') %>
     <main class="text-center">
-        <div class="h3"><%= document.doctypeId.title %></div>
+      <div class="h3"><%= document.doctypeId.title %></div>
+      <embed src="../../<%= document.fileUrl %>" width="1000vw" height="500vh" padding ="0"/>
+
+      <div><%= document.fileUrl %></div>
     </main>
     <%- include('../includes/scripts') %>
   </body>

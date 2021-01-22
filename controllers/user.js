@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
@@ -61,6 +63,18 @@ exports.getDocument = async (req, res, next) => {
       path: '/documents',
       document: document,
     });
+
+    // fs.readFile(document.fileUrl, (err, data) => {
+    //   if (err) {
+    //     return next(err);
+    //   }
+    //   res.setHeader('Content-Type', 'application/pdf');
+    //   res.setHeader('Content-Disposition', `inline; filename=${document.fileUrl}`);
+    //   res.send(data);
+    //   const file = fs.createReadStream(document.fileUrl);
+
+    //   file.pipe(res);
+    // });
   } catch (err) {
     next(err);
   }
