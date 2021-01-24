@@ -43,11 +43,13 @@ exports.isFuture = (date) => {
 };
 
 exports.deleteFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      throw err;
-    }
-  });
+  if (fs.existsSync(filePath)) {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  }
 };
 
 exports.monthToString = (monthNumber) => {

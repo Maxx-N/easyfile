@@ -179,3 +179,31 @@ exports.postAddDocument = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.postDeleteDocument = async (req, res, next) => {
+  try {
+    const document = await Document.findById(req.params.documentId);
+    if (!document) {
+      const error = new Error("Le document à supprimer n'a pas été trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+    if (document.userId.toString() !== req.user._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à supprimer ce document."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
+    helpers.deleteFile(document.fileUrl);
+    await Document.deleteOne({ _id: document._id });
+    req.user.documentIds = req.user.documentIds.filter((docId) => {
+      return docId.toString() !== document._id.toString();
+    });
+    await req.user.save();
+    res.redirect('/documents');
+  } catch (err) {
+    next(err);
+  }
+};

@@ -161,4 +161,6 @@ router.post(
   userController.postAddDocument
 );
 
+router.post('/delete-document/:documentId', isAuth, userController.postDeleteDocument);
+
 module.exports = router;
