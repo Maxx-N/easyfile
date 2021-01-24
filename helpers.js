@@ -74,5 +74,8 @@ exports.displayDate = (date) => {
   const month = this.monthToString(date.getMonth() + 1);
   const year = date.getFullYear();
 
+  if (day === 1) {
+    return `${day}er ${month} ${year}`;
+  }
   return `${day} ${month} ${year}`;
 };

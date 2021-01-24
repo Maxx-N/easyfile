@@ -45,7 +45,7 @@ a:hover {
   /* background-color: var(--third-red-color); */
 }
 
-/* document */
+/* documents */
 
 .document-item {
   border-radius: 50px;
@@ -53,4 +53,8 @@ a:hover {
 
 .document-item:hover {
   border: 0.2rem solid #1f9bcf;
+}
+
+.list-group-item > .h3 {
+  margin: auto;
 }

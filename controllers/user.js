@@ -62,19 +62,11 @@ exports.getDocument = async (req, res, next) => {
       pageTitle: document.doctypeId.title,
       path: '/documents',
       document: document,
+      displayDate: helpers.displayDate,
+      monthToString: helpers.monthToString,
+      isPresent: helpers.isPresent,
+      isPast: helpers.isPast,
     });
-
-    // fs.readFile(document.fileUrl, (err, data) => {
-    //   if (err) {
-    //     return next(err);
-    //   }
-    //   res.setHeader('Content-Type', 'application/pdf');
-    //   res.setHeader('Content-Disposition', `inline; filename=${document.fileUrl}`);
-    //   res.send(data);
-    //   const file = fs.createReadStream(document.fileUrl);
-
-    //   file.pipe(res);
-    // });
   } catch (err) {
     next(err);
   }
