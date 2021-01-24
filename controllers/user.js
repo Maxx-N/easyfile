@@ -35,7 +35,7 @@ exports.getDocuments = async (req, res, next) => {
 };
 
 exports.getDocument = async (req, res, next) => {
-  const documentId = req.param('documentId');
+  const documentId = req.params.documentId;
   try {
     const document = await Document.findById(documentId).populate(
       'doctypeId',
@@ -72,10 +72,39 @@ exports.getDocument = async (req, res, next) => {
   }
 };
 
-exports.getAddDocument = async (req, res, next) => {
+exports.getEditDocument = async (req, res, next) => {
+  const editMode = !!req.query.edit;
   try {
     const doctypes = await Doctype.find();
-    res.render('user/add-document', {
+    if (editMode) {
+      const documentId = req.params.documentId;
+      const document = await Document.findById(documentId);
+      return res.render('user/edit-document', {
+        pageTitle: 'Modification de document',
+        path: '/documents',
+        doctypes: doctypes,
+        validationErrors: [],
+        errorMessages: [],
+        oldInput: {
+          doctypeId: document.doctypeId,
+          issuanceDate: document.issuanceDate
+            ? document.issuanceDate.toISOString().split('T')[0]
+            : '',
+          expirationDate: document.expirationDate
+            ? document.expirationDate.toISOString().split('T')[0]
+            : '',
+          month:
+            document.month && document.year
+              ? helpers.monthAndYearToMonthFormat(document.month, document.year)
+              : '',
+          year: document.year && !document.month ? document.year : '',
+          title: document.title ? document.title : '',
+        },
+        editMode: true,
+        documentId: document._id,
+      });
+    }
+    res.render('user/edit-document', {
       pageTitle: 'Nouveau document',
       path: '/documents',
       doctypes: doctypes,
@@ -89,6 +118,7 @@ exports.getAddDocument = async (req, res, next) => {
         year: '',
         title: '',
       },
+      editMode: false,
     });
   } catch (err) {
     err.message =
@@ -97,7 +127,8 @@ exports.getAddDocument = async (req, res, next) => {
   }
 };
 
-exports.postAddDocument = async (req, res, next) => {
+exports.postEditDocument = async (req, res, next) => {
+  const editMode = !!req.query.edit;
   const doctypeId = req.body.doctypeId;
   const issuanceDate = req.body.issuanceDate
     ? new Date(req.body.issuanceDate)
@@ -129,7 +160,7 @@ exports.postAddDocument = async (req, res, next) => {
       const errorMessages = validationErrors.map((err) => err.msg);
 
       const doctypes = await Doctype.find();
-      return res.status(422).render('user/add-document', {
+      return res.status(422).render('user/edit-document', {
         pageTitle: 'Nouveau document',
         path: '/documents',
         doctypes: doctypes,
@@ -143,6 +174,8 @@ exports.postAddDocument = async (req, res, next) => {
           year: req.body.year,
           title: title,
         },
+        editMode: editMode,
+        documentId: editMode ? req.body.documentId : null,
       });
     }
 

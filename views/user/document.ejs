@@ -54,9 +54,11 @@
         </li>
         <% } %>
       </ul>
+      <a href="/edit-document/<%= document._id %>?edit=true" class="btn btn-info">Modifier</a>
       <form id="deletingForm" doctypeName="<%= document.doctypeId.title %>" action="/delete-document/<%= document._id %>" method="POST">
         <button id="deletingButton" class="btn btn-danger" type="button">Supprimer</button>
       </form>
+      
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/document.js"></script>

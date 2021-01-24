@@ -71,6 +71,17 @@ exports.monthToString = (monthNumber) => {
   return monthsArray[monthNumber - 1];
 };
 
+exports.monthAndYearToMonthFormat = (month, year) => {
+  let monthFormat;
+  if (month > 10) {
+    monthFormat = month.toString();
+  } else {
+    monthFormat = `0${month}`;
+  }
+
+  return `${year}-${monthFormat}`;
+};
+
 exports.displayDate = (date) => {
   const day = date.getDate();
   const month = this.monthToString(date.getMonth() + 1);

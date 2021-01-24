@@ -11,11 +11,11 @@
       <form
         class="text-center center-half"
         method="POST"
-        action="/add-document"
+        action="/edit-document<%= editMode ? '?edit=true' : '' %>"
         enctype="multipart/form-data"
       >
         <fieldset>
-          <legend>Nouveau document</legend>
+          <legend><%= editMode ? 'Modification de ' : 'Nouveau ' %>document</legend>
           <div class="form-group">
             <label for="file">Fichier</label>
             <input
@@ -116,7 +116,10 @@
             />
             <small class="form-text text-muted">Passée ou actuelle.</small>
           </div>
-          <button type="submit" class="btn btn-primary">Ajouter !</button>
+          <% if (editMode) { %>
+              <input type="hidden" name="documentId" value="<%= documentId %>" />
+          <% } %>
+          <button type="submit" class="btn btn-primary"><%= editMode ? 'Modifier !' : 'Ajouter !' %></button>
         </fieldset>
       </form>
     </main>

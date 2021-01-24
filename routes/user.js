@@ -14,10 +14,12 @@ router.get('/documents', isAuth, userController.getDocuments);
 
 router.get('/documents/:documentId', isAuth, userController.getDocument);
 
-router.get('/add-document', isAuth, userController.getAddDocument);
+router.get('/add-document', isAuth, userController.getEditDocument);
+
+router.get('/edit-document/:documentId', isAuth, userController.getEditDocument);
 
 router.post(
-  '/add-document',
+  '/edit-document',
   isAuth,
   [
     body('doctypeId')
@@ -158,7 +160,7 @@ router.post(
       }
     }),
   ],
-  userController.postAddDocument
+  userController.postEditDocument
 );
 
 router.post('/delete-document/:documentId', isAuth, userController.postDeleteDocument);
