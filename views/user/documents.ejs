@@ -21,6 +21,7 @@
                     <tr 
                     class="pointer document-item table-light" 
                     title="<%= document.title ? document.title : document.doctypeId.title %>"
+                    id="<%= document._id %>"
                     >
                         <td>
                             <a href="/documents/<%= document._id %>">
@@ -60,5 +61,6 @@
         <% } %>
     </main>
     <%- include('../includes/scripts') %>
+    <script src="/js/documents.js"></script>
 </body>
 </html>
