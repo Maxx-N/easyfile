@@ -129,6 +129,7 @@ exports.getEditDocument = async (req, res, next) => {
 
 exports.postEditDocument = async (req, res, next) => {
   const editMode = !!req.query.edit;
+
   const doctypeId = req.body.doctypeId;
   const issuanceDate = req.body.issuanceDate
     ? new Date(req.body.issuanceDate)
@@ -143,14 +144,14 @@ exports.postEditDocument = async (req, res, next) => {
   const errors = validationResult(req);
 
   try {
-    if (!errors.isEmpty() || !file) {
+    if (!errors.isEmpty() || (!file && !editMode)) {
       const validationErrors = [];
       if (!errors.isEmpty()) {
         validationErrors.push(...errors.array());
       }
       if (file) {
         helpers.deleteFile(file.path);
-      } else {
+      } else if (!editMode) {
         validationErrors.push({
           msg: 'Vous devez sélectionner un fichier au format PDF.',
           param: 'file',
@@ -161,7 +162,7 @@ exports.postEditDocument = async (req, res, next) => {
 
       const doctypes = await Doctype.find();
       return res.status(422).render('user/edit-document', {
-        pageTitle: 'Nouveau document',
+        pageTitle: editMode ? 'Modification de document' : 'Nouveau document',
         path: '/documents',
         doctypes: doctypes,
         validationErrors: validationErrors,
@@ -179,13 +180,51 @@ exports.postEditDocument = async (req, res, next) => {
       });
     }
 
-    const document = new Document({
-      userId: req.user._id,
-      doctypeId: doctypeId,
-      fileUrl: file.path,
-    });
+    let document;
+
+    if (!editMode) {
+      document = new Document({
+        userId: req.user._id,
+        doctypeId: doctypeId,
+        fileUrl: file.path,
+      });
+    } else {
+      document = await Document.findById(req.body.documentId);
+      if (!document) {
+        const error = new Error("Le document à modifier n'a pas été trouvé");
+        error.statusCode = 404;
+        throw error;
+      }
+      if (file) {
+        helpers.deleteFile(document.fileUrl);
+        document.fileUrl = file.path;
+      }
+      document.doctypeId = doctypeId;
+    }
 
     const doctype = await Doctype.findById(document.doctypeId);
+
+    if (editMode) {
+      if (doctype.isUnique && document.title) {
+        document.title = null;
+      }
+      if (doctype.periodicity !== 'month' && document.month) {
+        document.month = null;
+      }
+      if (
+        doctype.periodicity !== 'month' &&
+        doctype.periodicity !== 'year' &&
+        document.year
+      ) {
+        document.year = null;
+      }
+      if (!doctype.hasIssuanceDate && document.issuanceDate) {
+        document.issuanceDate = null;
+      }
+      if (!doctype.hasExpirationDate && document.expirationDate) {
+        document.expirationDate = null;
+      }
+    }
 
     let year;
     if (doctype.periodicity === 'month') {
@@ -202,13 +241,17 @@ exports.postEditDocument = async (req, res, next) => {
     if (!doctype.isUnique) document.title = title;
 
     await document.save();
-    req.user.documentIds.push(document._id);
-    await req.user.save();
+
+    if (!editMode) {
+      req.user.documentIds.push(document._id);
+      await req.user.save();
+    }
 
     res.redirect('/documents');
   } catch (err) {
-    err.message =
-      "Le document n'a pas pu être ajouté en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard.";
+    err.message = editMode
+      ? "Le document n'a pas pu être modifié en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard."
+      : "Le document n'a pas pu être ajouté en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard.";
     next(err);
   }
 };

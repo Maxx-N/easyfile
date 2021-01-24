@@ -16,7 +16,11 @@ router.get('/documents/:documentId', isAuth, userController.getDocument);
 
 router.get('/add-document', isAuth, userController.getEditDocument);
 
-router.get('/edit-document/:documentId', isAuth, userController.getEditDocument);
+router.get(
+  '/edit-document/:documentId',
+  isAuth,
+  userController.getEditDocument
+);
 
 router.post(
   '/edit-document',
@@ -27,7 +31,7 @@ router.post(
       .isEmpty()
       .withMessage("Merci d'ajouter un type de document.")
       .custom(async (value, { req }) => {
-        if (req.body.doctypeId) {
+        if (req.body.doctypeId && !req.query.edit) {
           const doctype = await Doctype.findById(value);
           if (doctype.isUnique) {
             const userDoctypeIds = await helpers.getUserDoctypeIds(req.user);
@@ -37,7 +41,7 @@ router.post(
               )
             ) {
               return Promise.reject(
-                `Votre ${doctype.title.toLowerCase()} est un document unique que vous avez déjà mis en ligne.`
+                `Votre ${doctype.title.toLowerCase()} est un document unique que vous avez déjà mis en ligne. Pour le remplacer, vous pouvez le modifier directement.`
               );
             }
           }
@@ -163,6 +167,10 @@ router.post(
   userController.postEditDocument
 );
 
-router.post('/delete-document/:documentId', isAuth, userController.postDeleteDocument);
+router.post(
+  '/delete-document/:documentId',
+  isAuth,
+  userController.postDeleteDocument
+);
 
 module.exports = router;
