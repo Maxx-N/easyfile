@@ -5,9 +5,6 @@ const { validationResult } = require('express-validator');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const helpers = require('../helpers');
-//
-const User = require('../models/user');
-//
 
 //
 
@@ -93,6 +90,10 @@ exports.getEditDocument = async (req, res, next) => {
         throw error;
       }
 
+      const oldFileArray = document.fileUrl.split('-');
+      oldFileArray.shift();
+      oldFileName = oldFileArray.join('-');
+
       return res.render('user/edit-document', {
         pageTitle: 'Modification de document',
         path: '/documents',
@@ -113,6 +114,7 @@ exports.getEditDocument = async (req, res, next) => {
               : '',
           year: document.year && !document.month ? document.year : '',
           title: document.title ? document.title : '',
+          fileName: oldFileName,
         },
         editMode: true,
         documentId: document._id,
@@ -144,7 +146,6 @@ exports.getEditDocument = async (req, res, next) => {
 };
 
 exports.postEditDocument = async (req, res, next) => {
-
   const editMode = !!req.query.edit;
 
   const doctypeId = req.body.doctypeId;

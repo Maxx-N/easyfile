@@ -102,3 +102,13 @@ function changeFields() {
     year.style.display = 'none';
   }
 }
+
+const file = document.getElementById('file');
+const oldFile = document.getElementById('oldFile');
+file.addEventListener('change', () => {
+  if (file.value) {
+    oldFile.style.display = 'none';
+  } else {
+    oldFile.style.display = 'block';
+  }
+});

@@ -53,3 +53,11 @@ a:hover {
 .list-group-item > .h3 {
   margin: auto;
 }
+
+#oldFile {
+  color: #1f9bcf;
+  border: #1f9bcf solid 0.1rem;
+  padding: 0.1rem;
+  margin: 0.5rem;
+  display: block;
+}
