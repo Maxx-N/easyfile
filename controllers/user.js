@@ -5,6 +5,9 @@ const { validationResult } = require('express-validator');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const helpers = require('../helpers');
+//
+const User = require('../models/user');
+//
 
 //
 
@@ -28,8 +31,10 @@ exports.getDocuments = async (req, res, next) => {
       isPresent: helpers.isPresent,
     });
   } catch (err) {
-    err.message =
-      'Un problème est survenu lors de la récupération de vos documents. Merci de bien vouloir nous excuser et réessayer plus tard.';
+    if (!err.message) {
+      err.message =
+        'Un problème est survenu lors de la récupération de vos documents. Merci de bien vouloir nous excuser et réessayer plus tard.';
+    }
     next(err);
   }
 };
@@ -79,6 +84,15 @@ exports.getEditDocument = async (req, res, next) => {
     if (editMode) {
       const documentId = req.params.documentId;
       const document = await Document.findById(documentId);
+
+      if (document.userId.toString() !== req.user._id.toString()) {
+        const error = new Error(
+          "Vous n'avez pas l'autorisation de modifier ce document."
+        );
+        error.statusCode = 403;
+        throw error;
+      }
+
       return res.render('user/edit-document', {
         pageTitle: 'Modification de document',
         path: '/documents',
@@ -121,13 +135,16 @@ exports.getEditDocument = async (req, res, next) => {
       editMode: false,
     });
   } catch (err) {
-    err.message =
-      'Un problème est survenu lors de la récupération des types de documents. Merci de bien vouloir nous excuser et réessayer plus tard.';
+    if (!err.message) {
+      err.message =
+        'Un problème est survenu lors de la récupération des types de documents. Merci de bien vouloir nous excuser et réessayer plus tard.';
+    }
     next(err);
   }
 };
 
 exports.postEditDocument = async (req, res, next) => {
+
   const editMode = !!req.query.edit;
 
   const doctypeId = req.body.doctypeId;
@@ -195,6 +212,16 @@ exports.postEditDocument = async (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+      if (document.userId.toString() !== req.user._id.toString()) {
+        if (req.file) {
+          helpers.deleteFile(req.file.path);
+        }
+        const error = new Error(
+          "Vous n'avez pas l'autorisation de modifier ce document."
+        );
+        error.statusCode = 403;
+        throw error;
+      }
       if (file) {
         helpers.deleteFile(document.fileUrl);
         document.fileUrl = file.path;
@@ -249,9 +276,11 @@ exports.postEditDocument = async (req, res, next) => {
 
     res.redirect('/documents');
   } catch (err) {
-    err.message = editMode
-      ? "Le document n'a pas pu être modifié en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard."
-      : "Le document n'a pas pu être ajouté en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard.";
+    if (!err.message) {
+      err.message = editMode
+        ? "Le document n'a pas pu être modifié en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard."
+        : "Le document n'a pas pu être ajouté en raison d'un problème sur le serveur. Merci de bien vouloir nous excuser et réessayer plus tard.";
+    }
     next(err);
   }
 };
