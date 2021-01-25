@@ -29,6 +29,9 @@
                                 ` - ${monthToString(document.month)} ${document.year}` : document.year?
                                 ` - ${document.year}` : '' %>
                             </a>
+                            <% if(document.title && !document.month && !document.year) { %>
+                                -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
+                            <% } %>
                         </td>
                         <td>
                             <% if (document.issuanceDate) { %>
