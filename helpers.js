@@ -92,3 +92,7 @@ exports.displayDate = (date) => {
   }
   return `${day} ${month} ${year}`;
 };
+
+exports.sortByTitle = (items) => {
+  items.sort((item1, item2) => (item1.title > item2.title ? +1 : -1));
+};

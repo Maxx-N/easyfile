@@ -1,12 +1,14 @@
 const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
+const helpers = require('../helpers');
 
 //
 
 exports.getDoctypes = async (req, res, next) => {
   try {
     const doctypes = await Doctype.find();
+    helpers.sortByTitle(doctypes);
     res.render('admin/doctypes', {
       pageTitle: 'Doc Types',
       path: '/admin/doctypes',

@@ -5,6 +5,7 @@ const { validationResult } = require('express-validator');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const helpers = require('../helpers');
+const doctype = require('../models/doctype');
 
 //
 
@@ -78,6 +79,7 @@ exports.getEditDocument = async (req, res, next) => {
   const editMode = !!req.query.edit;
   try {
     const doctypes = await Doctype.find();
+    helpers.sortByTitle(doctypes);
     if (editMode) {
       const documentId = req.params.documentId;
       const document = await Document.findById(documentId);
