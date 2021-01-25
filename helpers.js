@@ -94,5 +94,47 @@ exports.displayDate = (date) => {
 };
 
 exports.sortByTitle = (items) => {
-  items.sort((item1, item2) => (item1.title > item2.title ? +1 : -1));
+  items.sort((item1, item2) => {
+    return item1.title > item2.title ? +1 : -1;
+  });
 };
+
+exports.sortDocuments = (documents) => {
+  sortDocumentsByTitle(documents);
+  sortDocumentsByDate(documents);
+  sortDocumentsByMonth(documents);
+  sortDocumentsByYear(documents);
+  sortDocumentsByDoctypeTitle(documents);
+};
+
+// PRIVATE
+
+function sortDocumentsByDoctypeTitle(documents) {
+  documents.sort((doc1, doc2) => {
+    return doc1.doctypeId.title < doc2.doctypeId.title ? -1 : +1;
+  });
+}
+
+function sortDocumentsByYear(documents) {
+  documents.sort((doc1, doc2) => {
+    return doc1.year > doc2.year ? -1 : +1;
+  });
+}
+
+function sortDocumentsByMonth(documents) {
+  documents.sort((doc1, doc2) => {
+    return doc1.month > doc2.month ? -1 : +1;
+  });
+}
+
+function sortDocumentsByDate(documents) {
+  documents.sort((doc1, doc2) => {
+    return doc1.issuanceDate > doc2.issuanceDate ? -1 : +1;
+  });
+}
+
+function sortDocumentsByTitle(documents) {
+  documents.sort((doc1, doc2) => {
+    return doc1.title < doc2.title ? -1 : +1;
+  });
+}

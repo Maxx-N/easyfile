@@ -19,6 +19,7 @@ exports.getDocuments = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    helpers.sortDocuments(documents);
     res.render('user/documents', {
       pageTitle: 'Mes documents',
       path: '/documents',
@@ -263,12 +264,14 @@ exports.postEditDocument = async (req, res, next) => {
       year = req.body.year ? parseInt(req.body.year) : null;
     }
 
-    if (doctype.hasIssuanceDate) document.issuanceDate = issuanceDate;
-    if (doctype.hasExpirationDate) document.expirationDate = expirationDate;
-    if (doctype.periodicity === 'month') document.month = month;
-    if (doctype.periodicity === 'month' || doctype.periodicity === 'year')
-      document.year = year;
-    if (!doctype.isUnique) document.title = title;
+    document.issuanceDate = doctype.hasIssuanceDate ? issuanceDate : null;
+    document.expirationDate = doctype.hasExpirationDate ? expirationDate : null;
+    document.month = doctype.periodicity === 'month' ? month : null;
+    document.year =
+      doctype.periodicity === 'month' || doctype.periodicity === 'year'
+        ? year
+        : null;
+    document.title = !doctype.isUnique ? title : null;
 
     await document.save();
 
