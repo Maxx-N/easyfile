@@ -20,6 +20,9 @@ const loanFileSchema = new Schema({
     enum: ['pending', 'accepted', 'refused', 'suspended'],
     required: true,
   },
+  requestIds: [
+    { type: Schema.Types.ObjectId, ref: 'Request', required: true },
+  ],
   documentIds: [
     { type: Schema.Types.ObjectId, ref: 'Document', required: true },
   ],
