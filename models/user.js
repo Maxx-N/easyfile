@@ -21,7 +21,12 @@ const userSchema = new Schema({
     enum: ['male', 'female', 'other'],
   },
   address: String,
-  documentIds: [{ type: Schema.Types.ObjectId, ref: 'Document', required: true }],
+  documentIds: [
+    { type: Schema.Types.ObjectId, ref: 'Document', required: true },
+  ],
+  loanFileIds: [
+    { type: Schema.Types.ObjectId, ref: 'LoanFile', required: true },
+  ],
 });
 
 module.exports = mongoose.model('User', userSchema);
