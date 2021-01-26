@@ -3,6 +3,7 @@ const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
 const User = require('../models/user');
+const Pro = require('../models/pro');
 
 //
 
@@ -18,17 +19,30 @@ router.post(
   '/signup',
   [
     body('email')
-      .normalizeEmail({gmail_remove_dots: false})
+      .normalizeEmail({ gmail_remove_dots: false })
       .isEmail()
       .withMessage('Merci de saisir un e-mail valide.')
-      .custom((value) => {
-        return User.findOne({ email: value }).then((userDoc) => {
-          if (userDoc) {
-            return Promise.reject();
-          }
-        });
-      })
-      .withMessage('Un utilisateur avec cet e-mail est déjà inscrit.'),
+      .custom((value, { req }) => {
+        const isClient = req.body.isBank !== '1';
+        if (isClient) {
+          return User.findOne({ email: value }).then((userDoc) => {
+            if (userDoc) {
+              return Promise.reject(
+                'Un utilisateur avec cet e-mail est déjà inscrit.'
+              );
+            }
+          });
+        }
+        if (!isClient) {
+          return Pro.findOne({ email: value }).then((proDoc) => {
+            if (proDoc) {
+              return Promise.reject(
+                'Un professionnel avec cet e-mail est déjà inscrit.'
+              );
+            }
+          });
+        }
+      }),
     body('password')
       .trim()
       .isStrongPassword()
@@ -52,7 +66,10 @@ router.get('/login', authController.getLogin);
 
 router.post(
   '/login',
-  [body('email').normalizeEmail({gmail_remove_dots: false}), body('password').trim()],
+  [
+    body('email').normalizeEmail({ gmail_remove_dots: false }),
+    body('password').trim(),
+  ],
   authController.postLogin
 );
 

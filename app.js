@@ -11,11 +11,13 @@ const { validationResult } = require('express-validator');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const proRoutes = require('./routes/pro');
 
 const MONGODB_URI = require('./private').MONGODB_URI;
 const SECRET_SESSION = require('./private').SECRET_SESSION;
 const ADMIN_EMAIL = require('./private').ADMIN_EMAIL;
 const User = require('./models/user');
+const Pro = require('./models/pro');
 const isAdmin = require('./middleware/is-admin');
 
 //
@@ -62,7 +64,9 @@ app.use(
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = !!req.session.user;
+  res.locals.isProAuthenticated = !!req.session.pro;
   res.locals.user = req.session.user;
+  res.locals.pro = req.session.pro;
   res.locals.isAdmin =
     !!req.session.user && req.session.user.email === ADMIN_EMAIL;
   next();
@@ -84,13 +88,32 @@ app.use(async (req, res, next) => {
   }
 });
 
+app.use(async (req, res, next) => {
+  if (!req.session.pro) {
+    return next();
+  }
+  try {
+    const pro = await Pro.findById(req.session.pro._id);
+    if (!pro) {
+      return next();
+    }
+    req.pro = pro;
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.use('/admin', isAdmin, adminRoutes);
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(proRoutes);
 
 app.use('/', (req, res, next) => {
   if (!!req.session.user) {
     return res.redirect('/documents');
+  } else if (!!req.session.pro) {
+    return res.redirect('/loan-files');
   }
   res.redirect('/login');
 });
@@ -112,6 +135,10 @@ app.use((err, req, res, next) => {
     isAuthenticated:
       req.locals && !!req.locals.isAuthenticated
         ? req.locals.isAuthenticated
+        : false,
+    isProAuthenticated:
+      req.locals && !!req.locals.isProAuthenticated
+        ? req.locals.isProAuthenticated
         : false,
   });
 });

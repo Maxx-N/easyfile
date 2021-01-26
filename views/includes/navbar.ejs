@@ -35,10 +35,23 @@
         >
       </li>
     </ul>
+    <% } %> 
+    
+    <% if (isProAuthenticated) { %>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a
+                  class="nav-link <%= path === '/loan-files' ? 'active' : '' %>"
+                  href="/loan-files"
+                  >Prêts
+                </a
+              >
+            </li>
+        </ul>
     <% } %>
 
     <ul class="navbar-nav ml-auto">
-      <% if (!isAuthenticated) { %>
+      <% if (!isAuthenticated && !isProAuthenticated) { %>
       <li
         class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>"
       >
@@ -74,7 +87,7 @@
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          ><%= user.email %></a
+          ><%= isAuthenticated ? user.email : pro.email %></a
         >
         <div class="dropdown-menu">
           <a class="dropdown-item" href="#">Profil</a>

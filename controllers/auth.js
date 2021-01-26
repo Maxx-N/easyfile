@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
+const Pro = require('../models/pro');
 
 //
 
@@ -62,6 +63,12 @@ exports.postSignup = async (req, res, next) => {
         res.redirect('/documents');
       });
     }
+    if (!isClient) {
+      const pro = new Pro({ email: email, password: hashedPassword });
+      await pro.save();
+      req.session.pro = pro;
+      res.redirect('/loan-files');
+    }
   } catch (err) {
     return next(err);
   }
@@ -87,17 +94,41 @@ exports.postLogin = async (req, res, next) => {
   const isClient = !req.body.isBank;
 
   try {
-    const user = await User.findOne({ email: email });
     const errorsArray = [];
-    if (!user) {
-      errorsArray.push({
-        param: 'email',
-        msg: 'Cet e-mail ne correspond à aucun utilisateur.',
-      });
+    let user;
+    let pro;
+
+    if (isClient) {
+      user = await User.findOne({ email: email });
+      if (!user) {
+        errorsArray.push({
+          param: 'email',
+          msg: 'Cet e-mail ne correspond à aucun utilisateur particulier.',
+        });
+      } else {
+        const doMatch = await bcrypt.compare(password, user.password);
+        if (!doMatch) {
+          errorsArray.push({
+            param: 'password',
+            msg: 'Mot de passe invalide.',
+          });
+        }
+      }
     } else {
-      const doMatch = await bcrypt.compare(password, user.password);
-      if (!doMatch) {
-        errorsArray.push({ param: 'password', msg: 'Mot de passe invalide.' });
+      pro = await Pro.findOne({ email: email });
+      if (!pro) {
+        errorsArray.push({
+          param: 'email',
+          msg: 'Cet e-mail ne correspond à aucun professionnel.',
+        });
+      } else {
+        const doMatch = await bcrypt.compare(password, pro.password);
+        if (!doMatch) {
+          errorsArray.push({
+            param: 'password',
+            msg: 'Mot de passe invalide.',
+          });
+        }
       }
     }
 
@@ -117,13 +148,14 @@ exports.postLogin = async (req, res, next) => {
         validationErrors: errorsArray,
       });
     }
-    req.session.user = user;
-    return req.session.save((err) => {
-      if (err) {
-        throw err;
-      }
-      res.redirect('/documents');
-    });
+    if (isClient) {
+      req.session.user = user;
+      await req.session.save();
+    } else {
+      req.session.pro = pro;
+      await req.session.save();
+    }
+    return res.redirect('/');
   } catch (err) {
     err.message =
       "L'authentification a échoué. Nous vous remercions de bien vouloir nous excuser et vous invitons à réessayer plus tard.";
