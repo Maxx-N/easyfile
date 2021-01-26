@@ -12,6 +12,7 @@ const doctypeSchema = new Schema({
   periodicity: {
     type: String,
     enum: ['none', 'month', 'year'],
+    required: true,
   },
   isUnique: {
     type: Boolean,
