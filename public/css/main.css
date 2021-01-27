@@ -29,9 +29,15 @@ a:hover {
   width: 80%;
   margin: 1rem auto;
   padding: 0.5rem 0;
+  border: 1px solid #1f9bcf;
+  color: #1f9bcf;
 }
 
-.user-messages li {
+.user-messages .h3 {
+  color: #1f9bcf;
+}
+
+ul.user-messages li {
   list-style: inside;
 }
 
@@ -60,4 +66,14 @@ a:hover {
   padding: 0.1rem;
   margin: 0.5rem;
   display: block;
+}
+
+/* pro creates a user */
+
+ol > li {
+  list-style-position: inside;
+}
+
+span.email {
+  text-decoration: underline;
 }

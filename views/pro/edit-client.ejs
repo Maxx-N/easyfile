@@ -7,7 +7,49 @@
   <body>
     <%- include('../includes/navbar') %>
     <main class="text-center">
-      <div class="h1">Création d'un client</div>
+      <div class="user-messages">
+        <div class="h3">
+          Aucun profil enregistré pour <span class="email"><%= email %></span>
+        </div>
+        <ol>
+          <li>Créez le profil de votre client.</li>
+          <li>Transmettez-lui le mot de passe.</li>
+          <li>Invitez-le à le changer dès sa première connexion.</li>
+        </ol>
+      </div>
+      <%- include('../includes/error-feedback') %>
+
+      <form class="text-center center-half" method="POST" action="/edit-client">
+        <fieldset>
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value="<%= oldInput.password %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'password') ? 'invalid' : '' %>"
+            />
+            <small class="form-text text-muted"
+              >Au moins 8 caractères dont : une majuscule, une minuscule, un
+              chiffre et un symbole.</small
+            >
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirmation du mot de passe</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              value="<%= oldInput.confirmPassword %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'confirmPassword') ? 'invalid' : '' %>"
+            />
+          </div>
+          <input type="hidden" name="email" value="<%= email %>" />
+          <button type="submit" class="btn btn-primary">Inscription</button>
+        </fieldset>
+      </form>
+      <%- include('../includes/scripts') %>
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>
