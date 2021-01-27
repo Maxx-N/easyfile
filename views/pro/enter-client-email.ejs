@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+    <link rel="stylesheet" href="/css/forms.css" />
+  </head>
+  <body>
+    <%- include('../includes/navbar') %>
+    <main class="text-center">
+        <%- include('../includes/error-feedback') %>
+
+        <form class="text-center center-half" method="POST" action="/enter-client-email">
+            <fieldset>
+              <div class="form-group">
+                <label for="email">E-mail du client</label>
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  value="<%= oldInput.email %>"
+                  class="form-control text-center <%= validationErrors.some(err => err.param === 'email') ? 'invalid' : '' %>"
+                  aria-describedby="emailHelp"
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Valider</button>
+            </fieldset>
+          </form>
+    
+    </main>
+    <%- include('../includes/scripts') %>
+    <script src="/js/forms.js"></script>
+  </body>
+</html>
