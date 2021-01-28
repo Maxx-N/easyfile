@@ -128,4 +128,29 @@ router.post(
   authController.postEditProfile
 );
 
+router.get('/edit-password', authController.getEditPassword);
+
+router.post(
+  '/edit-password',
+  isAuth,
+  [
+    body('password')
+      .trim()
+      .isStrongPassword()
+      .withMessage(
+        'Votre nouveau mot de passe doit contenir au moins 8 caractères, dont : une minuscule, une majuscule, un chiffre et un symbole.'
+      ),
+    body('confirmPassword')
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          return false;
+        }
+        return true;
+      })
+      .withMessage('Les mots de passe saisis doivent être identiques.'),
+  ],
+  authController.postEditPassword
+);
+
 module.exports = router;

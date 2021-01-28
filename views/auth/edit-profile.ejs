@@ -6,7 +6,8 @@
   </head>
   <body>
     <%- include('../includes/navbar') %>
-    <main>
+    <main class="text-center">
+      <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
       <%- include('../includes/error-feedback') %>
       <% if (isAuthenticated) { %>
             <form class="text-center center-half" method="POST" action="/edit-profile">

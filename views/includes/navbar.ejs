@@ -35,19 +35,16 @@
         >
       </li>
     </ul>
-    <% } %> 
-    
-    <% if (isProAuthenticated) { %>
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a
-                  class="nav-link <%= path === '/loan-files' ? 'active' : '' %>"
-                  href="/loan-files"
-                  >Prêts
-                </a
-              >
-            </li>
-        </ul>
+    <% } %> <% if (isProAuthenticated) { %>
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a
+          class="nav-link <%= path === '/loan-files' ? 'active' : '' %>"
+          href="/loan-files"
+          >Prêts
+        </a>
+      </li>
+    </ul>
     <% } %>
 
     <ul class="navbar-nav ml-auto">
@@ -79,7 +76,9 @@
         </div>
       </li>
       <% } else { %>
-      <li class="nav-item dropdown">
+      <li
+        class="nav-item dropdown <%= path === '/edit-profile' ? 'active' : '' %>"
+      >
         <a
           class="nav-link dropdown-toggle"
           data-toggle="dropdown"
@@ -90,7 +89,11 @@
           ><%= isAuthenticated ? user.email : pro.email %></a
         >
         <div class="dropdown-menu">
-          <a class="dropdown-item <%= path === '/edit-profile' ? 'active' : '' %>" href="/edit-profile">Profil</a>
+          <a
+            class="dropdown-item <%= path === '/edit-profile' ? 'active' : '' %>"
+            href="/edit-profile"
+            >Profil</a
+          >
           <div class="dropdown-divider"></div>
           <form method="POST" action="/logout">
             <button class="dropdown-item">Déconnexion</button>
