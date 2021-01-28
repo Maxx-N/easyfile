@@ -5,6 +5,7 @@ const authController = require('../controllers/auth');
 const User = require('../models/user');
 const Pro = require('../models/pro');
 const isAuth = require('../middleware/is-auth');
+const helpers = require('../helpers');
 
 //
 
@@ -82,30 +83,47 @@ router.post(
   '/edit-profile',
   isAuth,
   [
-    body('firstName')
+    body(
+      'firstName',
+      'Si vous indiquez un prénom, sa longueur doit être comprise en 2 et 50 caractères.'
+    )
+      .if(body('firstName').notEmpty())
       .trim()
-      .custom((value, { req }) => {
-        if (value) {
-          if (value.length < 2 || value.length > 50) {
-            return Promise.reject(
-              'Si vous indiquez un prénom, sa longueur doit être comprise en 2 et 50 caractères.'
-            );
-          }
-        }
-        return true;
-      }),
-    body('lastName')
+      .isLength({ min: 2, max: 50 }),
+    body(
+      'lastName',
+      'Si vous indiquez un nom, sa longueur doit être comprise en 2 et 50 caractères.'
+    )
+      .if(body('lastName').notEmpty())
       .trim()
-      .custom((value, { req }) => {
-        if (value) {
-          if (value.length < 2 || value.length > 50) {
-            return Promise.reject(
-              'Si vous indiquez un nom, sa longueur doit être comprise en 2 et 50 caractères.'
-            );
-          }
+      .isLength({ min: 2, max: 50 }),
+    body('birthDate').custom((value, { req }) => {
+      if (value) {
+        const birthDate = new Date(value);
+        if (helpers.calculateAge(birthDate) < 18) {
+          return Promise.reject('Vous devez avoir 18 ans.');
         }
-        return true;
-      }),
+      }
+      return true;
+    }),
+    body('phoneNumber')
+      .if(body('phoneNumber').notEmpty())
+      .trim()
+      .isNumeric()
+      .withMessage(
+        'Votre numéro de téléphone ne peut comporter que des chiffres, sans espace.'
+      )
+      .isLength({ min: 6, max: 20 })
+      .withMessage(
+        'Si vous indiquez un numéro de téléphone, sa longueur doit être comprise en 6 et 20 chiffres.'
+      ),
+    body('address')
+      .if(body('address').notEmpty())
+      .trim()
+      .isLength({ min: 10, max: 255 })
+      .withMessage(
+        'Si vous indiquez une adresse, sa longueur doit être comprise en 10 et 255 caractères.'
+      ),
   ],
   authController.postEditProfile
 );

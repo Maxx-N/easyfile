@@ -47,13 +47,24 @@ exports.isFuture = (date) => {
 };
 
 exports.calculateAge = (date) => {
-  // const today = this.getCurrentDate();
-  const diffMs = Date.now() - date.getTime();
-  const ageDt = new Date(diffMs);
-  console.log(Date.now());
-  console.log(ageDt);
+  const today = new Date();
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth();
+  const todayDay = today.getDate();
 
-  return Math.abs(ageDt.getUTCFullYear() - 1970);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+
+  let age = todayYear - year;
+  const ageMonth = todayMonth - month;
+  const ageDay = todayDay - day;
+
+  if (ageMonth < 0 || (ageMonth == 0 && ageDay < 0)) {
+    age = parseInt(age) - 1;
+  }
+
+  return age;
 };
 
 exports.deleteFile = (filePath) => {

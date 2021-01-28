@@ -205,17 +205,15 @@ exports.getEditProfile = (req, res, next) => {
   }
 };
 
-exports.postEditProfile = (req, res, next) => {
+exports.postEditProfile = async (req, res, next) => {
   const user = req.user;
 
-  const gender = req.body.gender;
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const birthDate = new Date(req.body.birthDate);
-  const phoneNumber = req.body.phoneNumber;
-  const address = req.body.address;
-
-  console.log(helpers.calculateAge(birthDate));
+  const gender = req.body.gender ? req.body.gender : null;
+  const firstName = req.body.firstName ? req.body.firstName : null;
+  const lastName = req.body.lastName ? req.body.lastName : null;
+  const birthDate = new Date(req.body.birthDate ? req.body.birthDate : null);
+  const phoneNumber = req.body.phoneNumber ? req.body.phoneNumber : null;
+  const address = req.body.address ? req.body.address : null;
 
   const errors = validationResult(req);
 
@@ -240,19 +238,24 @@ exports.postEditProfile = (req, res, next) => {
     });
   }
 
-  return res.render('auth/edit-profile', {
-    pageTitle: 'Modification du profil',
-    path: '/edit-profile',
-    email: user.email,
-    errorMessages: [],
-    validationErrors: [],
-    oldInput: {
-      firstName: user.firstName,
-      lastName: user.lastName,
-      address: user.address,
-      phoneNumber: user.phoneNumber,
-      gender: user.gender,
-      birthDate: user.birthDate,
-    },
-  });
+  user.gender = gender;
+  user.firstName = firstName;
+  user.lastName = lastName;
+  user.birthDate = birthDate;
+  user.phoneNumber = phoneNumber;
+  user.address = address;
+
+  try {
+    await user.save((err) => {
+      if (err) {
+        err.message =
+          "Un problème est survenu et les modifications n'ont pu être enregistrées. Nous travaillons sur ce problème et vous prions de nous excuser.";
+        throw err;
+      }
+    });
+
+    res.redirect('/documents');
+  } catch (err) {
+    return next(err);
+  }
 };

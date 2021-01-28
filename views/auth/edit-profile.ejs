@@ -71,7 +71,7 @@
                 <div class="form-group">
                     <label for="phoneNumber">Téléphone</label>
                     <input
-                    type="text"
+                    type="tel"
                     name="phoneNumber"
                     id="phoneNumber"
                     value="<%= oldInput.phoneNumber %>"
@@ -91,7 +91,7 @@
                     class="form-control text-center <%= validationErrors.some(err => err.param === 'address') ? 'invalid' : '' %>"
                     />
                     <small class="form-text text-muted"
-                    >Entre 10 et 100 caractères.</small
+                    >Entre 10 et 255 caractères.</small
                     >
                 </div>
                 <button type="submit" class="btn btn-primary">Modifier</button>
