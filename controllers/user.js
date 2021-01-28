@@ -106,10 +106,10 @@ exports.getEditDocument = async (req, res, next) => {
         oldInput: {
           doctypeId: document.doctypeId,
           issuanceDate: document.issuanceDate
-            ? document.issuanceDate.toISOString().split('T')[0]
+            ? helpers.dateToInputFormat(document.issuanceDate)
             : '',
           expirationDate: document.expirationDate
-            ? document.expirationDate.toISOString().split('T')[0]
+            ? helpers.dateToInputFormat(document.expirationDate)
             : '',
           month:
             document.month && document.year

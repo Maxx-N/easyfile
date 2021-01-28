@@ -13,14 +13,15 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  firstName: String,
-  lastName: String,
-  birthDate: Date,
   gender: {
     type: String,
     enum: ['male', 'female', 'other'],
   },
+  firstName: String,
+  lastName: String,
+  birthDate: Date,
   address: String,
+  phoneNumber: String,
   documentIds: [
     { type: Schema.Types.ObjectId, ref: 'Document', required: true },
   ],

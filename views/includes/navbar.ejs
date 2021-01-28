@@ -90,7 +90,7 @@
           ><%= isAuthenticated ? user.email : pro.email %></a
         >
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="#">Profil</a>
+          <a class="dropdown-item <%= path === '/edit-profile' ? 'active' : '' %>" href="/edit-profile">Profil</a>
           <div class="dropdown-divider"></div>
           <form method="POST" action="/logout">
             <button class="dropdown-item">Déconnexion</button>

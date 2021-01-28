@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 const Pro = require('../models/pro');
+const helpers = require('../helpers');
 
 //
 
@@ -170,5 +171,88 @@ exports.postLogout = (req, res, next) => {
       return next(err);
     }
     res.redirect('/');
+  });
+};
+
+exports.getEditProfile = (req, res, next) => {
+  if (req.user) {
+    const user = req.user;
+    return res.render('auth/edit-profile', {
+      pageTitle: 'Modification du profil',
+      path: '/edit-profile',
+      email: user.email,
+      errorMessages: [],
+      validationErrors: [],
+      oldInput: {
+        gender: user.gender,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        birthDate: user.birthDate
+          ? helpers.dateToInputFormat(user.birthDate)
+          : null,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+      },
+    });
+  }
+
+  if (req.pro) {
+    return res.render('auth/edit-profile', {
+      pageTitle: 'Modification du profil',
+      path: '/edit-profile',
+      errorMessages: [],
+    });
+  }
+};
+
+exports.postEditProfile = (req, res, next) => {
+  const user = req.user;
+
+  const gender = req.body.gender;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const birthDate = new Date(req.body.birthDate);
+  const phoneNumber = req.body.phoneNumber;
+  const address = req.body.address;
+
+  console.log(helpers.calculateAge(birthDate));
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map((err) => {
+      return err.msg;
+    });
+    return res.render('auth/edit-profile', {
+      pageTitle: 'Modification du profil',
+      path: '/edit-profile',
+      email: user.email,
+      errorMessages: errorMessages,
+      validationErrors: errors.array(),
+      oldInput: {
+        gender: gender,
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: req.body.birthDate,
+        phoneNumber: phoneNumber,
+        address: address,
+      },
+    });
+  }
+
+  return res.render('auth/edit-profile', {
+    pageTitle: 'Modification du profil',
+    path: '/edit-profile',
+    email: user.email,
+    errorMessages: [],
+    validationErrors: [],
+    oldInput: {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      address: user.address,
+      phoneNumber: user.phoneNumber,
+      gender: user.gender,
+      birthDate: user.birthDate,
+    },
   });
 };

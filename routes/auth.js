@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const authController = require('../controllers/auth');
 const User = require('../models/user');
 const Pro = require('../models/pro');
+const isAuth = require('../middleware/is-auth');
 
 //
 
@@ -74,5 +75,39 @@ router.post(
 );
 
 router.post('/logout', authController.postLogout);
+
+router.get('/edit-profile', authController.getEditProfile);
+
+router.post(
+  '/edit-profile',
+  isAuth,
+  [
+    body('firstName')
+      .trim()
+      .custom((value, { req }) => {
+        if (value) {
+          if (value.length < 2 || value.length > 50) {
+            return Promise.reject(
+              'Si vous indiquez un prénom, sa longueur doit être comprise en 2 et 50 caractères.'
+            );
+          }
+        }
+        return true;
+      }),
+    body('lastName')
+      .trim()
+      .custom((value, { req }) => {
+        if (value) {
+          if (value.length < 2 || value.length > 50) {
+            return Promise.reject(
+              'Si vous indiquez un nom, sa longueur doit être comprise en 2 et 50 caractères.'
+            );
+          }
+        }
+        return true;
+      }),
+  ],
+  authController.postEditProfile
+);
 
 module.exports = router;

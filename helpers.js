@@ -28,6 +28,10 @@ exports.getCurrentDate = () => {
   return today;
 };
 
+exports.dateToInputFormat = (date) => {
+  return date.toISOString().split('T')[0];
+};
+
 exports.isPast = (date) => {
   const today = this.getCurrentDate();
   return date < today;
@@ -40,6 +44,16 @@ exports.isPresent = (date) => {
 exports.isFuture = (date) => {
   const today = this.getCurrentDate();
   return date > today;
+};
+
+exports.calculateAge = (date) => {
+  // const today = this.getCurrentDate();
+  const diffMs = Date.now() - date.getTime();
+  const ageDt = new Date(diffMs);
+  console.log(Date.now());
+  console.log(ageDt);
+
+  return Math.abs(ageDt.getUTCFullYear() - 1970);
 };
 
 exports.deleteFile = (filePath) => {
