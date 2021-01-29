@@ -26,10 +26,10 @@ router.post(
   proController.postEnterClientEmail
 );
 
-router.get('/edit-client/:clientEmail', isProAuth, proController.getEditClient);
+router.get('/add-client/:clientEmail', isProAuth, proController.getAddClient);
 
 router.post(
-  '/edit-client',
+  '/add-client',
   isProAuth,
   [
     body('password')
@@ -48,17 +48,17 @@ router.post(
       })
       .withMessage('Les mots de passe saisis doivent être identiques.'),
   ],
-  proController.postEditClient
+  proController.postAddClient
 );
 
 router.get(
-  '/edit-loan-file/:clientId',
+  '/add-loan-file/:clientId',
   isProAuth,
-  proController.getEditLoanFile
+  proController.getAddLoanFile
 );
 
-router.post('/edit-loan-file', isProAuth, proController.postEditLoanFile);
+router.post('/add-loan-file', isProAuth, proController.postAddLoanFile);
 
-router.get('/edit-request/:loanFileId', isProAuth, proController.getEditRequest);
+router.get('/add-request/:loanFileId', isProAuth, proController.getAddRequest);
 
 module.exports = router;

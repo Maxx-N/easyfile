@@ -57,18 +57,18 @@ exports.postEnterClientEmail = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (user) {
-      return res.redirect(`/edit-loan-file/${user._id}`);
+      return res.redirect(`/add-loan-file/${user._id}`);
     }
 
-    return res.redirect(`/edit-client/${email}`);
+    return res.redirect(`/add-client/${email}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getEditClient = (req, res, next) => {
+exports.getAddClient = (req, res, next) => {
   const email = req.params.clientEmail;
-  return res.render('pro/edit-client', {
+  return res.render('pro/add-client', {
     pageTitle: 'Nouveau client',
     path: '/clients',
     email: email,
@@ -81,7 +81,7 @@ exports.getEditClient = (req, res, next) => {
   });
 };
 
-exports.postEditClient = async (req, res, next) => {
+exports.postAddClient = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -91,7 +91,7 @@ exports.postEditClient = async (req, res, next) => {
     const errorMessages = errors.array().map((err) => {
       return err.msg;
     });
-    return res.render('pro/edit-client', {
+    return res.render('pro/add-client', {
       pageTitle: 'Nouveau client',
       path: '/clients',
       email: email,
@@ -118,13 +118,13 @@ exports.postEditClient = async (req, res, next) => {
       }
     });
 
-    res.redirect(`/edit-loan-file/${user._id}`);
+    res.redirect(`/add-loan-file/${user._id}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getEditLoanFile = async (req, res, next) => {
+exports.getAddLoanFile = async (req, res, next) => {
   const clientId = req.params.clientId;
 
   try {
@@ -135,7 +135,7 @@ exports.getEditLoanFile = async (req, res, next) => {
       throw error;
     }
 
-    res.render('pro/edit-loan-file', {
+    res.render('pro/add-loan-file', {
       pageTitle: 'Nouveau dossier de prêt',
       path: '/loan-files',
       user: user,
@@ -145,7 +145,7 @@ exports.getEditLoanFile = async (req, res, next) => {
   }
 };
 
-exports.postEditLoanFile = async (req, res, next) => {
+exports.postAddLoanFile = async (req, res, next) => {
   const choice = req.body.choiceOfAction;
   const pro = req.pro;
 
@@ -177,14 +177,14 @@ exports.postEditLoanFile = async (req, res, next) => {
 
     await loanFile.populate('userId').execPopulate();
 
-    res.redirect(`/edit-request/${loanFile._id}`);
+    res.redirect(`/add-request/${loanFile._id}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getEditRequest = (req, res, next) => {
-  res.render('pro/edit-request', {
+exports.getAddRequest = (req, res, next) => {
+  res.render('pro/add-request', {
     pageTitle: 'Création de requête',
     path: '/loan-files',
   });
