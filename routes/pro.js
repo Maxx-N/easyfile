@@ -14,6 +14,12 @@ router.get('/loan-files', isProAuth, proController.getLoanFiles);
 
 router.get('/loan-files/:loanFileId', isProAuth, proController.getLoanFile);
 
+router.post(
+  '/delete-loan-file/:loanFileId',
+  isProAuth,
+  proController.deleteLoanFile
+);
+
 router.get('/enter-client-email', isProAuth, proController.getEnterClientEmail);
 
 router.post(
@@ -53,11 +59,7 @@ router.post(
   proController.postAddClient
 );
 
-router.get(
-  '/add-loan-file/:clientId',
-  isProAuth,
-  proController.getAddLoanFile
-);
+router.get('/add-loan-file/:clientId', isProAuth, proController.getAddLoanFile);
 
 router.post('/add-loan-file', isProAuth, proController.postAddLoanFile);
 

@@ -9,7 +9,11 @@
       <a class="btn btn-info" href="/add-request">Demander des documents</a>
       <div class="h3">Dossier de prêt numéro <%= loanFile._id %></div>
       <p>Utilisateur : <%= loanFile.userId.email %></p>
+      <form id="deletingForm" clientEmail="<%= loanFile.userId.email %>" action="/delete-loan-file/<%= loanFile._id %>" method="POST">
+        <button id="deletingButton" class="btn btn-danger" type="button">Supprimer</button>
+      </form>
     </main>
     <%- include('../includes/scripts') %>
+    <script src="/js/loan-file.js"></script>
   </body>
 </html>

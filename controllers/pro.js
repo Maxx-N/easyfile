@@ -44,6 +44,44 @@ exports.getLoanFile = async (req, res, next) => {
   }
 };
 
+exports.deleteLoanFile = async (req, res, next) => {
+  const pro = req.pro;
+  const loanFileId = req.params.loanFileId;
+  try {
+    const loanFile = await LoanFile.findById(loanFileId);
+    if (!loanFile) {
+      const error = new Error("Le dossier de prêt n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const user = await User.findById(loanFile.userId);
+    if (!user) {
+      const error = new Error(
+        "L'utilisateur correspondant à ce dossier de prêt n'a pu être trouvé."
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    await LoanFile.deleteOne({ _id: loanFile._id });
+
+    user.loanFileIds = user.loanFileIds.filter((fileId) => {
+      return fileId.toString() !== loanFile._id.toString();
+    });
+    await user.save();
+
+    pro.loanFileIds = pro.loanFileIds.filter((fileId) => {
+      return fileId.toString() !== loanFile._id.toString();
+    });
+    await pro.save();
+
+    res.redirect('/loan-files');
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getEnterClientEmail = (req, res, next) => {
   res.render('pro/enter-client-email', {
     pageTitle: 'Dossiers de prêt',
