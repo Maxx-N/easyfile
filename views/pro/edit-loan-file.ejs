@@ -7,10 +7,34 @@
   <body>
     <%- include('../includes/navbar') %>
     <main class="text-center">
-      <div class="h1">Ajout du dossier de prêt</div>
-      <div class="p">Email de la banque : <%= pro.email %></div>
-      <div class="p">Email du client : <%= user.email %></div>
-
+      <div class="h1">Création du dossier de prêt</div>
+      <div class="p">Formulaire ici (<%= user.email %>)</div>
+      <form
+        class="text-center center-half"
+        method="POST"
+        action="/edit-loan-file"
+      >
+        <fieldset>
+          <div class="form-group"></div>
+          <input type="hidden" name="userId" value="<%= user._id %>" />
+          <button
+            type="submit"
+            class="btn btn-info"
+            name="choiceOfAction"
+            value="addRequest"
+          >
+            Valider et demander des documents
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            name="choiceOfAction"
+            value="backHome"
+          >
+            Valider et retourner à l'accueil
+          </button>
+        </fieldset>
+      </form>
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>

@@ -48,16 +48,6 @@ exports.postEnterClientEmail = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (user) {
-      // const loanFile = new LoanFile({
-      //   userId: user._id,
-      //   proId: req.pro._id,
-      //   status: 'pending',
-      // });
-      // await loanFile.save();
-      // user.loanFileIds.push(loanFile._id);
-      // await user.save();
-      // await loanFile.populate('userId', '-documentIds -loanFileIds').execPopulate();
-
       return res.render('pro/edit-loan-file', {
         pageTitle: 'Nouveau dossier de prêt',
         path: '/loan-files',
@@ -134,6 +124,43 @@ exports.postEditClient = async (req, res, next) => {
       pageTitle: 'Nouveau dossier de prêt',
       path: '/loan-files',
       user: user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postEditLoanFile = async (req, res, next) => {
+  const choice = req.body.choiceOfAction;
+
+  try {
+    const user = await User.findById(req.body.userId);
+    if (!user) {
+      const error = new Error('Aucun utilisateur trouvé.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Mise à jour du User
+
+    const loanFile = new LoanFile({
+      userId: user._id,
+      proId: req.pro._id,
+      status: 'pending',
+    });
+    await loanFile.save();
+    user.loanFileIds.push(loanFile._id);
+    await user.save();
+
+    if (choice === 'backHome') {
+      return res.redirect('/');
+    }
+
+    await loanFile.populate('userId').execPopulate();
+
+    res.render('pro/edit-request', {
+      pageTitle: 'Création de requête',
+      path: '/loan-files',
     });
   } catch (err) {
     next(err);
