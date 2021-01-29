@@ -6,10 +6,19 @@ const LoanFile = require('../models/loan-file');
 
 //
 
-exports.getLoanFiles = (req, res, next) => {
+exports.getLoanFiles = async (req, res, next) => {
+  const pro = await req.pro.populate('loanFileIds');
+  const loanFiles = [];
+
+  for (let loanFileId of pro.loanFileIds) {
+    let file = await LoanFile.findById(loanFileId).populate('userId');
+    loanFiles.push(file);
+  }
+
   res.render('pro/loan-files', {
     pageTitle: 'Dossiers de prêt',
     path: '/loan-files',
+    loanFiles: loanFiles,
   });
 };
 
@@ -55,32 +64,26 @@ exports.postEnterClientEmail = async (req, res, next) => {
       });
     }
 
-    if (!user) {
-      return res.render('pro/edit-client', {
-        pageTitle: 'Nouveau client',
-        path: '/clients',
-        email: email,
-        oldInput: {
-          password: '',
-          confirmPassword: '',
-        },
-        errorMessages: [],
-        validationErrors: [],
-      });
-    }
+    return res.redirect(`/edit-client/${email}`);
 
-    res.render('pro/enter-client-email', {
-      pageTitle: 'Dossiers de prêt',
-      path: '/loan-files',
-      oldInput: {
-        email: '',
-      },
-      validationErrors: [],
-      errorMessages: [],
-    });
   } catch (err) {
     next(err);
   }
+};
+
+exports.getEditClient = (req, res, next) => {
+  const email = req.params.clientEmail;
+  return res.render('pro/edit-client', {
+    pageTitle: 'Nouveau client',
+    path: '/clients',
+    email: email,
+    oldInput: {
+      password: '',
+      confirmPassword: '',
+    },
+    errorMessages: [],
+    validationErrors: [],
+  });
 };
 
 exports.postEditClient = async (req, res, next) => {
@@ -132,6 +135,7 @@ exports.postEditClient = async (req, res, next) => {
 
 exports.postEditLoanFile = async (req, res, next) => {
   const choice = req.body.choiceOfAction;
+  const pro = req.pro;
 
   try {
     const user = await User.findById(req.body.userId);
@@ -151,6 +155,9 @@ exports.postEditLoanFile = async (req, res, next) => {
     await loanFile.save();
     user.loanFileIds.push(loanFile._id);
     await user.save();
+
+    pro.loanFileIds.push(loanFile._id);
+    await pro.save();
 
     if (choice === 'backHome') {
       return res.redirect('/');

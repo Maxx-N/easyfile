@@ -21,6 +21,10 @@ a:hover {
   color: #1f9bcf;
 }
 
+.list-inline {
+  list-style: inside;
+}
+
 /* alerts */
 
 .user-messages {

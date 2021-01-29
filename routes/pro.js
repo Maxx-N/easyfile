@@ -12,10 +12,10 @@ const router = express.Router();
 
 router.get('/loan-files', isProAuth, proController.getLoanFiles);
 
-router.get('/enter-client', isProAuth, proController.getEnterClientEmail);
+router.get('/enter-client-email', isProAuth, proController.getEnterClientEmail);
 
 router.post(
-  '/enter-client',
+  '/enter-client-email',
   isProAuth,
   [
     body('email')
@@ -25,6 +25,8 @@ router.post(
   ],
   proController.postEnterClientEmail
 );
+
+router.get('/edit-client/:clientEmail', isProAuth, proController.getEditClient);
 
 router.post(
   '/edit-client',
@@ -49,6 +51,6 @@ router.post(
   proController.postEditClient
 );
 
-router.post('/edit-loan-file', isProAuth, proController.postEditLoanFile)
+router.post('/edit-loan-file', isProAuth, proController.postEditLoanFile);
 
 module.exports = router;
