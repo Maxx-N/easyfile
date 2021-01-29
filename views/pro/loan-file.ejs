@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+  </head>
+  <body>
+    <%- include('../includes/navbar') %>
+    <main class="text-center">
+      <a class="btn btn-info" href="/add-request">Demander des documents</a>
+      <div class="h3">Dossier de prêt numéro <%= loanFile._id %></div>
+      <p>Utilisateur : <%= loanFile.userId.email %></p>
+    </main>
+    <%- include('../includes/scripts') %>
+  </body>
+</html>

@@ -12,6 +12,8 @@ const router = express.Router();
 
 router.get('/loan-files', isProAuth, proController.getLoanFiles);
 
+router.get('/loan-files/:loanFileId', isProAuth, proController.getLoanFile);
+
 router.get('/enter-client-email', isProAuth, proController.getEnterClientEmail);
 
 router.post(

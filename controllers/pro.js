@@ -22,6 +22,28 @@ exports.getLoanFiles = async (req, res, next) => {
   });
 };
 
+exports.getLoanFile = async (req, res, next) => {
+  const loanFileId = req.params.loanFileId;
+
+  try {
+    const loanFile = await LoanFile.findById(loanFileId).populate('userId');
+
+    if (!loanFile) {
+      const error = new Error("Le dossier de prêt n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.render('pro/loan-file', {
+      pageTitle: 'Dossier de prêt',
+      path: '/loan-files',
+      loanFile: loanFile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getEnterClientEmail = (req, res, next) => {
   res.render('pro/enter-client-email', {
     pageTitle: 'Dossiers de prêt',
