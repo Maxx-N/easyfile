@@ -10,7 +10,7 @@
       <div class="h1">Les dossiers de prêt</div>
       <ul>
         <% for (let file of loanFiles) { %>
-        <li class="list-inline"><a href=""><%= file.userId.email %></a></li>
+        <li class="list-inline"><a href="/edit-loan-file/<%= file.userId._id %>"><%= file.userId.email %></a></li>
         <% } %>
       </ul>
     </main>
