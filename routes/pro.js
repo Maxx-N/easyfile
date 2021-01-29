@@ -51,6 +51,14 @@ router.post(
   proController.postEditClient
 );
 
+router.get(
+  '/edit-loan-file/:clientId',
+  isProAuth,
+  proController.getEditLoanFile
+);
+
 router.post('/edit-loan-file', isProAuth, proController.postEditLoanFile);
+
+router.get('/edit-request/:loanFileId', isProAuth, proController.getEditRequest);
 
 module.exports = router;

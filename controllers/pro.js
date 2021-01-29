@@ -57,15 +57,10 @@ exports.postEnterClientEmail = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (user) {
-      return res.render('pro/edit-loan-file', {
-        pageTitle: 'Nouveau dossier de prêt',
-        path: '/loan-files',
-        user: user,
-      });
+      return res.redirect(`/edit-loan-file/${user._id}`);
     }
 
     return res.redirect(`/edit-client/${email}`);
-
   } catch (err) {
     next(err);
   }
@@ -123,6 +118,23 @@ exports.postEditClient = async (req, res, next) => {
       }
     });
 
+    res.redirect(`/edit-loan-file/${user._id}`);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getEditLoanFile = async (req, res, next) => {
+  const clientId = req.params.clientId;
+
+  try {
+    const user = await User.findById(clientId);
+    if (!user) {
+      const error = new Error("L'utilisateur n'a pas pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
     res.render('pro/edit-loan-file', {
       pageTitle: 'Nouveau dossier de prêt',
       path: '/loan-files',
@@ -165,11 +177,15 @@ exports.postEditLoanFile = async (req, res, next) => {
 
     await loanFile.populate('userId').execPopulate();
 
-    res.render('pro/edit-request', {
-      pageTitle: 'Création de requête',
-      path: '/loan-files',
-    });
+    res.redirect(`/edit-request/${loanFile._id}`);
   } catch (err) {
     next(err);
   }
+};
+
+exports.getEditRequest = (req, res, next) => {
+  res.render('pro/edit-request', {
+    pageTitle: 'Création de requête',
+    path: '/loan-files',
+  });
 };
