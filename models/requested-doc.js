@@ -22,11 +22,7 @@ const requestedDocSchema = new Schema({
   monthAge: {
     type: number,
   },
-  doctypeIds: {
-    documentIds: [
-      { type: Schema.Types.ObjectId, ref: 'Doctype', required: true },
-    ],
-  },
+  doctypeId: { type: Schema.Types.ObjectId, ref: 'Doctype', required: true },
 });
 
 module.exports = mongoose.model('RequestedDoc', requestedDocSchema);

@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 const LoanFile = require('../models/loan-file');
+const Doctype = require('../models/doctype');
+const doctype = require('../models/doctype');
 
 //
 
@@ -243,9 +245,24 @@ exports.postAddLoanFile = async (req, res, next) => {
   }
 };
 
-exports.getAddRequest = (req, res, next) => {
-  res.render('pro/add-request', {
-    pageTitle: 'Création de requête',
-    path: '/loan-files',
-  });
+exports.getAddRequest = async (req, res, next) => {
+  try {
+    const doctypes = await Doctype.find();
+    if (!doctype) {
+      const error = new Error('Aucun type de document trouvé.');
+      error.statusCode = 404;
+      throw err;
+    }
+    res.render('pro/add-request', {
+      pageTitle: 'Création de requête',
+      path: '/loan-files',
+      doctypes: doctypes,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postAddRequest = (req, res, next) => {
+  console.log(req.body.coucou);
 };

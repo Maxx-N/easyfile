@@ -8,13 +8,39 @@
     <%- include('../includes/navbar') %>
     <main class="text-center">
       <div class="h1">Création de la requête de documents</div>
-      <form class="text-center center-half" method="POST" action="/">
+      <div id="requestedDocs"></div>
+      <form class="text-center center-half" method="POST" action="/add-request">
         <fieldset>
           <div class="form-group">
-            <label for="">Test</label>
-            <input type="text" />
+            <label for="doctypeId">Type(s)</label>
+            <select
+              class="form-control text-center pointer"
+              id="doctypeId"
+              name="doctypeId"
+            >
+              <option value="" disabled selected>
+                Sélectionner un type de document ...
+              </option>
+              <% for (let doctype of doctypes) { %>
+              <option
+                doctypeName="<%= doctype.name%>"
+                value="<%= doctype._id %>"
+                isUnique="<%= doctype.isUnique %>"
+                periodicity="<%= doctype.periodicity %>"
+                hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
+                hasExpirationDate="<%= doctype.hasExpirationDate %>"
+              >
+                <%= doctype.title %>
+              </option>
+              <% } %>
+            </select>
           </div>
-          <button type="button" class="btn btn-info">Ajouter le document</button>
+
+          <button id="addDocButton" type="button" class="btn btn-info">
+            Ajouter le document
+          </button>
+          <input type="hidden" name="coucou" value="1" />
+          <input type="hidden" name="coucou" value="2" />
           <button type="submit" class="btn btn-primary">
             Valider la requête
           </button>
@@ -23,5 +49,6 @@
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>
+    <script src="/js/add-requested-doc.js"></script>
   </body>
 </html>
