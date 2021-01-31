@@ -1,51 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('../includes/head') %>
-    <link rel="stylesheet" href="/css/forms.css" />
-  </head>
-  <body>
-    <%- include('../includes/navbar') %>
-    <main class="text-center">
-      <div class="h1">Création de la requête de documents</div>
-      <div id="requestedDocs"></div>
-      <form class="text-center center-half" method="POST" action="/add-request">
-        <fieldset>
-          <div class="form-group">
-            <label for="doctypeId">Type(s)</label>
-            <select
-              class="form-control text-center pointer"
-              id="doctypeId"
-              name="doctypeId"
-            >
-              <option value="" disabled selected>
-                Sélectionner un type de document ...
-              </option>
-              <% for (let doctype of doctypes) { %>
-              <option
-                doctypeName="<%= doctype.name%>"
-                value="<%= doctype._id %>"
-                isUnique="<%= doctype.isUnique %>"
-                periodicity="<%= doctype.periodicity %>"
-                hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
-                hasExpirationDate="<%= doctype.hasExpirationDate %>"
-              >
-                <%= doctype.title %>
-              </option>
-              <% } %>
-            </select>
-          </div>
+<head>
+<%- include('../includes/head') %>
+<link rel="stylesheet" href="/css/forms.css" />
+</head>
+<body>
+<%- include('../includes/navbar') %>
+<main class="text-center">
+    <div class="h1">Création de la requête de documents</div>
+    <div class="d-flex justify-content-around">   
 
-          <button id="addDocButton" type="button" class="btn btn-info">
-            Ajouter le document
-          </button>
-          <input type="hidden" name="coucou" value="1" />
-          <input type="hidden" name="coucou" value="2" />
-          <button type="submit" class="btn btn-primary">
-            Valider la requête
-          </button>
-        </fieldset>
-      </form>
+        <div id="firstColumn" class="text-center center-half full-flex">
+            <div id="infoList" class="list-group"></div>
+            <div id="selectors" class="form-group">
+                <select
+                  class="form-control text-center pointer"
+                  id="doctypeId"
+                  name="doctypeId"
+                >
+                    <option value="" disabled selected>
+                      Sélectionner un type de document ...
+                    </option>
+                    <% for (let doctype of doctypes) { %>
+                        <option
+                          doctypeName="<%= doctype.name%>"
+                          value="<%= doctype._id %>"
+                          isUnique="<%= doctype.isUnique %>"
+                          periodicity="<%= doctype.periodicity %>"
+                          hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
+                          hasExpirationDate="<%= doctype.hasExpirationDate %>"
+                        >
+                          <%= doctype.title %>
+                        </option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+
+        <div class="column-separation"></div>
+
+        <div id="secondColumn" class="full-flex">   
+            <form         
+            method="POST"
+            action="/add-request">       
+                <button type="submit" class="btn btn-primary">
+                  Valider la requête
+                </button>
+          </form>
+          <table class="table table-hover" 
+          >
+              <thead>
+                  <tr class="table-primary">
+                      <th scope="col">Type</th>
+                      <th scope="col">Ancienneté</th>
+                  </tr>
+              </thead>
+              <tbody id="docTable">
+                  <!-- <tr class="table-light">
+                    <td>cni</td>
+                    <td>-</td>
+                  </tr> -->
+              </tbody>
+          </table>
+    </div>
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>

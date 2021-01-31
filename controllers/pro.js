@@ -264,5 +264,4 @@ exports.getAddRequest = async (req, res, next) => {
 };
 
 exports.postAddRequest = (req, res, next) => {
-  console.log(req.body.coucou);
 };

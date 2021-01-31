@@ -25,6 +25,16 @@ a:hover {
   list-style: inside;
 }
 
+.full-flex {
+  flex-basis: 100%;
+  margin: 2rem;
+}
+
+.column-separation {
+  width: 0.5rem;
+  background-color: #1f9bcf;
+}
+
 /* alerts */
 
 .user-messages {
