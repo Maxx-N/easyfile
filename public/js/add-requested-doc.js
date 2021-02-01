@@ -1,4 +1,5 @@
 const firstColumn = document.getElementById('firstColumn');
+const secondColumn = document.getElementById('secondColumn');
 const selectors = document.getElementById('selectors');
 const doctypeSelector = document.getElementById('doctypeSelector');
 
@@ -11,7 +12,8 @@ doctypeSelector.addEventListener('change', createDoctype);
 function createDoctype() {
   const selectedOption = getSelectedOption();
   createListItem(selectedOption.textContent);
-  doctypeSelector.style.display = 'none';
+  // doctypeSelector.style.display = 'none';
+  hide(doctypeSelector);
   createCancelButton();
   createAddButton();
   createAgeSelector(selectedOption);
@@ -181,7 +183,8 @@ function removeItems() {
 }
 
 function reinitializeDoctypeSelector() {
-  doctypeSelector.style.display = 'block';
+  // doctypeSelector.style.display = 'block';
+  show(doctypeSelector);
   doctypeSelector.value = '';
 }
 
@@ -218,6 +221,7 @@ function addDoc() {
   addRow(docTable);
   hideSelectedDoctypeOption();
   clearDoc();
+  hideOrShowRightColumn();
 }
 
 function addRow(docTable) {
@@ -264,7 +268,8 @@ function addSelectedAge(row) {
 
 function hideSelectedDoctypeOption() {
   const selectedOption = getSelectedOption();
-  selectedOption.style.display = 'none';
+  // selectedOption.style.display = 'none';
+  hide(selectedOption);
 }
 
 // Ajout du logo poubelle
@@ -288,8 +293,10 @@ function removeFromRightColumn(e) {
   const tableRow = this.parentNode;
   const doctypeId = tableRow.getAttribute('doctypeId');
   const option = getOptionByDoctypeId(doctypeId);
-  option.style.display = 'block';
+  // option.style.display = 'block';
+  show(option);
   tableRow.remove();
+  hideOrShowRightColumn();
 }
 
 // Récupérer une option à partir du doctypeId correspondant
@@ -302,4 +309,23 @@ function getOptionByDoctypeId(doctypeId) {
   return doctypeOptions.find((dto) => {
     return dto.value === doctypeId;
   });
+}
+
+// Cacher ou montrer un élément du DOM
+
+function hide(el) {
+  el.classList.add('hidden');
+}
+
+function show(el) {
+  el.classList.remove('hidden');
+}
+
+function hideOrShowRightColumn() {
+  const docRows = [...document.querySelectorAll('#docTable > tr')];
+  if (docRows.length > 0) {
+    show(secondColumn);
+  } else {
+    hide(secondColumn);
+  }
 }

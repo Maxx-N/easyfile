@@ -45,6 +45,10 @@ a:hover {
   width: 1rem;
 }
 
+.hidden {
+  display: none;
+}
+
 /* trash icon */
 
 .trash-container:hover {
