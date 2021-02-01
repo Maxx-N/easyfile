@@ -1,3 +1,5 @@
+@import '/css/fontawesome.min.css';
+
 main {
   padding: 2rem;
 }
@@ -32,7 +34,21 @@ a:hover {
 
 .column-separation {
   width: 0.5rem;
-  background-color: #1f9bcf;
+  background-color: #343a40;
+}
+
+.margin-top-3-rem {
+  margin-top: 3rem;
+}
+
+.width1rem {
+  width: 1rem;
+}
+
+/* trash icon */
+
+.trash-container:hover {
+  color: red;
 }
 
 /* alerts */

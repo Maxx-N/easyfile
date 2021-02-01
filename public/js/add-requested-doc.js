@@ -1,6 +1,6 @@
 const firstColumn = document.getElementById('firstColumn');
 const selectors = document.getElementById('selectors');
-const doctypeSelector = document.getElementById('doctypeId');
+const doctypeSelector = document.getElementById('doctypeSelector');
 
 doctypeSelector.value = '';
 
@@ -15,12 +15,15 @@ function createDoctype() {
   createCancelButton();
   createAddButton();
   createAgeSelector(selectedOption);
+  createTitleInput();
 }
 
-// Helpers
+// Récupération d'options sélectionnées
 
 function getSelectedOption() {
-  const doctypeOptions = [...document.querySelectorAll('#doctypeId > option')];
+  const doctypeOptions = [
+    ...document.querySelectorAll('#doctypeSelector > option'),
+  ];
   return doctypeOptions.find((option) => {
     return doctypeSelector.value === option.value;
   });
@@ -34,6 +37,8 @@ function getSelectedAge() {
   });
 }
 
+// Affichage du type sélectionné dans le DOM
+
 function createListItem(content) {
   const infoList = document.getElementById('infoList');
   const div = document.createElement('div');
@@ -41,6 +46,8 @@ function createListItem(content) {
   div.classList.add('list-group-item');
   infoList.appendChild(div);
 }
+
+// Création de boutons dans le DOM
 
 function createCancelButton() {
   const button = document.createElement('button');
@@ -60,7 +67,7 @@ function createAddButton() {
   button.addEventListener('click', addDoc);
 }
 
-// Sélecteur d'ancienneté
+// Création du sélecteur d'ancienneté
 
 function createAgeSelector(selectedOption) {
   const isUnique = selectedOption.getAttribute('isUnique') === 'true';
@@ -68,10 +75,15 @@ function createAgeSelector(selectedOption) {
     selectedOption.getAttribute('hasIssuanceDate') === 'true';
   const periodicity = selectedOption.getAttribute('periodicity');
 
-  if (!isUnique) {
+  if (!isUnique && !(periodicity === 'none' && !hasIssuanceDate)) {
     const select = document.createElement('select');
     select.id = 'ageSelector';
-    select.classList.add('form-control', 'text-center', 'pointer');
+    select.classList.add(
+      'form-control',
+      'text-center',
+      'pointer',
+      'margin-top-3-rem'
+    );
 
     if (periodicity === 'month') {
       createMonthOption(select);
@@ -132,6 +144,24 @@ function createMonthAgeOption(select) {
   }
 }
 
+// Création de l'input titre
+
+function createTitleInput() {
+  const div = document.createElement('div');
+  div.id = 'titleGroup';
+  div.classList.add('form-group', 'margin-top-3-rem');
+
+  const input = document.createElement('input');
+  input.id = 'titleInput';
+  input.classList.add('form-control', 'text-center');
+  input.setAttribute('placeholder', 'Précision (optionnelle)');
+  input.setAttribute('maxLength', '32');
+
+  div.appendChild(input);
+
+  selectors.appendChild(div);
+}
+
 // Réinitialisation
 
 function clearDoc() {
@@ -140,6 +170,7 @@ function clearDoc() {
   removeAgeSelector();
   removeAddDocButton();
   removeCancelDocButton();
+  removeTitleGroup();
 }
 
 function removeItems() {
@@ -175,20 +206,35 @@ function removeCancelDocButton() {
   }
 }
 
+function removeTitleGroup() {
+  const titleGroup = document.getElementById('titleGroup');
+  titleGroup.remove();
+}
+
 // Ajout de document(s) requis
 
 function addDoc() {
   const docTable = document.getElementById('docTable');
   addRow(docTable);
-  removeSelectedDoctypeOption();
+  hideSelectedDoctypeOption();
   clearDoc();
 }
 
 function addRow(docTable) {
   const tr = document.createElement('tr');
   tr.classList.add('table-light');
+
+  const selectedOption = getSelectedOption();
+  tr.setAttribute('doctypeId', selectedOption.value);
+
+  const selectedAge = getSelectedAge();
+  if (selectedAge) {
+    tr.setAttribute('age', selectedAge.value);
+  }
+
   addDoctypeData(tr);
   addSelectedAge(tr);
+  addTrash(tr);
   docTable.prepend(tr);
 }
 
@@ -196,6 +242,10 @@ function addDoctypeData(row) {
   const doctypeTitle = getSelectedOption().textContent;
   const td = document.createElement('td');
   td.textContent = doctypeTitle;
+  const title = document.getElementById('titleInput').value;
+  if (title) {
+    td.textContent += ` (${title})`;
+  }
   row.appendChild(td);
 }
 
@@ -212,7 +262,44 @@ function addSelectedAge(row) {
   row.appendChild(td);
 }
 
-function removeSelectedDoctypeOption() {
+function hideSelectedDoctypeOption() {
   const selectedOption = getSelectedOption();
-  selectedOption.remove();
+  selectedOption.style.display = 'none';
+}
+
+// Ajout du logo poubelle
+
+function addTrash(row) {
+  const td = document.createElement('td');
+  td.classList.add('width1rem', 'pointer', 'trash-container');
+
+  const i = document.createElement('i');
+  i.classList.add('fas', 'fa-trash');
+
+  td.addEventListener('click', removeFromRightColumn);
+
+  td.appendChild(i);
+  row.appendChild(td);
+}
+
+// Retrait de la colonne de droite
+
+function removeFromRightColumn(e) {
+  const tableRow = this.parentNode;
+  const doctypeId = tableRow.getAttribute('doctypeId');
+  const option = getOptionByDoctypeId(doctypeId);
+  option.style.display = 'block';
+  tableRow.remove();
+}
+
+// Récupérer une option à partir du doctypeId correspondant
+
+function getOptionByDoctypeId(doctypeId) {
+  const doctypeOptions = [
+    ...document.querySelectorAll('#doctypeSelector > option'),
+  ];
+
+  return doctypeOptions.find((dto) => {
+    return dto.value === doctypeId;
+  });
 }

@@ -9,33 +9,31 @@
 <main class="text-center">
     <div class="h1">Création de la requête de documents</div>
     <div class="d-flex justify-content-around">   
-
-        <div id="firstColumn" class="text-center center-half full-flex">
-            <div id="infoList" class="list-group"></div>
-            <div id="selectors" class="form-group">
-                <select
-                  class="form-control text-center pointer"
-                  id="doctypeId"
-                  name="doctypeId"
-                >
-                    <option value="" disabled selected>
-                      Sélectionner un type de document ...
-                    </option>
-                    <% for (let doctype of doctypes) { %>
-                        <option
-                          doctypeName="<%= doctype.name%>"
-                          value="<%= doctype._id %>"
-                          isUnique="<%= doctype.isUnique %>"
-                          periodicity="<%= doctype.periodicity %>"
-                          hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
-                          hasExpirationDate="<%= doctype.hasExpirationDate %>"
-                        >
-                          <%= doctype.title %>
-                        </option>
-                    <% } %>
-                </select>
-            </div>
-        </div>
+      
+      <div id="firstColumn" class="text-center center-half full-flex">
+          <div id="infoList" class="list-group"></div>
+          <div id="selectors" class="form-group">
+              <select
+                class="form-control text-center pointer"
+                id="doctypeSelector"
+              >
+                  <option value="" disabled selected>
+                    Sélectionner un type de document ...
+                  </option>
+                  <% for (let doctype of doctypes) { %>
+                      <option
+                        value="<%= doctype._id %>"
+                        isUnique="<%= doctype.isUnique %>"
+                        periodicity="<%= doctype.periodicity %>"
+                        hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
+                        hasExpirationDate="<%= doctype.hasExpirationDate %>"
+                      >
+                        <%= doctype.title %>
+                      </option>
+                  <% } %>
+              </select>
+          </div>
+      </div>
 
         <div class="column-separation"></div>
 
@@ -51,15 +49,16 @@
           >
               <thead>
                   <tr class="table-primary">
-                      <th scope="col">Type</th>
-                      <th scope="col">Ancienneté</th>
+                      <th>Type</th>
+                      <th>Ancienneté</th>
+                      <th></th>
                   </tr>
               </thead>
               <tbody id="docTable">
-                  <!-- <tr class="table-light">
-                    <td>cni</td>
-                    <td>-</td>
-                  </tr> -->
+                <tr>
+                
+                  <!-- <td style="width:1rem"><i class="fas fa-trash"></i></td> -->
+                </tr>
               </tbody>
           </table>
     </div>
