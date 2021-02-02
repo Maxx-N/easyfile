@@ -268,8 +268,10 @@ function addSelectedAge(row) {
 
 function hideSelectedDoctypeOption() {
   const selectedOption = getSelectedOption();
-  // selectedOption.style.display = 'none';
-  hide(selectedOption);
+  const isUnique = selectedOption.getAttribute('isUnique') === 'true';
+  if (isUnique) {
+    hide(selectedOption);
+  }
 }
 
 // Ajout du logo poubelle
@@ -314,11 +316,15 @@ function getOptionByDoctypeId(doctypeId) {
 // Cacher ou montrer un élément du DOM
 
 function hide(el) {
-  el.classList.add('hidden');
+  if (!el.classList.contains('hidden')) {
+    el.classList.add('hidden');
+  }
 }
 
 function show(el) {
-  el.classList.remove('hidden');
+  if (el.classList.contains('hidden')) {
+    el.classList.remove('hidden');
+  }
 }
 
 function hideOrShowRightColumn() {
