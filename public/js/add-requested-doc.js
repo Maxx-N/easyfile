@@ -324,8 +324,8 @@ function show(el) {
 function hideOrShowRightColumn() {
   const docRows = [...document.querySelectorAll('#docTable > tr')];
   if (docRows.length > 0) {
-    show(secondColumn);
+    secondColumn.classList.remove('invisible');
   } else {
-    hide(secondColumn);
+    secondColumn.classList.add('invisible');
   }
 }
