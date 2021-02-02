@@ -23,6 +23,9 @@ const requestedDocSchema = new Schema({
     type: number,
   },
   doctypeId: { type: Schema.Types.ObjectId, ref: 'Doctype', required: true },
+  alternativeRequestedDocIds: [
+    { type: Schema.Types.ObjectId, ref: 'RequestedDoc', required: true },
+  ]
 });
 
 module.exports = mongoose.model('RequestedDoc', requestedDocSchema);
