@@ -2,6 +2,8 @@ const firstColumn = document.getElementById('firstColumn');
 const secondColumn = document.getElementById('secondColumn');
 const selectors = document.getElementById('selectors');
 const doctypeSelector = document.getElementById('doctypeSelector');
+const defaultInstruction =
+  'Cliquez sur un document pour l\'ajouter à un groupe de documents alternatifs (exemple : "Carte d\'identité" et "Passeport"... ).';
 
 let docGroupId = 1;
 
@@ -243,6 +245,7 @@ function addRow(docTable) {
   docTable.prepend(tr);
 
   tr.addEventListener('click', linkDocs);
+  giveAlternativeInstruction(tr);
 }
 
 function addDoctypeData(row) {
@@ -331,6 +334,29 @@ function linkDocs(e) {
       } else {
         this.setAttribute('selected', 'true');
       }
+    }
+    giveAlternativeInstruction(this);
+  }
+}
+
+function giveAlternativeInstruction(doc) {
+  const docs = [...document.getElementsByClassName('doc')];
+  if (docs.length >= 2) {
+    const alternativeInstruction = document.getElementById(
+      'alternativeInstruction'
+    );
+
+    const selectedDoc = docs.find((doc) => {
+      return doc.getAttribute('selected') === 'true';
+    });
+
+    if (doc === selectedDoc) {
+      alternativeInstruction.classList.add('bg-info', 'text-light');
+      alternativeInstruction.textContent =
+        'Cliquez sur le groupe auquel vous souhaitez ajouter ce document. Pour annuler la sélection, cliquez à nouveau sur celui-ci.';
+    } else {
+      alternativeInstruction.classList.remove('bg-info', 'text-light');
+      alternativeInstruction.textContent = defaultInstruction;
     }
   }
 }

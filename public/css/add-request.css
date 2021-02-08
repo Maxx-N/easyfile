@@ -48,3 +48,10 @@
 .down-of-group td {
   border: transparent;
 }
+
+#alternativeInstruction {
+  margin: 1rem;
+  padding: 1rem;
+  color: var(--blue);
+  font-size: 0.7rem;
+}
