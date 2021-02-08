@@ -1,0 +1,50 @@
+#topContainer {
+  border: 0.1rem dashed var(--gray);
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.full-flex {
+  flex-basis: 100%;
+  margin: 2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.separator {
+  background-color: var(--gray);
+  color: white;
+  margin: 1rem 0;
+  opacity: 0.7;
+}
+
+.doc[selected='true'] {
+  border: 4px solid #1f9bcf;
+  color: #1f9bcf;
+}
+
+.group-item {
+  border-left: 2px dashed #1f9bcf;
+  border-right: 2px dashed #1f9bcf;
+}
+
+.top-of-group {
+  border-top: 2px dashed #1f9bcf;
+}
+
+.bottom-of-group {
+  border-bottom: 2px dashed #1f9bcf;
+}
+
+.up-of-group td,
+.middle-of-group td,
+.down-of-group td {
+  border: transparent;
+}

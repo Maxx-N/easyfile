@@ -3,6 +3,8 @@ const secondColumn = document.getElementById('secondColumn');
 const selectors = document.getElementById('selectors');
 const doctypeSelector = document.getElementById('doctypeSelector');
 
+let docGroupId = 1;
+
 doctypeSelector.value = '';
 
 doctypeSelector.addEventListener('change', createDoctype);
@@ -183,7 +185,6 @@ function removeItems() {
 }
 
 function reinitializeDoctypeSelector() {
-  // doctypeSelector.style.display = 'block';
   show(doctypeSelector);
   doctypeSelector.value = '';
 }
@@ -226,7 +227,7 @@ function addDoc() {
 
 function addRow(docTable) {
   const tr = document.createElement('tr');
-  tr.classList.add('table-light');
+  tr.classList.add('table-light', 'doc', 'pointer');
 
   const selectedOption = getSelectedOption();
   tr.setAttribute('doctypeId', selectedOption.value);
@@ -240,6 +241,8 @@ function addRow(docTable) {
   addSelectedAge(tr);
   addTrash(tr);
   docTable.prepend(tr);
+
+  tr.addEventListener('click', linkDocs);
 }
 
 function addDoctypeData(row) {
@@ -251,6 +254,7 @@ function addDoctypeData(row) {
     td.textContent += ` (${title})`;
   }
   row.appendChild(td);
+  displayGroupedDocs();
 }
 
 function addSelectedAge(row) {
@@ -278,15 +282,111 @@ function hideSelectedDoctypeOption() {
 
 function addTrash(row) {
   const td = document.createElement('td');
-  td.classList.add('width1rem', 'pointer', 'trash-container');
+  td.classList.add('width1rem', 'pointer', 'trash-container', 'trash');
 
   const i = document.createElement('i');
-  i.classList.add('fas', 'fa-trash');
+  i.classList.add('fas', 'fa-trash', 'trash');
 
   td.addEventListener('click', removeFromRightColumn);
 
   td.appendChild(i);
   row.appendChild(td);
+}
+
+// Liaison de documents
+
+function linkDocs(e) {
+  const isTrashedClicked =
+    [...e.target.classList].some((c) => {
+      return c === 'trash';
+    }) ||
+    [...e.target.parentNode.classList].some((c) => {
+      return c === 'trash';
+    });
+
+  if (!isTrashedClicked) {
+    const docs = [...document.getElementsByClassName('doc')];
+
+    if (this.getAttribute('selected') === 'true') {
+      this.setAttribute('selected', 'false');
+    } else {
+      const selectedDoc = docs.find((doc) => {
+        return doc.getAttribute('selected') === 'true';
+      });
+
+      if (selectedDoc) {
+        const thisId = this.getAttribute('docGroupId');
+
+        if (thisId) {
+          if (thisId !== selectedDoc.getAttribute('docGroupId')) {
+            selectedDoc.setAttribute('docGroupId', thisId);
+          }
+        } else {
+          this.setAttribute('docGroupId', docGroupId);
+          selectedDoc.setAttribute('docGroupId', docGroupId);
+          docGroupId++;
+        }
+        selectedDoc.setAttribute('selected', 'false');
+        displayGroupedDocs();
+      } else {
+        this.setAttribute('selected', 'true');
+      }
+    }
+  }
+}
+
+// Affichage groupé des documents
+
+function displayGroupedDocs() {
+  const docTable = document.getElementById('docTable');
+  const docs = [...document.getElementsByClassName('doc')];
+
+  const orderedDocs = docs.sort((doc1, doc2) => {
+    const group1 = +doc1.getAttribute('docGroupId');
+    const group2 = +doc2.getAttribute('docGroupId');
+    return group2 - group1;
+  });
+  for (let doc of docs) {
+    doc.remove();
+  }
+  for (let orderedDoc of orderedDocs) {
+    docTable.appendChild(orderedDoc);
+  }
+  for (let orderedDoc of orderedDocs) {
+    addCorrectClass(orderedDoc);
+  }
+}
+
+// Ajout de la bonne classe pour un document dans le tableau
+
+function addCorrectClass(myDoc) {
+  const docs = [...document.getElementsByClassName('doc')];
+  const hasGroup =
+    myDoc.getAttribute('docGroupId') &&
+    docs.some((doc) => {
+      return (
+        doc !== myDoc &&
+        doc.getAttribute('docGroupId') === myDoc.getAttribute('docGroupId')
+      );
+    });
+
+  myDoc.classList.remove('top-of-group', 'bottom-of-group', 'group-item');
+
+  if (hasGroup) {
+    myDoc.classList.add('group-item');
+    const group = docs.filter((doc) => {
+      return (
+        doc.getAttribute('docGroupId') === myDoc.getAttribute('docGroupId')
+      );
+    });
+    const index = group.indexOf(myDoc);
+    if (index === 0) {
+      myDoc.classList.add('top-of-group');
+    }
+    if (index === group.length - 1) {
+      myDoc.classList.add('bottom-of-group');
+    }
+  }
 }
 
 // Retrait de la colonne de droite
@@ -299,6 +399,7 @@ function removeFromRightColumn(e) {
   show(option);
   tableRow.remove();
   hideOrShowRightColumn();
+  displayGroupedDocs();
 }
 
 // Récupérer une option à partir du doctypeId correspondant
