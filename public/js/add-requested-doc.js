@@ -3,7 +3,7 @@ const secondColumn = document.getElementById('secondColumn');
 const selectors = document.getElementById('selectors');
 const doctypeSelector = document.getElementById('doctypeSelector');
 const defaultInstruction =
-  'Cliquez sur un document pour l\'ajouter à un groupe de documents alternatifs (exemple : "Carte d\'identité" et "Passeport"... ).';
+  'Cliquez sur un élément pour l\'ajouter à un groupe de documents alternatifs (exemple : "Carte d\'identité" OU "Passeport"... ).';
 
 let docGroupId = 1;
 
@@ -341,11 +341,11 @@ function linkDocs(e) {
 
 function giveAlternativeInstruction(doc) {
   const docs = [...document.getElementsByClassName('doc')];
-  if (docs.length >= 2) {
-    const alternativeInstruction = document.getElementById(
-      'alternativeInstruction'
-    );
+  const alternativeInstruction = document.getElementById(
+    'alternativeInstruction'
+  );
 
+  if (docs.length >= 2) {
     const selectedDoc = docs.find((doc) => {
       return doc.getAttribute('selected') === 'true';
     });
@@ -353,11 +353,13 @@ function giveAlternativeInstruction(doc) {
     if (doc === selectedDoc) {
       alternativeInstruction.classList.add('bg-info', 'text-light');
       alternativeInstruction.textContent =
-        'Cliquez sur le groupe auquel vous souhaitez ajouter ce document. Pour annuler la sélection, cliquez à nouveau sur celui-ci.';
+        'Cliquez sur le groupe dans lequel vous souhaitez déplacer ce document. Pour annuler la sélection, cliquez à nouveau dessus.';
     } else {
       alternativeInstruction.classList.remove('bg-info', 'text-light');
       alternativeInstruction.textContent = defaultInstruction;
     }
+  } else {
+    alternativeInstruction.textContent = '';
   }
 }
 
@@ -370,7 +372,7 @@ function displayGroupedDocs() {
   const orderedDocs = docs.sort((doc1, doc2) => {
     const group1 = +doc1.getAttribute('docGroupId');
     const group2 = +doc2.getAttribute('docGroupId');
-    return group2 - group1;
+    return group1 - group2;
   });
   for (let doc of docs) {
     doc.remove();
@@ -396,7 +398,12 @@ function addCorrectClass(myDoc) {
       );
     });
 
-  myDoc.classList.remove('top-of-group', 'bottom-of-group', 'group-item');
+  myDoc.classList.remove(
+    'top-of-group',
+    'middle-of-group',
+    'bottom-of-group',
+    'group-item'
+  );
 
   if (hasGroup) {
     myDoc.classList.add('group-item');
@@ -408,9 +415,10 @@ function addCorrectClass(myDoc) {
     const index = group.indexOf(myDoc);
     if (index === 0) {
       myDoc.classList.add('top-of-group');
-    }
-    if (index === group.length - 1) {
+    } else if (index === group.length - 1) {
       myDoc.classList.add('bottom-of-group');
+    } else {
+      myDoc.classList.add('middle-of-group');
     }
   }
 }
@@ -426,6 +434,7 @@ function removeFromRightColumn(e) {
   tableRow.remove();
   hideOrShowRightColumn();
   displayGroupedDocs();
+  giveAlternativeInstruction(tableRow);
 }
 
 // Récupérer une option à partir du doctypeId correspondant

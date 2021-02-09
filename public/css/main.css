@@ -53,6 +53,10 @@ a:hover {
   visibility: hidden;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 /* trash icon */
 
 .trash-container:hover {
