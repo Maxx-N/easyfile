@@ -255,6 +255,7 @@ function addDoctypeData(row) {
   const title = document.getElementById('titleInput').value;
   if (title) {
     td.textContent += ` (${title})`;
+    row.setAttribute('requestedDocTitle', title);
   }
   row.appendChild(td);
   displayGroupedDocs();
@@ -470,4 +471,50 @@ function hideOrShowRightColumn() {
   } else {
     secondColumn.classList.add('invisible');
   }
+}
+
+// SOUMISSION DU FORMULAIRE
+
+const submitBtn = document.getElementById('submitBtn');
+
+submitBtn.addEventListener('click', onSubmitForm);
+
+function onSubmitForm() {
+  createHiddenInputs();
+}
+
+function createHiddenInputs() {
+  const docs = [...document.getElementsByClassName('doc')];
+  for (let doc of docs) {
+    makeADocHiddenInput(doc);
+  }
+}
+
+function makeADocHiddenInput(doc) {
+  let age = doc.getAttribute('age');
+  let title = doc.getAttribute('requestedDocTitle');
+  let docGroupId = doc.getAttribute('docGroupId');
+  const doctypeId = doc.getAttribute('doctypeId');
+
+  if (!age) {
+    age = 0;
+  }
+  if (!title) {
+    title = 0;
+  }
+  if (!docGroupId) {
+    docGroupId = 0;
+  }
+
+  const valueArray = [doctypeId, title, age, docGroupId];
+  const valueString = valueArray.join('///');
+
+  const input = document.createElement('input');
+  input.setAttribute('type', 'hidden');
+  input.setAttribute('name', 'requestedDocs');
+  input.setAttribute('value', valueString);
+
+
+  const form = document.getElementById('addRequestedDocForm');
+  form.appendChild(input);
 }

@@ -39,7 +39,6 @@
 .top-of-group {
   border-top: 4px solid var(--gray);
   border-bottom: 1px dashed var(--gray);
-
 }
 
 .middle-of-group {
@@ -93,4 +92,9 @@
 
 #tableContainer::-webkit-scrollbar-thumb:hover {
   background: var(--gray);
+}
+
+.table {
+  width: 95%;
+  margin: 0 auto;
 }

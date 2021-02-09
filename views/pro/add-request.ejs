@@ -38,13 +38,15 @@
         <div id="secondColumn" class="full-flex invisible">   
             <form         
             method="POST"
-            action="/add-request">       
-                <button type="submit" class="btn btn-primary">
+            action="/add-request"
+            id="addRequestedDocForm"
+            >       
+                <button id="submitBtn" type="button" class="btn btn-primary">
                   Valider la requête
                 </button>
             </form>
           <div id="tableContainer">
-          <table class="table table-hover" style="width: 95%; margin : 0 auto;" 
+          <table class="table table-hover" 
           >
               <thead>
                   <tr class="table-primary">
