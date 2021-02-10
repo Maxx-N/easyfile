@@ -67,4 +67,6 @@ router.get('/add-request/:loanFileId', isProAuth, proController.getAddRequest);
 
 router.post('/add-request', isProAuth, proController.postAddRequest);
 
+router.get('/requests/:requestId', isProAuth, proController.getRequest);
+
 module.exports = router;

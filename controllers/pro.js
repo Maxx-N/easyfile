@@ -224,8 +224,6 @@ exports.postAddLoanFile = async (req, res, next) => {
       throw error;
     }
 
-    // Mise à jour du User
-
     const loanFile = new LoanFile({
       userId: user._id,
       proId: req.pro._id,
@@ -279,12 +277,11 @@ exports.postAddRequest = async (req, res, next) => {
   try {
     const loanFile = await LoanFile.findById(loanFileId);
     loanFile.requestIds.push(request._id);
+    await loanFile.save();
   } catch (err) {
-    if (err) {
-      err.message =
-        'Un problème est survenu lors de la récupération du dossier de prêt. Nous travaillons à le réparer.';
-      return next(err);
-    }
+    err.message =
+      'Un problème est survenu lors de la récupération du dossier de prêt. Nous travaillons à le réparer.';
+    return next(err);
   }
 
   const docInputs = req.body.requestedDocs;
@@ -370,11 +367,9 @@ exports.postAddRequest = async (req, res, next) => {
         await requestedDoc.save();
         request.requestedDocIds.push(requestedDoc._id);
       } catch (err) {
-        if (err) {
-          err.message =
-            'Un problème est survenu lors de la sauvegarde des documents requis. Nous travaillons à le réparer.';
-          return next(err);
-        }
+        err.message =
+          'Un problème est survenu lors de la sauvegarde des documents requis. Nous travaillons à le réparer.';
+        return next(err);
       }
     }
   }
@@ -382,10 +377,14 @@ exports.postAddRequest = async (req, res, next) => {
   try {
     await request.save();
   } catch (err) {
-    if (err) {
-      err.message =
-        'Un problème est survenu lors de la sauvegarde de votre requête. Nous travaillons à le réparer.';
-      return next(err);
-    }
+    err.message =
+      'Un problème est survenu lors de la sauvegarde de votre requête. Nous travaillons à le réparer.';
+    return next(err);
   }
+
+  res.redirect(`/requests/${request._id}`);
+};
+
+exports.getRequest = (req, res, next) => {
+  console.log(req.params.requestId);
 };
