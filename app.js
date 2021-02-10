@@ -6,7 +6,6 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const multer = require('multer');
-const { validationResult } = require('express-validator');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');

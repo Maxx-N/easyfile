@@ -4,24 +4,29 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const LoanFile = require('../models/loan-file');
 const Doctype = require('../models/doctype');
-const doctype = require('../models/doctype');
+const RequestedDoc = require('../models/requested-doc');
+const Request = require('../models/request');
 
 //
 
 exports.getLoanFiles = async (req, res, next) => {
-  const pro = await req.pro.populate('loanFileIds');
-  const loanFiles = [];
+  try {
+    const pro = await req.pro.populate('loanFileIds');
+    const loanFiles = [];
 
-  for (let loanFileId of pro.loanFileIds) {
-    let file = await LoanFile.findById(loanFileId).populate('userId');
-    loanFiles.push(file);
+    for (let loanFileId of pro.loanFileIds) {
+      let file = await LoanFile.findById(loanFileId).populate('userId');
+      loanFiles.push(file);
+    }
+
+    res.render('pro/loan-files', {
+      pageTitle: 'Dossiers de prêt',
+      path: '/loan-files',
+      loanFiles: loanFiles,
+    });
+  } catch (err) {
+    return next(err);
   }
-
-  res.render('pro/loan-files', {
-    pageTitle: 'Dossiers de prêt',
-    path: '/loan-files',
-    loanFiles: loanFiles,
-  });
 };
 
 exports.getLoanFile = async (req, res, next) => {
@@ -248,7 +253,7 @@ exports.postAddLoanFile = async (req, res, next) => {
 exports.getAddRequest = async (req, res, next) => {
   try {
     const doctypes = await Doctype.find();
-    if (!doctype) {
+    if (!doctypes) {
       const error = new Error('Aucun type de document trouvé.');
       error.statusCode = 404;
       throw err;
@@ -257,11 +262,130 @@ exports.getAddRequest = async (req, res, next) => {
       pageTitle: 'Création de requête',
       path: '/loan-files',
       doctypes: doctypes,
+      loanFileId: req.params.loanFileId,
     });
   } catch (err) {
     next(err);
   }
 };
 
-exports.postAddRequest = (req, res, next) => {
+exports.postAddRequest = async (req, res, next) => {
+  const loanFileId = req.body.loanFileId;
+  const request = new Request({
+    loanFileId: loanFileId,
+    isAccepted: false,
+  });
+
+  try {
+    const loanFile = await LoanFile.findById(loanFileId);
+    loanFile.requestIds.push(request._id);
+  } catch (err) {
+    if (err) {
+      err.message =
+        'Un problème est survenu lors de la récupération du dossier de prêt. Nous travaillons à le réparer.';
+      return next(err);
+    }
+  }
+
+  const docInputs = req.body.requestedDocs;
+  const docArrays = [];
+  for (let doc of docInputs) {
+    docArrays.push(doc.split('///'));
+  }
+
+  let docObjects = [];
+  for (let doc of docArrays) {
+    const doctypeId = doc[0];
+    let title;
+    let age;
+    let docGroupId;
+
+    if (doc[1] === '0') {
+      title = null;
+    } else {
+      title = doc[1];
+    }
+
+    if (doc[2] === '0') {
+      age = null;
+    } else {
+      age = +doc[2];
+    }
+
+    if (doc[3] === '0') {
+      docGroupId = null;
+    } else {
+      docGroupId = +doc[3];
+    }
+
+    docObjects.push({
+      doctypeId: doctypeId,
+      title: title,
+      age: age,
+      docGroupId: docGroupId,
+    });
+  }
+
+  const repeatedGroupIds = docObjects.map((obj) => {
+    return obj.docGroupId;
+  });
+  const groupIds = [];
+  for (const id of repeatedGroupIds) {
+    if (!groupIds.includes(id)) {
+      groupIds.push(id);
+    }
+  }
+
+  for (let groupId of groupIds) {
+    const group = docObjects.filter((obj) => {
+      return obj.docGroupId === groupId;
+    });
+    const requestedDocs = [];
+    for (let doc of group) {
+      const requestedDoc = new RequestedDoc({
+        requestId: request._id,
+        title: doc.title,
+        age: doc.age,
+        doctypeId: doc.doctypeId,
+      });
+      requestedDocs.push(requestedDoc);
+    }
+
+    for (let requestedDoc of requestedDocs) {
+      let siblingDocIds;
+      if (groupId) {
+        siblingDocIds = requestedDocs
+          .filter((d) => {
+            return d !== requestedDoc;
+          })
+          .map((d) => {
+            return d._id;
+          });
+      } else {
+        siblingDocIds = [];
+      }
+      requestedDoc.alternativeRequestedDocIds = siblingDocIds;
+
+      try {
+        await requestedDoc.save();
+        request.requestedDocIds.push(requestedDoc._id);
+      } catch (err) {
+        if (err) {
+          err.message =
+            'Un problème est survenu lors de la sauvegarde des documents requis. Nous travaillons à le réparer.';
+          return next(err);
+        }
+      }
+    }
+  }
+
+  try {
+    await request.save();
+  } catch (err) {
+    if (err) {
+      err.message =
+        'Un problème est survenu lors de la sauvegarde de votre requête. Nous travaillons à le réparer.';
+      return next(err);
+    }
+  }
 };

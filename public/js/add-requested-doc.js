@@ -480,7 +480,20 @@ const submitBtn = document.getElementById('submitBtn');
 submitBtn.addEventListener('click', onSubmitForm);
 
 function onSubmitForm() {
-  createHiddenInputs();
+  const docs = [...document.getElementsByClassName('doc')];
+  if (docs && docs.length >= 0) {
+    const form = document.getElementById('addRequestedDocForm');
+    if (
+      confirm(
+        'Une fois la requête créée, vous ne pourrez plus la modifier. Êtes-vous sûr?'
+      )
+    ) {
+      createHiddenInputs();
+      form.submit();
+    }
+  } else {
+    alert("Merci d'ajouter au moins un document avant de valider la requête.");
+  }
 }
 
 function createHiddenInputs() {
@@ -513,7 +526,6 @@ function makeADocHiddenInput(doc) {
   input.setAttribute('type', 'hidden');
   input.setAttribute('name', 'requestedDocs');
   input.setAttribute('value', valueString);
-
 
   const form = document.getElementById('addRequestedDocForm');
   form.appendChild(input);
