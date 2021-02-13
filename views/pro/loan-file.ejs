@@ -1,19 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('../includes/head') %>
-  </head>
-  <body>
-    <%- include('../includes/navbar') %>
-    <main class="text-center">
-      <a class="btn btn-info" href="/add-request/<%= loanFile._id %>">Demander des documents</a>
-      <div class="h3">Dossier de prêt numéro <%= loanFile._id %></div>
-      <p>Utilisateur : <%= loanFile.userId.email %></p>
-      <form id="deletingForm" clientEmail="<%= loanFile.userId.email %>" action="/delete-loan-file/<%= loanFile._id %>" method="POST">
-        <button id="deletingButton" class="btn btn-danger" type="button">Supprimer</button>
-      </form>
-    </main>
-    <%- include('../includes/scripts') %>
-    <script src="/js/loan-file.js"></script>
-  </body>
+<head>
+  <%- include('../includes/head') %>
+</head>
+<body class="no-scroll">
+<%- include('../includes/navbar') %>
+<link rel="stylesheet" href="/css/loan-file.css">
+<main class="text-center">
+    <div class="d-flex justify-content-around full-height">
+        <div>
+          <form id="deletingForm" clientEmail="<%= loanFile.userId.email %>" action="/delete-loan-file/<%= loanFile._id %>" method="POST">
+              <button id="deletingButton" class="btn btn-danger" type="button">Supprimer le dossier de prêt</button>
+          </form>
+              <div class="h3">Dossier de prêt numéro <%= loanFile._id %></div>
+              <p>Utilisateur : <%= loanFile.userId.email %></p>
+        </div>
+        <div class="full-height">
+            <a class="btn btn-info" href="/add-request/<%= loanFile._id %>">Ajouter une requête de documents</a>
+            <div id="requestsContainer" class="scrollable">
+                <% for (let request of loanFile.requestIds) { %>
+                    <div class="request">
+                        <% for (let group of makeGroupsOfRequestedDocs(request.requestedDocIds)) { %>
+                          <div class="list-group group">
+                                <% if (group.length > 1) { %>
+                                    <div class="choice">Au choix : </div>
+                                <% } %>
+                                <% for (let doc of group) { %>
+                                    <div class="list-group-item">
+                                        <span><%= doc.doctypeId.title %></span>
+                                        <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
+                                        <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>    
+    </div>
+</main>
+<%- include('../includes/scripts') %>
+<script src="/js/loan-file.js"></script>
+</body>
 </html>

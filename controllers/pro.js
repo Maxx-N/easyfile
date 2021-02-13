@@ -6,6 +6,7 @@ const LoanFile = require('../models/loan-file');
 const Doctype = require('../models/doctype');
 const RequestedDoc = require('../models/requested-doc');
 const Request = require('../models/request');
+const helpers = require('../helpers');
 
 //
 
@@ -33,7 +34,12 @@ exports.getLoanFile = async (req, res, next) => {
   const loanFileId = req.params.loanFileId;
 
   try {
-    const loanFile = await LoanFile.findById(loanFileId).populate('userId');
+    const loanFile = await LoanFile.findById(loanFileId)
+      .populate('userId')
+      .populate({
+        path: 'requestIds',
+        populate: { path: 'requestedDocIds', populate: 'doctypeId' },
+      });
 
     if (!loanFile) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
@@ -45,6 +51,8 @@ exports.getLoanFile = async (req, res, next) => {
       pageTitle: 'Dossier de prêt',
       path: '/loan-files',
       loanFile: loanFile,
+      makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
+      displayRequestedDocAge: helpers.displayRequestedDocAge,
     });
   } catch (err) {
     next(err);
@@ -382,9 +390,5 @@ exports.postAddRequest = async (req, res, next) => {
     return next(err);
   }
 
-  res.redirect(`/requests/${request._id}`);
-};
-
-exports.getRequest = (req, res, next) => {
-  console.log(req.params.requestId);
+  res.redirect(`/loan-files/${loanFileId}`);
 };

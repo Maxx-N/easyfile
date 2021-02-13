@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const User = require('./models/user');
+const Doctype = require('./models/doctype');
 
 //
 
@@ -130,6 +131,60 @@ exports.sortDocuments = (documents) => {
   sortDocumentsByMonth(documents);
   sortDocumentsByYear(documents);
   sortDocumentsByDoctypeTitle(documents);
+};
+
+exports.displayRequestedDocAge = (populatedRequestedDoc) => {
+  const age = populatedRequestedDoc.age;
+
+  if (age) {
+    let displayedAge;
+
+    if (populatedRequestedDoc.doctypeId.periodicity === 'month') {
+      if (age === 1) {
+        displayedAge = 'Mois dernier';
+      } else {
+        displayedAge = `${age} derniers mois`;
+      }
+    } else if (populatedRequestedDoc.doctypeId.periodicity === 'year') {
+      if (age === 1) {
+        displayedAge = 'Année dernière';
+      } else {
+        displayedAge = `${age} dernières années`;
+      }
+    } else {
+      displayedAge = `Datant d'il y a moins de ${age} mois`;
+    }
+
+    return displayedAge;
+  }
+};
+
+exports.makeGroupsOfRequestedDocs = (requestedDocs) => {
+  const groups = [];
+  for (let doc of requestedDocs) {
+    const otherDocs = requestedDocs.filter((d) => {
+      return d !== doc;
+    });
+
+    const relatedDocs = otherDocs.filter((d) => {
+      return d.alternativeRequestedDocIds.includes(doc._id);
+    });
+
+    const relatedGroup = groups.find((group) => {
+      return group.some((d) => {
+        return relatedDocs.includes(d);
+      });
+    });
+
+    if (relatedGroup) {
+      relatedGroup.push(doc);
+    } else {
+      const newGroup = [doc];
+      groups.push(newGroup);
+    }
+  }
+
+  return groups;
 };
 
 // PRIVATE

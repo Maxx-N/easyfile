@@ -2,6 +2,15 @@
 
 main {
   padding: 2rem;
+  height: calc(100vh - 110px);
+}
+
+.navbar {
+  height: 90px;
+}
+
+.full-height {
+  height: 100%;
 }
 
 .btn {
@@ -55,6 +64,19 @@ a:hover {
 
 .no-scroll {
   overflow: hidden;
+}
+
+.scrollable {
+  overflow: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
 }
 
 /* trash icon */

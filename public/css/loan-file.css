@@ -1,0 +1,27 @@
+.request {
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem 0.5rem;
+  border: 2px solid var(--gray);
+}
+
+.choice {
+  background-color: var(--gray-dark);
+  color: white;
+  border-radius: 10px;
+}
+
+.group {
+  margin: 0.5rem 0;
+  border-radius: 10px;
+  border: 1px solid var(--gray);
+}
+
+.list-group-item {
+  border-radius: 10px;
+}
+
+#requestsContainer {
+  height: 90%;
+}
+
