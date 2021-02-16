@@ -52,10 +52,12 @@
 }
 
 #alternativeInstruction {
+  margin-top : 0.25rem;
   padding: 0.5rem;
   font-size: 0.8rem;
   color: var(--blue);
-  max-height: 20%;
+  max-height: calc(20% - 2rem);
+  font-weight: bold;
 }
 
 .border-info {
@@ -63,7 +65,7 @@
 }
 
 #tableContainer {
-  height: 80%;
+  height: calc(80% - 2rem);
   overflow-x: hidden;
   overflow-y: auto;
   width: auto;

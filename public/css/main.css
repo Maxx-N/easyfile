@@ -1,8 +1,7 @@
 @import '/css/fontawesome.min.css';
 
 main {
-  padding: 1rem;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 110px - 1rem);
 }
 
 .navbar {
@@ -15,7 +14,6 @@ main {
 
 .full-flex {
   flex-basis: 100%;
-  /* margin: 2rem; */
 }
 
 .half-flex {
