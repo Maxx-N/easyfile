@@ -20,6 +20,9 @@
             <div id="requestsContainer" class="scrollable">
                 <% for (let request of loanFile.requestIds) { %>
                     <div class="request">
+                        <form action="/delete-request/<%= request._id %>" method="POST">
+                            <button class="delete-cross" type="button"><i class="fa fa-times trash pointer"></i></button>
+                        </form>
                         <% for (let group of makeGroupsOfRequestedDocs(request.requestedDocIds)) { %>
                           <div class="list-group group">
                                 <% if (group.length > 1) { %>

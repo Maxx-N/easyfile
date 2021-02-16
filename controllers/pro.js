@@ -59,7 +59,7 @@ exports.getLoanFile = async (req, res, next) => {
   }
 };
 
-exports.deleteLoanFile = async (req, res, next) => {
+exports.postDeleteLoanFile = async (req, res, next) => {
   const pro = req.pro;
   const loanFileId = req.params.loanFileId;
   try {
@@ -397,11 +397,48 @@ exports.postAddRequest = async (req, res, next) => {
 
   try {
     await request.save();
+    res.redirect(`/loan-files/${loanFileId}`);
   } catch (err) {
-    err.message =
-      'Un problème est survenu lors de la sauvegarde de votre requête. Nous travaillons à le réparer.';
+    if (!err.message) {
+      err.message =
+        'Un problème est survenu lors de la sauvegarde de votre requête. Nous travaillons à le réparer.';
+    }
+    next(err);
+  }
+};
+
+exports.postDeleteRequest = async (req, res, next) => {
+  const requestId = req.params.requestId;
+
+  try {
+    const request = await Request.findById(requestId);
+    if (!request) {
+      const error = new Error('Requête non trouvée.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const loanFile = await LoanFile.findById(request.loanFileId);
+    if (!loanFile) {
+      const error = new Error('Dossier de prêt non trouvé.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    await RequestedDoc.deleteMany({ requestId: request._id });
+    await Request.deleteOne({ _id: requestId });
+
+    loanFile.requestIds = loanFile.requestIds.filter((id) => {
+      return id.toString() !== requestId.toString();
+    });
+    await loanFile.save();
+
+    res.redirect(`/loan-files/${loanFile._id}`);
+  } catch (err) {
+    if (!err.message) {
+      err.message =
+        'Un problème est survenu lors de la suppression de votre requête. Nous travaillons à le réparer.';
+    }
     return next(err);
   }
-
-  res.redirect(`/loan-files/${loanFileId}`);
 };

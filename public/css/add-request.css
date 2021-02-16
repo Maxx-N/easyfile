@@ -28,7 +28,6 @@
 .doc[selected='true'] {
   border: 4px solid var(--info);
   color: var(--info);
-  /* background-color: var(--info); */
 }
 
 .group-item {

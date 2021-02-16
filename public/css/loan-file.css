@@ -3,6 +3,24 @@
   border-radius: 10px;
   margin: 1rem 0.5rem;
   border: 2px solid var(--gray);
+  position: relative;
+  padding-top: 2rem;
+}
+
+.trash {
+  height: 1rem;
+}
+
+.delete-cross {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  border: none;
+  background-color: transparent;
+}
+
+.delete-cross:hover {
+  color: red;
 }
 
 .choice {
@@ -24,4 +42,3 @@
 #requestsContainer {
   height: 90%;
 }
-

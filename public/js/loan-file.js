@@ -12,3 +12,18 @@ button.addEventListener('click', () => {
     form.submit();
   }
 });
+
+const deleteRequestButtons = [
+  ...document.getElementsByClassName('delete-cross'),
+];
+
+for (let button of deleteRequestButtons) {
+  button.addEventListener('click', () => {
+    const form = button.parentElement;
+    if (
+      confirm(`Êtes-vous sûr(e) de vouloir supprimer la requête sélectionnée ?`)
+    ) {
+      form.submit();
+    }
+  });
+}
