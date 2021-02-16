@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const helpers = require('../helpers');
-const doctype = require('../models/doctype');
+const LoanFile = require('../models/loan-file');
 
 //
 
@@ -318,3 +318,53 @@ exports.postDeleteDocument = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getLoanFiles = async (req, res, next) => {
+  try {
+    const user = await req.user.populate('loanFileIds');
+    const loanFiles = [];
+
+    for (let loanFileId of user.loanFileIds) {
+      let file = await LoanFile.findById(loanFileId).populate('proId');
+      loanFiles.push(file);
+    }
+
+    res.render('user/loan-files', {
+      pageTitle: 'Dossiers de prêt',
+      path: '/loan-files',
+      loanFiles: loanFiles,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getLoanFile = async (req, res, next) => {
+  const loanFileId = req.params.loanFileId;
+
+  try {
+    const loanFile = await LoanFile.findById(loanFileId)
+      .populate('userId')
+      .populate({
+        path: 'requestIds',
+        populate: { path: 'requestedDocIds', populate: 'doctypeId' },
+      });
+
+    if (!loanFile) {
+      const error = new Error("Le dossier de prêt n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.render('user/loan-file', {
+      pageTitle: 'Dossier de prêt',
+      path: '/loan-files',
+      loanFile: loanFile,
+      makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
+      displayRequestedDocAge: helpers.displayRequestedDocAge,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+

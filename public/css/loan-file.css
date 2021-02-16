@@ -44,3 +44,12 @@
   height: 90%;
   width: 100%;
 }
+
+.userRequestedDoc {
+  position: relative;
+}
+
+.userRequestedDoc .fa-check {
+  position: absolute;
+  right: 1rem;
+}

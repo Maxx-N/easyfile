@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+  </head>
+  <body>
+    <%- include('../includes/navbar') %>
+    <main class="text-center">
+      <a class="btn btn-info" href="/enter-client-email">Nouveau</a>
+      <div class="h1">Mes dossiers de prêt</div>
+      <ul>
+        <% for (let file of loanFiles) { %>
+          <li class="list-inline"><a href="/loan-files/<%= file._id %>"><%= file.proId.email %></a></li>
+        <% } %>
+      </ul>
+    </main>
+    <%- include('../includes/scripts') %>
+  </body>
+</html>

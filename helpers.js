@@ -187,6 +187,33 @@ exports.makeGroupsOfRequestedDocs = (requestedDocs) => {
   return groups;
 };
 
+exports.hasUserTheRightDocument = (
+  userDocuments,
+  allDoctypes,
+  requestedDoc
+) => {
+  const requestedDoctype = allDoctypes.find((dt) => {
+    return dt._id.toString() === requestedDoc.doctypeId.toString();
+  });
+
+  let answer;
+
+  if (requestedDoc.age) {
+    switch (requestedDoctype.periodicity) {
+      case 'month':
+        // answer = userDocuments.any(doc => {
+        //   doc
+        // })
+        break;
+      case 'year':
+        break;
+      default:
+    }
+  }
+
+  return answer;
+};
+
 // PRIVATE
 
 function sortDocumentsByDoctypeTitle(documents) {
@@ -218,3 +245,7 @@ function sortDocumentsByTitle(documents) {
     return doc1.title < doc2.title ? -1 : +1;
   });
 }
+
+// function getMonthAge() {
+//   const currentMonth = new Date().getMonth();
+// }
