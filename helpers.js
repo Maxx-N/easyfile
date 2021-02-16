@@ -201,11 +201,31 @@ exports.hasUserTheRightDocument = (
   if (requestedDoc.age) {
     switch (requestedDoctype.periodicity) {
       case 'month':
-        // answer = userDocuments.any(doc => {
-        //   doc
-        // })
+        answer = true;
+        for (let i = requestedDoc.age; i > 0; i--) {
+          if (
+            !userDocuments.any((doc) => {
+              return getMonthlyDocAge(doc) === i;
+            })
+          ) {
+            answer = false;
+            break;
+          }
+        }
         break;
       case 'year':
+        answer = true;
+        const currentYear = new Date.getFullYear();
+        for (let i = requestedDoc.age; i > 0; i--) {
+          if (
+            !userDocuments.any((doc) => {
+              return currentYear - doc.year === i;
+            })
+          ) {
+            answer = false;
+            break;
+          }
+        }
         break;
       default:
     }
@@ -246,6 +266,17 @@ function sortDocumentsByTitle(documents) {
   });
 }
 
-// function getMonthAge() {
-//   const currentMonth = new Date().getMonth();
-// }
+function getMonthlyDocAge(doc) {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+
+  if (doc.year === currentYear) {
+    return currentMonth - doc.month;
+  }
+
+  const previousYears = currentYear - doc.year;
+  const addedMonths = 12 - doc.month;
+  const separatingYears = previousYears - 1;
+
+  return currentMonth + addedMonths + separatingYears * 12;
+}
