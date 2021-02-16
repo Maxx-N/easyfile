@@ -92,7 +92,7 @@ exports.deleteLoanFile = async (req, res, next) => {
     for (let requestId of loanFile.requestIds) {
       const request = await Request.findById(requestId);
       for (let requestedDocId of request.requestedDocIds) {
-        RequestedDoc.deleteOne({ _id: requestedDocId });
+        await RequestedDoc.deleteOne({ _id: requestedDocId });
       }
       await request.deleteOne({ _id: requestId });
     }
