@@ -79,8 +79,6 @@ exports.deleteLoanFile = async (req, res, next) => {
       throw error;
     }
 
-    await LoanFile.deleteOne({ _id: loanFile._id });
-
     user.loanFileIds = user.loanFileIds.filter((fileId) => {
       return fileId.toString() !== loanFile._id.toString();
     });
@@ -90,6 +88,16 @@ exports.deleteLoanFile = async (req, res, next) => {
       return fileId.toString() !== loanFile._id.toString();
     });
     await pro.save();
+
+    for (let requestId of loanFile.requestIds) {
+      const request = await Request.findById(requestId);
+      for (let requestedDocId of request.requestedDocIds) {
+        RequestedDoc.deleteOne({ _id: requestedDocId });
+      }
+      await request.deleteOne({ _id: requestId });
+    }
+
+    await LoanFile.deleteOne({ _id: loanFile._id });
 
     res.redirect('/loan-files');
   } catch (err) {
@@ -294,8 +302,13 @@ exports.postAddRequest = async (req, res, next) => {
 
   const docInputs = req.body.requestedDocs;
   const docArrays = [];
-  for (let doc of docInputs) {
-    docArrays.push(doc.split('///'));
+
+  if (typeof docInputs === 'string') {
+    docArrays.push(docInputs.split('///'));
+  } else {
+    for (let doc of docInputs) {
+      docArrays.push(doc.split('///'));
+    }
   }
 
   let docObjects = [];

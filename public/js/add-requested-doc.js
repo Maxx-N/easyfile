@@ -485,7 +485,7 @@ function onSubmitForm() {
     const form = document.getElementById('addRequestedDocForm');
     if (
       confirm(
-        'Une fois la requête créée, vous ne pourrez plus la modifier. Êtes-vous sûr?'
+        'Une fois la requête créée, vous ne pourrez plus la modifier. Êtes-vous sûr(e) ?'
       )
     ) {
       createHiddenInputs();
