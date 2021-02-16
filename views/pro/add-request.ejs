@@ -8,34 +8,33 @@
 <body class="no-scroll">
 <%- include('../includes/navbar') %>
 <main class="text-center">
-    <div class="d-flex justify-content-around">   
-      
-      <div id="firstColumn" class="text-center center-half full-flex">
-          <div id="infoList" class="list-group"></div>
-          <div id="selectors" class="form-group">
-              <select
-                class="form-control text-center pointer"
-                id="doctypeSelector"
-              >
-                  <option value="" disabled selected>
-                    Sélectionner un type de document ...
-                  </option>
-                  <% for (let doctype of doctypes) { %>
-                      <option
-                        value="<%= doctype._id %>"
-                        isUnique="<%= doctype.isUnique %>"
-                        periodicity="<%= doctype.periodicity %>"
-                        hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
-                        hasExpirationDate="<%= doctype.hasExpirationDate %>"
-                      >
-                        <%= doctype.title %>
-                      </option>
-                  <% } %>
-              </select>
-          </div>
-      </div>
+    <div class="d-flex justify-content-around full-height">        
+        <div id="firstColumn" class="text-center center-half full-flex">
+            <div id="infoList" class="list-group"></div>
+            <div id="selectors" class="form-group">
+                <select
+                  class="form-control text-center pointer"
+                  id="doctypeSelector"
+                >
+                    <option value="" disabled selected>
+                      Sélectionner un type de document ...
+                    </option>
+                    <% for (let doctype of doctypes) { %>
+                        <option
+                          value="<%= doctype._id %>"
+                          isUnique="<%= doctype.isUnique %>"
+                          periodicity="<%= doctype.periodicity %>"
+                          hasIssuanceDate="<%= doctype.hasIssuanceDate %>"
+                          hasExpirationDate="<%= doctype.hasExpirationDate %>"
+                        >
+                          <%= doctype.title %>
+                        </option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
 
-        <div id="secondColumn" class="full-flex invisible">   
+        <div id="secondColumn" class="full-flex full-height invisible">   
             <form         
             method="POST"
             action="/add-request"
@@ -46,22 +45,22 @@
                   Valider la requête
                 </button>
             </form>
-          <div id="tableContainer">
-          <table class="table table-hover" 
-          >
-              <thead>
-                  <tr class="table-primary">
-                      <th>Type</th>
-                      <th>Ancienneté</th>
-                      <th></th>
-                  </tr>
-              </thead>
-              <tbody id="docTable">
-              </tbody>
-          </table>
+            <div id="tableContainer">
+                <table class="table table-hover" 
+                >
+                    <thead>
+                        <tr class="table-primary">
+                            <th>Type</th>
+                            <th>Ancienneté</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="docTable">
+                    </tbody>
+                </table>
+            </div>
+            <div id="alternativeInstruction"></div>
         </div>
-        <div id="alternativeInstruction"></div>
-    </div>
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>

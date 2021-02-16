@@ -1,7 +1,7 @@
 @import '/css/fontawesome.min.css';
 
 main {
-  padding: 2rem;
+  padding: 1rem;
   height: calc(100vh - 110px);
 }
 
@@ -11,6 +11,15 @@ main {
 
 .full-height {
   height: 100%;
+}
+
+.full-flex {
+  flex-basis: 100%;
+  /* margin: 2rem; */
+}
+
+.half-flex {
+  flex-basis: 50%;
 }
 
 .btn {

@@ -5,11 +5,6 @@
   margin: 1rem 0;
 }
 
-.full-flex {
-  flex-basis: 100%;
-  margin: 2rem;
-}
-
 .hidden {
   display: none;
 }
@@ -57,14 +52,18 @@
 }
 
 #alternativeInstruction {
-  margin: 0.5rem;
   padding: 0.5rem;
   font-size: 0.8rem;
   color: var(--blue);
+  max-height: 20%;
+}
+
+.border-info {
+  border: 1px solid var(--info);
 }
 
 #tableContainer {
-  height: 50vh;
+  height: 80%;
   overflow-x: hidden;
   overflow-y: auto;
   width: auto;

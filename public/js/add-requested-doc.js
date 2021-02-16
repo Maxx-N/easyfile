@@ -3,7 +3,7 @@ const secondColumn = document.getElementById('secondColumn');
 const selectors = document.getElementById('selectors');
 const doctypeSelector = document.getElementById('doctypeSelector');
 const defaultInstruction =
-  'Cliquez sur un élément pour l\'ajouter à un groupe de documents alternatifs (exemple : "Carte d\'identité" OU "Passeport"... ).';
+  'Cliquez sur un élément pour l\'ajouter à un groupe de documents à fournir AU CHOIX (exemple : "Carte d\'identité" OU "Passeport"... ).';
 
 let docGroupId = 1;
 
@@ -347,6 +347,7 @@ function giveAlternativeInstruction(doc) {
   );
 
   if (docs.length >= 2) {
+    alternativeInstruction.classList.add('border-info');
     const selectedDoc = docs.find((doc) => {
       return doc.getAttribute('selected') === 'true';
     });
@@ -361,6 +362,7 @@ function giveAlternativeInstruction(doc) {
     }
   } else {
     alternativeInstruction.textContent = '';
+    alternativeInstruction.classList.remove('border-info');
   }
 }
 
