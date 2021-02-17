@@ -49,7 +49,11 @@
   position: relative;
 }
 
-.user-requested-doc .fa-check {
+.user-requested-doc .check-container {
   position: absolute;
   right: 1rem;
+}
+
+.check-container.check-success {
+  color: var(--success);
 }

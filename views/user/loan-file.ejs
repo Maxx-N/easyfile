@@ -27,7 +27,9 @@
                                         <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
                                         <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
                                         <% if (hasUserTheRightDocument(userDocuments, allDoctypes, doc)) { %>
-                                              <i class="fas fa-check pointer"></i>
+                                            <span class="check-container pointer">
+                                                <i class="fas fa-check "></i>
+                                            </span>
                                         <% } %>
                                     </div>
                                 <% } %>
@@ -40,5 +42,6 @@
     </div>
 </main>
 <%- include('../includes/scripts') %>
+<script src="/js/user-checklist.js"></script>
 </body>
 </html>
