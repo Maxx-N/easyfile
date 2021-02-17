@@ -45,11 +45,11 @@
   width: 100%;
 }
 
-.userRequestedDoc {
+.user-requested-doc {
   position: relative;
 }
 
-.userRequestedDoc .fa-check {
+.user-requested-doc .fa-check {
   position: absolute;
   right: 1rem;
 }

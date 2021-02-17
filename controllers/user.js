@@ -343,13 +343,15 @@ exports.getLoanFile = async (req, res, next) => {
   const loanFileId = req.params.loanFileId;
 
   try {
+    const userDocuments = await Document.find({ userId: req.user._id });
+    const allDoctypes = await Doctype.find();
+
     const loanFile = await LoanFile.findById(loanFileId)
       .populate('userId')
       .populate({
         path: 'requestIds',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
       });
-
     if (!loanFile) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
       error.statusCode = 404;
@@ -362,9 +364,11 @@ exports.getLoanFile = async (req, res, next) => {
       loanFile: loanFile,
       makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
       displayRequestedDocAge: helpers.displayRequestedDocAge,
+      hasUserTheRightDocument: helpers.hasUserTheRightDocument,
+      userDocuments: userDocuments,
+      allDoctypes: allDoctypes,
     });
   } catch (err) {
     next(err);
   }
 };
-

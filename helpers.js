@@ -190,22 +190,25 @@ exports.makeGroupsOfRequestedDocs = (requestedDocs) => {
 exports.hasUserTheRightDocument = (
   userDocuments,
   allDoctypes,
-  requestedDoc
+  populatedRequestedDoc
 ) => {
   const requestedDoctype = allDoctypes.find((dt) => {
-    return dt._id.toString() === requestedDoc.doctypeId.toString();
+    return dt._id.toString() === populatedRequestedDoc.doctypeId._id.toString();
   });
 
   let answer;
 
-  if (requestedDoc.age) {
+  if (populatedRequestedDoc.age) {
     switch (requestedDoctype.periodicity) {
       case 'month':
         answer = true;
-        for (let i = requestedDoc.age; i > 0; i--) {
+        for (let i = populatedRequestedDoc.age; i > 0; i--) {
           if (
-            !userDocuments.any((doc) => {
-              return getMonthlyDocAge(doc) === i;
+            !userDocuments.some((doc) => {
+              return (
+                doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+                getMonthsBack(doc.month, doc.year) === i
+              );
             })
           ) {
             answer = false;
@@ -215,11 +218,14 @@ exports.hasUserTheRightDocument = (
         break;
       case 'year':
         answer = true;
-        const currentYear = new Date.getFullYear();
-        for (let i = requestedDoc.age; i > 0; i--) {
+        const currentYear = new Date().getFullYear();
+        for (let i = populatedRequestedDoc.age; i > 0; i--) {
           if (
-            !userDocuments.any((doc) => {
-              return currentYear - doc.year === i;
+            !userDocuments.some((doc) => {
+              return (
+                doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+                currentYear - doc.year === i
+              );
             })
           ) {
             answer = false;
@@ -228,6 +234,27 @@ exports.hasUserTheRightDocument = (
         }
         break;
       default:
+        if (
+          userDocuments.some((doc) => {
+            return (
+              doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+              calculateAgeInMonths(doc.issuanceDate) < populatedRequestedDoc.age
+            );
+          })
+        ) {
+          answer = true;
+        }
+    }
+  } else {
+    if (
+      userDocuments.some((doc) => {
+        return (
+          doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+          (doc.expirationDate ? !this.isPast(doc.expirationDate) : true)
+        );
+      })
+    ) {
+      answer = true;
     }
   }
 
@@ -266,17 +293,29 @@ function sortDocumentsByTitle(documents) {
   });
 }
 
-function getMonthlyDocAge(doc) {
+function getMonthsBack(month, year) {
   const currentMonth = new Date().getMonth() + 1;
   const currentYear = new Date().getFullYear();
 
-  if (doc.year === currentYear) {
-    return currentMonth - doc.month;
+  if (year === currentYear) {
+    return currentMonth - month;
   }
 
-  const previousYears = currentYear - doc.year;
-  const addedMonths = 12 - doc.month;
+  const previousYears = currentYear - year;
+  const addedMonths = 12 - month;
   const separatingYears = previousYears - 1;
 
   return currentMonth + addedMonths + separatingYears * 12;
+}
+
+function calculateAgeInMonths(date) {
+  const monthsBack = getMonthsBack(date.getMonth() + 1, date.getFullYear());
+  const currentDay = new Date().getDate();
+  const day = date.getDate();
+
+  if (day > currentDay) {
+    return monthsBack - 1;
+  }
+
+  return monthsBack;
 }

@@ -22,11 +22,13 @@
                                     <div class="choice">Au choix : </div>
                                 <% } %>
                                 <% for (let doc of group) { %>
-                                    <div class="list-group-item userRequestedDoc">
+                                    <div class="list-group-item user-requested-doc">
                                         <span><%= doc.doctypeId.title %></span>
                                         <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
                                         <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
-                                        <i class="fas fa-check pointer"></i>
+                                        <% if (hasUserTheRightDocument(userDocuments, allDoctypes, doc)) { %>
+                                              <i class="fas fa-check pointer"></i>
+                                        <% } %>
                                     </div>
                                 <% } %>
                             </div>
@@ -38,6 +40,5 @@
     </div>
 </main>
 <%- include('../includes/scripts') %>
-<script src="/js/loan-file.js"></script>
 </body>
 </html>
