@@ -22,7 +22,10 @@
                                     <div class="choice">Au choix : </div>
                                 <% } %>
                                 <% for (let doc of group) { %>
-                                    <div class="list-group-item user-requested-doc">
+                                    <div 
+                                    class="list-group-item user-requested-doc"
+                                    requestedDoc="<%= JSON.stringify(doc) %>"
+                                    >
                                         <span><%= doc.doctypeId.title %></span>
                                         <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
                                         <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
