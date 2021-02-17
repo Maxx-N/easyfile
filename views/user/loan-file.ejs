@@ -25,6 +25,7 @@
                                     <div 
                                     class="list-group-item user-requested-doc"
                                     requestedDoc="<%= JSON.stringify(doc) %>"
+                                    isSelected="false"
                                     >
                                         <span><%= doc.doctypeId.title %></span>
                                         <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
@@ -44,6 +45,7 @@
         </div>    
     </div>
 </main>
+<div id="userDocuments" class="hidden" userDocuments="<%= JSON.stringify(userDocuments) %>"></div>
 <%- include('../includes/scripts') %>
 <script src="/js/user-checklist.js"></script>
 </body>

@@ -1,3 +1,7 @@
+const userDocuments = JSON.parse(
+  document.getElementById('userDocuments').getAttribute('userDocuments')
+);
+
 const checkContainers = [...document.getElementsByClassName('check-container')];
 
 for (let checkContainer of checkContainers) {
@@ -10,17 +14,21 @@ function onCheckClick() {
     requestedDocElement.getAttribute('requestedDoc')
   );
   const doctype = requestedDoc.doctypeId;
+  const isSelected = requestedDocElement.getAttribute('isSelected') === 'true';
 
-  if (doctype.isUnique) {
-    // ou un seul doc de ce type possédé ?
-    this.classList.toggle('check-success');
+  if (isSelected) {
+    unselect(requestedDocElement);
   } else {
-    if (doctype.periodicity !== 'none') {
-      for (let i = 0; i < requestedDoc.age; i++) {
+    requestedDocElement.setAttribute('isSelected', 'true');
+    this.classList.add('check-success');
+    if (!doctype.isUnique) {
+      if (doctype.periodicity !== 'none') {
+        for (let i = 0; i < requestedDoc.age; i++) {
+          createADocSelector(requestedDocElement);
+        }
+      } else {
         createADocSelector(requestedDocElement);
       }
-    } else {
-        createADocSelector(requestedDocElement);
     }
   }
 }
@@ -34,4 +42,21 @@ function createADocSelector(requestedDocElement) {
   select.appendChild(option1);
   select.appendChild(option2);
   requestedDocElement.appendChild(select);
+}
+
+function unselect(requestedDocElement) {
+  const requestedDoc = JSON.parse(
+    requestedDocElement.getAttribute('requestedDoc')
+  );
+
+  const checkContainer = requestedDocElement.querySelector('.check-container');
+  const selectors = [...requestedDocElement.querySelectorAll('select')];
+
+  requestedDocElement.setAttribute('isSelected', 'false');
+
+  for (let selector of selectors) {
+    selector.remove();
+  }
+
+  checkContainer.classList.remove('check-success');
 }
