@@ -13,7 +13,7 @@ function onCheckClick() {
   const requestedDoc = JSON.parse(
     requestedDocElement.getAttribute('requestedDoc')
   );
-  const doctype = requestedDoc.doctypeId;
+  const requestedDoctype = requestedDoc.doctypeId;
   const isSelected = requestedDocElement.getAttribute('isSelected') === 'true';
 
   if (isSelected) {
@@ -21,8 +21,8 @@ function onCheckClick() {
   } else {
     requestedDocElement.setAttribute('isSelected', 'true');
     this.classList.add('check-success');
-    if (!doctype.isUnique) {
-      if (doctype.periodicity !== 'none') {
+    if (!requestedDoctype.isUnique) {
+      if (requestedDoctype.periodicity !== 'none') {
         for (let i = 0; i < requestedDoc.age; i++) {
           createADocSelector(requestedDocElement);
         }
@@ -35,20 +35,34 @@ function onCheckClick() {
 
 function createADocSelector(requestedDocElement) {
   const select = document.createElement('select');
-  const option1 = document.createElement('option');
-  option1.textContent = 'Option 1';
-  const option2 = document.createElement('option');
-  option2.textContent = 'Option 2';
-  select.appendChild(option1);
-  select.appendChild(option2);
-  requestedDocElement.appendChild(select);
-}
 
-function unselect(requestedDocElement) {
   const requestedDoc = JSON.parse(
     requestedDocElement.getAttribute('requestedDoc')
   );
+  const requestedDoctype = requestedDoc.doctypeId;
 
+  const matchingDocs = userDocuments.filter((doc) => {
+    return doc.doctypeId.toString() === requestedDoctype._id.toString();
+  });
+
+  for (let matchingDoc of matchingDocs) {
+    const option = document.createElement('option');
+    option.textContent = matchingDoc.title;
+    select.appendChild(option);
+  }
+
+  requestedDocElement.appendChild(select);
+
+  //   const option1 = document.createElement('option');
+  //   option1.textContent = 'Option 1';
+  //   const option2 = document.createElement('option');
+  //   option2.textContent = 'Option 2';
+  //   select.appendChild(option1);
+  //   select.appendChild(option2);
+  //   requestedDocElement.appendChild(select);
+}
+
+function unselect(requestedDocElement) {
   const checkContainer = requestedDocElement.querySelector('.check-container');
   const selectors = [...requestedDocElement.querySelectorAll('select')];
 
