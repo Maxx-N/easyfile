@@ -11,9 +11,9 @@ const helpers = require('../helpers');
 
 const router = express.Router();
 
-router.get('', (req, res, next) => {
-  res.redirect('/auth/login');
-});
+// router.get('', (req, res, next) => {
+//   res.redirect('/login');
+// });
 
 router.get('/signup', authController.getSignup);
 

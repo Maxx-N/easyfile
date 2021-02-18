@@ -2,6 +2,7 @@
 
 main {
   height: calc(100vh - 110px - 1rem);
+  padding: 1rem;
 }
 
 .navbar {

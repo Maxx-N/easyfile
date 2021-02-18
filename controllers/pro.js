@@ -99,7 +99,7 @@ exports.postDeleteLoanFile = async (req, res, next) => {
 
     await LoanFile.deleteOne({ _id: loanFile._id });
 
-    res.redirect('/loan-files');
+    res.redirect('/pro/loan-files');
   } catch (err) {
     next(err);
   }
@@ -140,10 +140,10 @@ exports.postEnterClientEmail = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (user) {
-      return res.redirect(`/add-loan-file/${user._id}`);
+      return res.redirect(`/pro/add-loan-file/${user._id}`);
     }
 
-    return res.redirect(`/add-client/${email}`);
+    return res.redirect(`/pro/add-client/${email}`);
   } catch (err) {
     next(err);
   }
@@ -201,7 +201,7 @@ exports.postAddClient = async (req, res, next) => {
       }
     });
 
-    res.redirect(`/add-loan-file/${user._id}`);
+    res.redirect(`/pro/add-loan-file/${user._id}`);
   } catch (err) {
     next(err);
   }
@@ -258,7 +258,7 @@ exports.postAddLoanFile = async (req, res, next) => {
 
     await loanFile.populate('userId').execPopulate();
 
-    res.redirect(`/add-request/${loanFile._id}`);
+    res.redirect(`/pro/add-request/${loanFile._id}`);
   } catch (err) {
     next(err);
   }
@@ -397,7 +397,7 @@ exports.postAddRequest = async (req, res, next) => {
 
   try {
     await request.save();
-    res.redirect(`/loan-files/${loanFileId}`);
+    res.redirect(`/pro/loan-files/${loanFileId}`);
   } catch (err) {
     if (!err.message) {
       err.message =
@@ -433,7 +433,7 @@ exports.postDeleteRequest = async (req, res, next) => {
     });
     await loanFile.save();
 
-    res.redirect(`/loan-files/${loanFile._id}`);
+    res.redirect(`/pro/loan-files/${loanFile._id}`);
   } catch (err) {
     if (!err.message) {
       err.message =

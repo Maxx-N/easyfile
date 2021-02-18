@@ -68,7 +68,7 @@ exports.postSignup = async (req, res, next) => {
       const pro = new Pro({ email: email, password: hashedPassword });
       await pro.save();
       req.session.pro = pro;
-      res.redirect('/loan-files');
+      res.redirect('/pro/loan-files');
     }
   } catch (err) {
     return next(err);
@@ -327,7 +327,6 @@ exports.postEditPassword = async (req, res, next) => {
       }
     });
     res.redirect('/documents');
-    
   } catch (err) {
     return next(err);
   }

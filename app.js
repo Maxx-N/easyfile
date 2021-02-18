@@ -105,14 +105,15 @@ app.use(async (req, res, next) => {
 
 app.use('/admin', isAdmin, adminRoutes);
 app.use(authRoutes);
+
 app.use(userRoutes);
-app.use(proRoutes);
+app.use('/pro', proRoutes);
 
 app.use('/', (req, res, next) => {
   if (!!req.session.user) {
     return res.redirect('/documents');
   } else if (!!req.session.pro) {
-    return res.redirect('/loan-files');
+    return res.redirect('/pro/loan-files');
   }
   res.redirect('/login');
 });
