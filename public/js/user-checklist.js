@@ -10,10 +10,6 @@ for (let checkContainer of checkContainers) {
 
 function onCheckClick() {
   const requestedDocElement = this.parentElement;
-  const requestedDoc = JSON.parse(
-    requestedDocElement.getAttribute('requestedDoc')
-  );
-  const requestedDoctype = requestedDoc.doctypeId;
   const isSelected = requestedDocElement.getAttribute('isSelected') === 'true';
 
   if (isSelected) {
@@ -21,26 +17,38 @@ function onCheckClick() {
   } else {
     requestedDocElement.setAttribute('isSelected', 'true');
     this.classList.add('check-success');
-    if (!requestedDoctype.isUnique) {
-      if (requestedDoctype.periodicity !== 'none') {
-        for (let i = 0; i < requestedDoc.age; i++) {
-          createADocSelector(requestedDocElement);
-        }
-      } else {
-        createADocSelector(requestedDocElement);
-      }
-    }
+    createDivOfSelectors(requestedDocElement);
   }
 }
 
-function createADocSelector(requestedDocElement) {
-  const select = document.createElement('select');
-
+function createDivOfSelectors(requestedDocElement) {
   const requestedDoc = JSON.parse(
     requestedDocElement.getAttribute('requestedDoc')
   );
   const requestedDoctype = requestedDoc.doctypeId;
 
+  const selectorsContainer = document.createElement('div');
+  selectorsContainer.classList.add('doc-selectors-container');
+  requestedDocElement.appendChild(selectorsContainer);
+
+  if (!requestedDoctype.isUnique) {
+    if (requestedDoctype.periodicity !== 'none') {
+      for (let i = 0; i < requestedDoc.age; i++) {
+        createADocSelector(selectorsContainer);
+      }
+    } else {
+      createADocSelector(selectorsContainer);
+    }
+  }
+}
+
+function createADocSelector(selectorsContainer) {
+  const requestedDocElement = selectorsContainer.parentElement;
+  const select = document.createElement('select');
+  const requestedDoc = JSON.parse(
+    requestedDocElement.getAttribute('requestedDoc')
+  );
+  const requestedDoctype = requestedDoc.doctypeId;
   const matchingDocs = userDocuments.filter((doc) => {
     return doc.doctypeId.toString() === requestedDoctype._id.toString();
   });
@@ -51,20 +59,14 @@ function createADocSelector(requestedDocElement) {
     select.appendChild(option);
   }
 
-  requestedDocElement.appendChild(select);
-
-  //   const option1 = document.createElement('option');
-  //   option1.textContent = 'Option 1';
-  //   const option2 = document.createElement('option');
-  //   option2.textContent = 'Option 2';
-  //   select.appendChild(option1);
-  //   select.appendChild(option2);
-  //   requestedDocElement.appendChild(select);
+  selectorsContainer.appendChild(select);
 }
 
 function unselect(requestedDocElement) {
   const checkContainer = requestedDocElement.querySelector('.check-container');
-  const selectors = [...requestedDocElement.querySelectorAll('select')];
+  const selectors = [
+    ...requestedDocElement.querySelectorAll('.doc-selectors-container'),
+  ];
 
   requestedDocElement.setAttribute('isSelected', 'false');
 
