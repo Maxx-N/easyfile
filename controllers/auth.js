@@ -57,6 +57,7 @@ exports.postSignup = async (req, res, next) => {
       });
       await user.save();
       req.session.user = user;
+      req.session.pro = null;
       return req.session.save((err) => {
         if (err) {
           throw err;
@@ -68,7 +69,13 @@ exports.postSignup = async (req, res, next) => {
       const pro = new Pro({ email: email, password: hashedPassword });
       await pro.save();
       req.session.pro = pro;
-      res.redirect('/pro/loan-files');
+      req.session.user = null;
+      return req.session.save((err) => {
+        if (err) {
+          throw err;
+        }
+        res.redirect('/pro/loan-files');
+      });
     }
   } catch (err) {
     return next(err);
@@ -151,9 +158,11 @@ exports.postLogin = async (req, res, next) => {
     }
     if (isClient) {
       req.session.user = user;
+      req.session.pro = null;
       await req.session.save();
     } else {
       req.session.pro = pro;
+      req.session.user = null;
       await req.session.save();
     }
     return res.redirect('/');
@@ -331,3 +340,5 @@ exports.postEditPassword = async (req, res, next) => {
     return next(err);
   }
 };
+
+
