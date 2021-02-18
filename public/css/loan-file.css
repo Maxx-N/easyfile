@@ -67,4 +67,5 @@
 .doc-selectors-container select {
   border-radius: 10px;
   margin-top: 0.5rem;
+  padding: 0.25rem;
 }

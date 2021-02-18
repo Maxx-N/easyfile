@@ -2,6 +2,10 @@ const userDocuments = JSON.parse(
   document.getElementById('userDocuments').getAttribute('userDocuments')
 );
 
+const allDoctypes = JSON.parse(
+  document.getElementById('allDoctypes').getAttribute('allDoctypes')
+);
+
 const checkContainers = [...document.getElementsByClassName('check-container')];
 
 for (let checkContainer of checkContainers) {
@@ -48,10 +52,12 @@ function createADocSelector(selectorsContainer) {
   const requestedDoc = JSON.parse(
     requestedDocElement.getAttribute('requestedDoc')
   );
-  const requestedDoctype = requestedDoc.doctypeId;
-  const matchingDocs = userDocuments.filter((doc) => {
-    return doc.doctypeId.toString() === requestedDoctype._id.toString();
-  });
+  // const requestedDoctype = requestedDoc.doctypeId;
+
+  // const matchingDocs = userDocuments.filter((doc) => {
+  //   return doc.doctypeId.toString() === requestedDoctype._id.toString();
+  // });
+  const matchingDocs = findMatchingDocs(requestedDoc);
 
   for (let matchingDoc of matchingDocs) {
     const option = document.createElement('option');
@@ -75,4 +81,85 @@ function unselect(requestedDocElement) {
   }
 
   checkContainer.classList.remove('check-success');
+}
+
+// HELPERS
+
+function findMatchingDocs(requestedDoc) {
+  let matchingDocs;
+  const requestedDoctype = requestedDoc.doctypeId;
+
+  if (requestedDoc.age) {
+    if (requestedDoctype.periodicity === 'none') {
+      matchingDocs = userDocuments.filter((doc) => {
+        return (
+          doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+          getAgeOfADocument(doc) < requestedDoc.age
+        );
+      });
+    } else {
+      matchingDocs = userDocuments.filter((doc) => {
+        return (
+          doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+          getAgeOfADocument(doc) > 0 &&
+          getAgeOfADocument(doc) <= requestedDoc.age
+        );
+      });
+    }
+  } else {
+    matchingDocs = userDocuments.filter((doc) => {
+      return doc.doctypeId.toString() === requestedDoctype._id.toString();
+    });
+  }
+
+  return matchingDocs;
+}
+
+function getAgeOfADocument(doc) {
+  const doctype = allDoctypes.find((dt) => {
+    return dt._id.toString() === doc.doctypeId.toString();
+  });
+  let age;
+
+  switch (doctype.periodicity) {
+    case 'month':
+      age = getMonthsBack(doc.month, doc.year);
+      break;
+    case 'year':
+      const currentYear = new Date().getFullYear();
+      age = currentYear - doc.year;
+      break;
+    default:
+      age = calculateAgeInMonths(doc.issuanceDate);
+  }
+
+  return age;
+}
+
+function getMonthsBack(month, year) {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+
+  if (year === currentYear) {
+    return currentMonth - month;
+  }
+
+  const previousYears = currentYear - year;
+  const addedMonths = 12 - month;
+  const separatingYears = previousYears - 1;
+
+  return currentMonth + addedMonths + separatingYears * 12;
+}
+
+function calculateAgeInMonths(stringDate) {
+  const date = new Date(stringDate);
+  const monthsBack = getMonthsBack(date.getMonth() + 1, date.getFullYear());
+  const currentDay = new Date().getDate();
+  const day = date.getDate();
+
+  if (day > currentDay) {
+    return monthsBack - 1;
+  }
+
+  return monthsBack;
 }
