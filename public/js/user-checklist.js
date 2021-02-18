@@ -37,27 +37,22 @@ function createDivOfSelectors(requestedDocElement) {
 
   if (!requestedDoctype.isUnique) {
     if (requestedDoctype.periodicity !== 'none') {
-      for (let i = 0; i < requestedDoc.age; i++) {
-        createADocSelector(selectorsContainer);
+      for (let i = 1; i <= requestedDoc.age; i++) {
+        createADocSelector(selectorsContainer, i);
       }
     } else {
-      createADocSelector(selectorsContainer);
+      createADocSelector(selectorsContainer, requestedDoc.age);
     }
   }
 }
 
-function createADocSelector(selectorsContainer) {
+function createADocSelector(selectorsContainer, age) {
   const requestedDocElement = selectorsContainer.parentElement;
   const select = document.createElement('select');
   const requestedDoc = JSON.parse(
     requestedDocElement.getAttribute('requestedDoc')
   );
-  // const requestedDoctype = requestedDoc.doctypeId;
-
-  // const matchingDocs = userDocuments.filter((doc) => {
-  //   return doc.doctypeId.toString() === requestedDoctype._id.toString();
-  // });
-  const matchingDocs = findMatchingDocs(requestedDoc);
+  const matchingDocs = findMatchingDocs(requestedDoc, age);
 
   for (let matchingDoc of matchingDocs) {
     const option = document.createElement('option');
@@ -85,16 +80,16 @@ function unselect(requestedDocElement) {
 
 // HELPERS
 
-function findMatchingDocs(requestedDoc) {
+function findMatchingDocs(requestedDoc, age) {
   let matchingDocs;
   const requestedDoctype = requestedDoc.doctypeId;
 
-  if (requestedDoc.age) {
+  if (age) {
     if (requestedDoctype.periodicity === 'none') {
       matchingDocs = userDocuments.filter((doc) => {
         return (
           doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-          getAgeOfADocument(doc) < requestedDoc.age
+          getAgeOfADocument(doc) < age
         );
       });
     } else {
@@ -102,7 +97,7 @@ function findMatchingDocs(requestedDoc) {
         return (
           doc.doctypeId.toString() === requestedDoctype._id.toString() &&
           getAgeOfADocument(doc) > 0 &&
-          getAgeOfADocument(doc) <= requestedDoc.age
+          getAgeOfADocument(doc) === age
         );
       });
     }
