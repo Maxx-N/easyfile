@@ -5,9 +5,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const requestSchema = new Schema({
-  loanFileId: {
+  swapFolderId: {
     type: Schema.Types.ObjectId,
-    ref: 'LoanFile',
+    ref: 'SwapFolder',
     required: true,
   },
   isAccepted: {

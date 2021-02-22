@@ -113,7 +113,7 @@ app.use('/', (req, res, next) => {
   if (!!req.session.user) {
     return res.redirect('/documents');
   } else if (!!req.session.pro) {
-    return res.redirect('/pro/loan-files');
+    return res.redirect('/pro/swap-folders');
   }
   res.redirect('/login');
 });

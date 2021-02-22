@@ -13,8 +13,8 @@ const proSchema = new Schema({
     type: String,
     required: true,
   },
-  loanFileIds: [
-    { type: Schema.Types.ObjectId, ref: 'LoanFile', required: true },
+  swapFolderIds: [
+    { type: Schema.Types.ObjectId, ref: 'SwapFolder', required: true },
   ],
 });
 

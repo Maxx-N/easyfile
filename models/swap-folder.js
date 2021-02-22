@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const loanFileSchema = new Schema({
+const swapFolderSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -28,4 +28,4 @@ const loanFileSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model('LoanFile', loanFileSchema);
+module.exports = mongoose.model('SwapFolder', swapFolderSchema);

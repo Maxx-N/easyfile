@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 const User = require('./models/user');
-const Doctype = require('./models/doctype');
 
 //
 

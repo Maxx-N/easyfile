@@ -5,20 +5,20 @@
 </head>
 <body class="no-scroll">
 <%- include('../includes/navbar') %>
-<link rel="stylesheet" href="/css/loan-file.css">
+<link rel="stylesheet" href="/css/swap-folder.css">
 <main class="text-center">
     <div class="d-flex justify-content-around full-height">
         <div class=" half-flex">
-          <form id="deletingForm" clientEmail="<%= loanFile.userId.email %>" action="/pro/delete-loan-file/<%= loanFile._id %>" method="POST">
+          <form id="deletingForm" clientEmail="<%= swapFolder.userId.email %>" action="/pro/delete-swap-folder/<%= swapFolder._id %>" method="POST">
               <button id="deletingButton" class="btn btn-danger" type="button">Supprimer le dossier de prêt</button>
           </form>
-              <div class="h3">Dossier de prêt numéro <%= loanFile._id %></div>
-              <p>Utilisateur : <%= loanFile.userId.email %></p>
+              <div class="h3">Dossier de prêt numéro <%= swapFolder._id %></div>
+              <p>Utilisateur : <%= swapFolder.userId.email %></p>
         </div>
         <div class="full-height half-flex">
-            <a class="btn btn-info" href="/pro/add-request/<%= loanFile._id %>">Ajouter une requête de documents</a>
+            <a class="btn btn-info" href="/pro/add-request/<%= swapFolder._id %>">Ajouter une requête de documents</a>
             <div id="requestsContainer" class="scrollable">
-                <% for (let request of loanFile.requestIds) { %>
+                <% for (let request of swapFolder.requestIds) { %>
                     <div class="request">
                         <form action="/pro/delete-request/<%= request._id %>" method="POST">
                             <button class="delete-cross" type="button"><i class="fa fa-times cross pointer"></i></button>
@@ -44,6 +44,6 @@
     </div>
 </main>
 <%- include('../includes/scripts') %>
-<script src="/js/loan-file.js"></script>
+<script src="/js/swap-folder.js"></script>
 </body>
 </html>

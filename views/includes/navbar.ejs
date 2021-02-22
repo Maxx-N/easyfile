@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="/documents"
-    ><%= isAdmin ? 'Admin' : 'EasyFile' %></a
+    ><%= isAdmin ? 'Admin' : 'SwapFile' %></a
   >
   <button
     class="navbar-toggler"
@@ -37,8 +37,8 @@
 
       <li class="nav-item">
         <a
-          class="nav-link <%= path === '/loan-files' ? 'active' : '' %>"
-          href="/loan-files"
+          class="nav-link <%= path === '/swap-folders' ? 'active' : '' %>"
+          href="/swap-folders"
           >Mes dossiers de prêt</a
         >
       </li>
@@ -47,8 +47,8 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a
-          class="nav-link <%= path === '/loan-files' ? 'active' : '' %>"
-          href="/loan-files"
+          class="nav-link <%= path === '/swap-folders' ? 'active' : '' %>"
+          href="/swap-folders"
           >Prêts
         </a>
       </li>

@@ -9,8 +9,8 @@
       <a class="btn btn-info" href="/enter-client-email">Nouveau</a>
       <div class="h1">Mes dossiers de prêt</div>
       <ul>
-        <% for (let file of loanFiles) { %>
-          <li class="list-inline"><a href="/loan-files/<%= file._id %>"><%= file.proId.email %></a></li>
+        <% for (let file of swapFolders) { %>
+          <li class="list-inline"><a href="/swap-folders/<%= file._id %>"><%= file.proId.email %></a></li>
         <% } %>
       </ul>
     </main>

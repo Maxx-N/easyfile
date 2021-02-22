@@ -173,9 +173,9 @@ router.post(
   userController.postDeleteDocument
 );
 
-router.get('/loan-files', isAuth, userController.getLoanFiles);
+router.get('/swap-folders', isAuth, userController.getSwapFolders);
 
-router.get('/loan-files/:loanFileId', isAuth, userController.getLoanFile);
+router.get('/swap-folders/:swapFolderId', isAuth, userController.getSwapFolder);
 
 
 module.exports = router;

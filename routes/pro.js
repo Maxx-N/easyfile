@@ -10,14 +10,14 @@ const isProAuth = require('../middleware/is-pro-auth');
 
 const router = express.Router();
 
-router.get('/loan-files', isProAuth, proController.getLoanFiles);
+router.get('/swap-folders', isProAuth, proController.getSwapFolders);
 
-router.get('/loan-files/:loanFileId', isProAuth, proController.getLoanFile);
+router.get('/swap-folders/:swapFolderId', isProAuth, proController.getSwapFolder);
 
 router.post(
-  '/delete-loan-file/:loanFileId',
+  '/delete-swap-folder/:swapFolderId',
   isProAuth,
-  proController.postDeleteLoanFile
+  proController.postDeleteSwapFolder
 );
 
 router.get('/enter-client-email', isProAuth, proController.getEnterClientEmail);
@@ -59,11 +59,11 @@ router.post(
   proController.postAddClient
 );
 
-router.get('/add-loan-file/:clientId', isProAuth, proController.getAddLoanFile);
+router.get('/add-swap-folder/:clientId', isProAuth, proController.getAddSwapFolder);
 
-router.post('/add-loan-file', isProAuth, proController.postAddLoanFile);
+router.post('/add-swap-folder', isProAuth, proController.postAddSwapFolder);
 
-router.get('/add-request/:loanFileId', isProAuth, proController.getAddRequest);
+router.get('/add-request/:swapFolderId', isProAuth, proController.getAddRequest);
 
 router.post('/add-request', isProAuth, proController.postAddRequest);
 

@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const helpers = require('../helpers');
-const LoanFile = require('../models/loan-file');
+const SwapFolder = require('../models/swap-folder');
 
 //
 
@@ -319,49 +319,49 @@ exports.postDeleteDocument = async (req, res, next) => {
   }
 };
 
-exports.getLoanFiles = async (req, res, next) => {
+exports.getSwapFolders = async (req, res, next) => {
   try {
-    const user = await req.user.populate('loanFileIds');
-    const loanFiles = [];
+    const user = await req.user.populate('swapFolderIds');
+    const swapFolders = [];
 
-    for (let loanFileId of user.loanFileIds) {
-      let file = await LoanFile.findById(loanFileId).populate('proId');
-      loanFiles.push(file);
+    for (let swapFolderId of user.swapFolderIds) {
+      let file = await SwapFolder.findById(swapFolderId).populate('proId');
+      swapFolders.push(file);
     }
 
-    res.render('user/loan-files', {
+    res.render('user/swap-folders', {
       pageTitle: 'Dossiers de prêt',
-      path: '/loan-files',
-      loanFiles: loanFiles,
+      path: '/swap-folders',
+      swapFolders: swapFolders,
     });
   } catch (err) {
     return next(err);
   }
 };
 
-exports.getLoanFile = async (req, res, next) => {
-  const loanFileId = req.params.loanFileId;
+exports.getSwapFolder = async (req, res, next) => {
+  const swapFolderId = req.params.swapFolderId;
 
   try {
     const userDocuments = await Document.find({ userId: req.user._id });
     const allDoctypes = await Doctype.find();
 
-    const loanFile = await LoanFile.findById(loanFileId)
+    const swapFolder = await SwapFolder.findById(swapFolderId)
       .populate('userId')
       .populate({
         path: 'requestIds',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
       });
-    if (!loanFile) {
+    if (!swapFolder) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
       error.statusCode = 404;
       throw error;
     }
 
-    res.render('user/loan-file', {
+    res.render('user/swap-folder', {
       pageTitle: 'Dossier de prêt',
-      path: '/loan-files',
-      loanFile: loanFile,
+      path: '/swap-folders',
+      swapFolder: swapFolder,
       makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
       displayRequestedDocAge: helpers.displayRequestedDocAge,
       hasUserTheRightDocument: helpers.hasUserTheRightDocument,

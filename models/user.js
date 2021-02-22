@@ -25,8 +25,8 @@ const userSchema = new Schema({
   documentIds: [
     { type: Schema.Types.ObjectId, ref: 'Document', required: true },
   ],
-  loanFileIds: [
-    { type: Schema.Types.ObjectId, ref: 'LoanFile', required: true },
+  swapFolderIds: [
+    { type: Schema.Types.ObjectId, ref: 'SwapFolder', required: true },
   ],
 });
 

@@ -2,7 +2,7 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
-const LoanFile = require('../models/loan-file');
+const SwapFolder = require('../models/swap-folder');
 const Doctype = require('../models/doctype');
 const RequestedDoc = require('../models/requested-doc');
 const Request = require('../models/request');
@@ -10,47 +10,47 @@ const helpers = require('../helpers');
 
 //
 
-exports.getLoanFiles = async (req, res, next) => {
+exports.getSwapFolders = async (req, res, next) => {
   try {
-    const pro = await req.pro.populate('loanFileIds');
-    const loanFiles = [];
+    const pro = await req.pro.populate('swapFolderIds');
+    const swapFolders = [];
 
-    for (let loanFileId of pro.loanFileIds) {
-      let file = await LoanFile.findById(loanFileId).populate('userId');
-      loanFiles.push(file);
+    for (let swapFolderId of pro.swapFolderIds) {
+      let file = await SwapFolder.findById(swapFolderId).populate('userId');
+      swapFolders.push(file);
     }
 
-    res.render('pro/loan-files', {
+    res.render('pro/swap-folders', {
       pageTitle: 'Dossiers de prêt',
-      path: '/loan-files',
-      loanFiles: loanFiles,
+      path: '/swap-folders',
+      swapFolders: swapFolders,
     });
   } catch (err) {
     return next(err);
   }
 };
 
-exports.getLoanFile = async (req, res, next) => {
-  const loanFileId = req.params.loanFileId;
+exports.getSwapFolder = async (req, res, next) => {
+  const swapFolderId = req.params.swapFolderId;
 
   try {
-    const loanFile = await LoanFile.findById(loanFileId)
+    const swapFolder = await SwapFolder.findById(swapFolderId)
       .populate('userId')
       .populate({
         path: 'requestIds',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
       });
 
-    if (!loanFile) {
+    if (!swapFolder) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
       error.statusCode = 404;
       throw error;
     }
 
-    res.render('pro/loan-file', {
+    res.render('pro/swap-folder', {
       pageTitle: 'Dossier de prêt',
-      path: '/loan-files',
-      loanFile: loanFile,
+      path: '/swap-folders',
+      swapFolder: swapFolder,
       makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
       displayRequestedDocAge: helpers.displayRequestedDocAge,
     });
@@ -59,18 +59,18 @@ exports.getLoanFile = async (req, res, next) => {
   }
 };
 
-exports.postDeleteLoanFile = async (req, res, next) => {
+exports.postDeleteSwapFolder = async (req, res, next) => {
   const pro = req.pro;
-  const loanFileId = req.params.loanFileId;
+  const swapFolderId = req.params.swapFolderId;
   try {
-    const loanFile = await LoanFile.findById(loanFileId);
-    if (!loanFile) {
+    const swapFolder = await SwapFolder.findById(swapFolderId);
+    if (!swapFolder) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
       error.statusCode = 404;
       throw error;
     }
 
-    const user = await User.findById(loanFile.userId);
+    const user = await User.findById(swapFolder.userId);
     if (!user) {
       const error = new Error(
         "L'utilisateur correspondant à ce dossier de prêt n'a pu être trouvé."
@@ -79,17 +79,17 @@ exports.postDeleteLoanFile = async (req, res, next) => {
       throw error;
     }
 
-    user.loanFileIds = user.loanFileIds.filter((fileId) => {
-      return fileId.toString() !== loanFile._id.toString();
+    user.swapFolderIds = user.swapFolderIds.filter((fileId) => {
+      return fileId.toString() !== swapFolder._id.toString();
     });
     await user.save();
 
-    pro.loanFileIds = pro.loanFileIds.filter((fileId) => {
-      return fileId.toString() !== loanFile._id.toString();
+    pro.swapFolderIds = pro.swapFolderIds.filter((fileId) => {
+      return fileId.toString() !== swapFolder._id.toString();
     });
     await pro.save();
 
-    for (let requestId of loanFile.requestIds) {
+    for (let requestId of swapFolder.requestIds) {
       const request = await Request.findById(requestId);
       for (let requestedDocId of request.requestedDocIds) {
         await RequestedDoc.deleteOne({ _id: requestedDocId });
@@ -97,9 +97,9 @@ exports.postDeleteLoanFile = async (req, res, next) => {
       await request.deleteOne({ _id: requestId });
     }
 
-    await LoanFile.deleteOne({ _id: loanFile._id });
+    await SwapFolder.deleteOne({ _id: swapFolder._id });
 
-    res.redirect('/pro/loan-files');
+    res.redirect('/pro/swap-folders');
   } catch (err) {
     next(err);
   }
@@ -108,7 +108,7 @@ exports.postDeleteLoanFile = async (req, res, next) => {
 exports.getEnterClientEmail = (req, res, next) => {
   res.render('pro/enter-client-email', {
     pageTitle: 'Dossiers de prêt',
-    path: '/loan-files',
+    path: '/swap-folders',
     oldInput: {
       email: '',
     },
@@ -127,7 +127,7 @@ exports.postEnterClientEmail = async (req, res, next) => {
     });
     return res.render('pro/enter-client-email', {
       pageTitle: 'Dossiers de prêt',
-      path: '/loan-files',
+      path: '/swap-folders',
       oldInput: {
         email: email,
       },
@@ -140,7 +140,7 @@ exports.postEnterClientEmail = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (user) {
-      return res.redirect(`/pro/add-loan-file/${user._id}`);
+      return res.redirect(`/pro/add-swap-folder/${user._id}`);
     }
 
     return res.redirect(`/pro/add-client/${email}`);
@@ -201,13 +201,13 @@ exports.postAddClient = async (req, res, next) => {
       }
     });
 
-    res.redirect(`/pro/add-loan-file/${user._id}`);
+    res.redirect(`/pro/add-swap-folder/${user._id}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getAddLoanFile = async (req, res, next) => {
+exports.getAddSwapFolder = async (req, res, next) => {
   const clientId = req.params.clientId;
 
   try {
@@ -218,9 +218,9 @@ exports.getAddLoanFile = async (req, res, next) => {
       throw error;
     }
 
-    res.render('pro/add-loan-file', {
+    res.render('pro/add-swap-folder', {
       pageTitle: 'Nouveau dossier de prêt',
-      path: '/loan-files',
+      path: '/swap-folders',
       user: user,
     });
   } catch (err) {
@@ -228,7 +228,7 @@ exports.getAddLoanFile = async (req, res, next) => {
   }
 };
 
-exports.postAddLoanFile = async (req, res, next) => {
+exports.postAddSwapFolder = async (req, res, next) => {
   const choice = req.body.choiceOfAction;
   const pro = req.pro;
 
@@ -240,25 +240,25 @@ exports.postAddLoanFile = async (req, res, next) => {
       throw error;
     }
 
-    const loanFile = new LoanFile({
+    const swapFolder = new SwapFolder({
       userId: user._id,
       proId: req.pro._id,
       status: 'pending',
     });
-    await loanFile.save();
-    user.loanFileIds.push(loanFile._id);
+    await swapFolder.save();
+    user.swapFolderIds.push(swapFolder._id);
     await user.save();
 
-    pro.loanFileIds.push(loanFile._id);
+    pro.swapFolderIds.push(swapFolder._id);
     await pro.save();
 
     if (choice === 'backHome') {
       return res.redirect('/');
     }
 
-    await loanFile.populate('userId').execPopulate();
+    await swapFolder.populate('userId').execPopulate();
 
-    res.redirect(`/pro/add-request/${loanFile._id}`);
+    res.redirect(`/pro/add-request/${swapFolder._id}`);
   } catch (err) {
     next(err);
   }
@@ -274,9 +274,9 @@ exports.getAddRequest = async (req, res, next) => {
     }
     res.render('pro/add-request', {
       pageTitle: 'Création de requête',
-      path: '/loan-files',
+      path: '/swap-folders',
       doctypes: doctypes,
-      loanFileId: req.params.loanFileId,
+      swapFolderId: req.params.swapFolderId,
     });
   } catch (err) {
     next(err);
@@ -284,16 +284,16 @@ exports.getAddRequest = async (req, res, next) => {
 };
 
 exports.postAddRequest = async (req, res, next) => {
-  const loanFileId = req.body.loanFileId;
+  const swapFolderId = req.body.swapFolderId;
   const request = new Request({
-    loanFileId: loanFileId,
+    swapFolderId: swapFolderId,
     isAccepted: false,
   });
 
   try {
-    const loanFile = await LoanFile.findById(loanFileId);
-    loanFile.requestIds.push(request._id);
-    await loanFile.save();
+    const swapFolder = await SwapFolder.findById(swapFolderId);
+    swapFolder.requestIds.push(request._id);
+    await swapFolder.save();
   } catch (err) {
     err.message =
       'Un problème est survenu lors de la récupération du dossier de prêt. Nous travaillons à le réparer.';
@@ -397,7 +397,7 @@ exports.postAddRequest = async (req, res, next) => {
 
   try {
     await request.save();
-    res.redirect(`/pro/loan-files/${loanFileId}`);
+    res.redirect(`/pro/swap-folders/${swapFolderId}`);
   } catch (err) {
     if (!err.message) {
       err.message =
@@ -418,8 +418,8 @@ exports.postDeleteRequest = async (req, res, next) => {
       throw error;
     }
 
-    const loanFile = await LoanFile.findById(request.loanFileId);
-    if (!loanFile) {
+    const swapFolder = await SwapFolder.findById(request.swapFolderId);
+    if (!swapFolder) {
       const error = new Error('Dossier de prêt non trouvé.');
       error.statusCode = 404;
       throw error;
@@ -428,12 +428,12 @@ exports.postDeleteRequest = async (req, res, next) => {
     await RequestedDoc.deleteMany({ requestId: request._id });
     await Request.deleteOne({ _id: requestId });
 
-    loanFile.requestIds = loanFile.requestIds.filter((id) => {
+    swapFolder.requestIds = swapFolder.requestIds.filter((id) => {
       return id.toString() !== requestId.toString();
     });
-    await loanFile.save();
+    await swapFolder.save();
 
-    res.redirect(`/pro/loan-files/${loanFile._id}`);
+    res.redirect(`/pro/swap-folders/${swapFolder._id}`);
   } catch (err) {
     if (!err.message) {
       err.message =

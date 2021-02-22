@@ -23,6 +23,8 @@ function onCheckClick() {
     this.classList.add('check-success');
     createDivOfSelectors(requestedDocElement);
   }
+
+  // addOrDeleteValidationAndCancelButtons(requestedDocElement);
 }
 
 function createDivOfSelectors(requestedDocElement) {
@@ -57,6 +59,7 @@ function createADocSelector(selectorsContainer, age) {
   for (let matchingDoc of matchingDocs) {
     const option = document.createElement('option');
     option.textContent = matchingDoc.title;
+    option.value = matchingDoc._id;
     select.appendChild(option);
   }
 
@@ -158,3 +161,18 @@ function calculateAgeInMonths(stringDate) {
 
   return monthsBack;
 }
+
+// function addOrDeleteValidationAndCancelButtons(requestedDocElement) {
+//   const request = requestedDocElement.closest('.request');
+//   const requestDocs = [...request.getElementsByClassName('user-requested-doc')];
+//   const areDocumentsChecked = requestDocs.some((doc) => {
+//     return doc.getAttribute('isSelected') === 'true';
+//   });
+//   const validateButton = request.querySelector('.validate-button');
+
+//   if (areDocumentsChecked) {
+//     validateButton.classList.remove('hidden');
+//   } else {
+//     validateButton.classList.add('hidden');
+//   }
+// }
