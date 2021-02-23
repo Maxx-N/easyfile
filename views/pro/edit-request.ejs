@@ -3,7 +3,7 @@
 <head>
 <%- include('../includes/head') %>
 <link rel="stylesheet" href="/css/forms.css" />
-<link rel="stylesheet" href="/css/add-request.css" />
+<link rel="stylesheet" href="/css/edit-request.css" />
 </head>
 <body class="no-scroll">
 <%- include('../includes/navbar') %>
@@ -37,10 +37,10 @@
         <div id="secondColumn" class="full-flex full-height invisible">   
             <form         
             method="POST"
-            action="/pro/add-request"
+            action="/pro/edit-request"
             id="addRequestedDocForm"
             >     
-            <input type="hidden" name="swapFolderId" value="<%= swapFolderId %>">  
+            <input type="hidden" name="requestId" value="<%= request._id %>">  
                 <button id="submitBtn" type="button" class="btn btn-primary">
                   Valider la requête
                 </button>
@@ -56,12 +56,26 @@
                         </tr>
                     </thead>
                     <tbody id="docTable">
+                        <% for (let requestedDoc of request.requestedDocIds) { %>
+                            <tr 
+                            class="table-light doc pointer existing-document"
+                            doctypeId="<%= requestedDoc.doctypeId._id %>"
+                            age="<%= requestedDoc.age %>"
+                            title="<%= requestedDoc.title %>"
+                            id="<%= requestedDoc._id %>"
+                            alternativeRequestedDocIds="<%= JSON.stringify(requestedDoc.alternativeRequestedDocIds) %>"
+                            >
+                                <td><%= requestedDoc.doctypeId.title %></td>
+                                <td></td>
+                            </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
             <div id="alternativeInstruction"></div>
         </div>
     </main>
+    <div id="allDoctypes" class="hidden" allDoctypes="<%= JSON.stringify(doctypes) %>"></div>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>
     <script src="/js/add-requested-doc.js"></script>

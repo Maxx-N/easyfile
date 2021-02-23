@@ -4,8 +4,122 @@ const selectors = document.getElementById('selectors');
 const doctypeSelector = document.getElementById('doctypeSelector');
 const defaultInstruction =
   'Cliquez sur un élément pour l\'ajouter à un groupe de documents à fournir AU CHOIX (exemple : "Carte d\'identité" OU "Passeport"... ).';
-
 let docGroupId = 1;
+const existingDocuments = [
+  ...document.getElementsByClassName('existing-document'),
+];
+
+const allDoctypes = JSON.parse(
+  document.getElementById('allDoctypes').getAttribute('allDocTypes')
+);
+
+// Documents existants
+
+hideOrShowRightColumn();
+
+for (let existingDoc of existingDocuments) {
+  addAgeOfExistingDoc(existingDoc);
+  addTrash(existingDoc);
+  addDoctypeAndTitleOfExistingDoc(existingDoc);
+  linkToRelatedExistingDocs(existingDoc);
+  hideDoctypeOptionIfUnique(existingDoc);
+  existingDoc.addEventListener('click', linkDocs);
+}
+
+displayGroupedDocs();
+
+giveAlternativeInstruction();
+
+function hideDoctypeOptionIfUnique(existingDoc) {
+  const doctypeId = existingDoc.getAttribute('doctypeId');
+  const dt = allDoctypes.find((dt) => {
+    return dt._id === doctypeId;
+  });
+
+  if (dt.isUnique) {
+    const doctypeOptions = [
+      ...document.querySelectorAll('#doctypeSelector > option'),
+    ];
+    const matchingOption = doctypeOptions.find((option) => {
+      return option.value === doctypeId;
+    });
+
+    hide(matchingOption);
+  }
+}
+
+function addAgeOfExistingDoc(existingDoc) {
+  const doctypeId = existingDoc.getAttribute('doctypeId');
+  const dt = allDoctypes.find((dt) => {
+    return dt._id === doctypeId;
+  });
+  const ageBox = [...existingDoc.getElementsByTagName('td')][1];
+  const age = existingDoc.getAttribute('age');
+  ageBox.textContent = displayAge(age, dt);
+}
+
+function displayAge(age, doctype) {
+  let displayedAge;
+
+  if (age) {
+    if (doctype.periodicity === 'month') {
+      if (+age === 1) {
+        displayedAge = 'Mois dernier';
+      } else {
+        displayedAge = `${age} derniers mois`;
+      }
+    }
+
+    if (doctype.periodicity === 'year') {
+      if (+age === 1) {
+        displayedAge = 'Année dernière';
+      } else {
+        displayedAge = `${age} dernières années`;
+      }
+    }
+
+    if (doctype.periodicity === 'none' && doctype.hasIssuanceDate) {
+      if (+age === 1) {
+        displayedAge = "Daté(e) de moins d'1 mois";
+      } else {
+        displayedAge = `Daté(e) de moins de ${age} mois`;
+      }
+    }
+  } else {
+    displayedAge = '-';
+  }
+
+  return displayedAge;
+}
+
+function addDoctypeAndTitleOfExistingDoc(existingDoc) {
+  const td = existingDoc.getElementsByTagName('td')[0];
+  const title = existingDoc.getAttribute('title');
+
+  if (title) {
+    td.textContent += ` (${title})`;
+    existingDoc.setAttribute('requestedDocTitle', title);
+  }
+}
+
+function linkToRelatedExistingDocs(existingDoc) {
+  const alternativeRequestedDocIds = JSON.parse(
+    existingDoc.getAttribute('alternativeRequestedDocIds')
+  );
+  const groupId = existingDoc.getAttribute('docGroupId');
+  if (alternativeRequestedDocIds.length > 0 && !groupId) {
+    const relatedExistingDocs = existingDocuments.filter((doc) => {
+      return alternativeRequestedDocIds.includes(doc.getAttribute('id'));
+    });
+    existingDoc.setAttribute('docGroupId', docGroupId);
+    for (let doc of relatedExistingDocs) {
+      doc.setAttribute('docGroupId', docGroupId);
+    }
+    docGroupId++;
+  }
+}
+
+//
 
 doctypeSelector.value = '';
 
@@ -16,7 +130,6 @@ doctypeSelector.addEventListener('change', createDoctype);
 function createDoctype() {
   const selectedOption = getSelectedOption();
   createListItem(selectedOption.textContent);
-  // doctypeSelector.style.display = 'none';
   hide(doctypeSelector);
   createCancelButton();
   createAddButton();
@@ -245,7 +358,7 @@ function addRow(docTable) {
   docTable.prepend(tr);
 
   tr.addEventListener('click', linkDocs);
-  giveAlternativeInstruction(tr);
+  giveAlternativeInstruction();
 }
 
 function addDoctypeData(row) {
@@ -336,11 +449,11 @@ function linkDocs(e) {
         this.setAttribute('selected', 'true');
       }
     }
-    giveAlternativeInstruction(this);
+    giveAlternativeInstruction();
   }
 }
 
-function giveAlternativeInstruction(doc) {
+function giveAlternativeInstruction() {
   const docs = [...document.getElementsByClassName('doc')];
   const alternativeInstruction = document.getElementById(
     'alternativeInstruction'
@@ -352,7 +465,7 @@ function giveAlternativeInstruction(doc) {
       return doc.getAttribute('selected') === 'true';
     });
 
-    if (doc === selectedDoc) {
+    if (selectedDoc) {
       alternativeInstruction.classList.add('bg-info', 'text-light');
       alternativeInstruction.textContent =
         'Cliquez sur le groupe dans lequel vous souhaitez déplacer ce document. Pour annuler la sélection, cliquez à nouveau dessus.';
@@ -437,7 +550,7 @@ function removeFromRightColumn(e) {
   tableRow.remove();
   hideOrShowRightColumn();
   displayGroupedDocs();
-  giveAlternativeInstruction(tableRow);
+  giveAlternativeInstruction();
 }
 
 // Récupérer une option à partir du doctypeId correspondant

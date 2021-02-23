@@ -63,10 +63,8 @@ router.get('/add-swap-folder/:clientId', isProAuth, proController.getAddSwapFold
 
 router.post('/add-swap-folder', isProAuth, proController.postAddSwapFolder);
 
-router.get('/add-request/:swapFolderId', isProAuth, proController.getAddRequest);
+router.get('/edit-request/:requestId', isProAuth, proController.getEditRequest);
 
-router.post('/add-request', isProAuth, proController.postAddRequest);
-
-router.post('/delete-request/:requestId', isProAuth, proController.postDeleteRequest);
+router.post('/edit-request', isProAuth, proController.postEditRequest);
 
 module.exports = router;

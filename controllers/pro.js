@@ -37,7 +37,7 @@ exports.getSwapFolder = async (req, res, next) => {
     const swapFolder = await SwapFolder.findById(swapFolderId)
       .populate('userId')
       .populate({
-        path: 'requestIds',
+        path: 'proRequestId',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
       });
 
@@ -89,14 +89,21 @@ exports.postDeleteSwapFolder = async (req, res, next) => {
     });
     await pro.save();
 
-    for (let requestId of swapFolder.requestIds) {
-      const request = await Request.findById(requestId);
-      for (let requestedDocId of request.requestedDocIds) {
-        await RequestedDoc.deleteOne({ _id: requestedDocId });
-      }
-      await request.deleteOne({ _id: requestId });
+    // Suppression de la requête pro et de ses documents requis
+    const proRequest = await Request.findById(swapFolder.proRequestId);
+    for (let requestedDocId of proRequest.requestedDocIds) {
+      await RequestedDoc.deleteOne({ _id: requestedDocId });
     }
+    await Request.deleteOne({ _id: proRequest._id });
 
+    // Suppression de la requête user et de ses documents requis
+    const userRequest = await Request.findById(swapFolder.userRequestId);
+    for (let requestedDocId of userRequest.requestedDocIds) {
+      await RequestedDoc.deleteOne({ _id: requestedDocId });
+    }
+    await Request.deleteOne({ _id: userRequest._id });
+
+    // Suppression du dossier
     await SwapFolder.deleteOne({ _id: swapFolder._id });
 
     res.redirect('/pro/swap-folders');
@@ -240,10 +247,17 @@ exports.postAddSwapFolder = async (req, res, next) => {
       throw error;
     }
 
+    const userRequest = new Request();
+    const proRequest = new Request();
+
+    await userRequest.save();
+    await proRequest.save();
+
     const swapFolder = new SwapFolder({
       userId: user._id,
       proId: req.pro._id,
-      status: 'pending',
+      userRequestId: userRequest._id,
+      proRequestId: proRequest._id,
     });
     await swapFolder.save();
     user.swapFolderIds.push(swapFolder._id);
@@ -258,187 +272,157 @@ exports.postAddSwapFolder = async (req, res, next) => {
 
     await swapFolder.populate('userId').execPopulate();
 
-    res.redirect(`/pro/add-request/${swapFolder._id}`);
+    res.redirect(`/pro/edit-request/${swapFolder.proRequestId}`);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getAddRequest = async (req, res, next) => {
+exports.getEditRequest = async (req, res, next) => {
   try {
     const doctypes = await Doctype.find();
     if (!doctypes) {
       const error = new Error('Aucun type de document trouvé.');
       error.statusCode = 404;
-      throw err;
+      throw error;
     }
-    res.render('pro/add-request', {
+    const request = await Request.findById(req.params.requestId).populate({
+      path: 'requestedDocIds',
+      populate: { path: 'doctypeId' },
+    });
+
+    if (!request) {
+      const error = new Error('Aucune requête trouvée.');
+      error.statusCode = 404;
+      throw error;
+    }
+    res.render('pro/edit-request', {
       pageTitle: 'Création de requête',
       path: '/swap-folders',
       doctypes: doctypes,
-      swapFolderId: req.params.swapFolderId,
+      request: request,
     });
   } catch (err) {
     next(err);
   }
 };
 
-exports.postAddRequest = async (req, res, next) => {
-  const swapFolderId = req.body.swapFolderId;
-  const request = new Request({
-    swapFolderId: swapFolderId,
-    isAccepted: false,
-  });
-
-  try {
-    const swapFolder = await SwapFolder.findById(swapFolderId);
-    swapFolder.requestIds.push(request._id);
-    await swapFolder.save();
-  } catch (err) {
-    err.message =
-      'Un problème est survenu lors de la récupération du dossier de prêt. Nous travaillons à le réparer.';
-    return next(err);
-  }
-
-  const docInputs = req.body.requestedDocs;
-  const docArrays = [];
-
-  if (typeof docInputs === 'string') {
-    docArrays.push(docInputs.split('///'));
-  } else {
-    for (let doc of docInputs) {
-      docArrays.push(doc.split('///'));
-    }
-  }
-
-  let docObjects = [];
-  for (let doc of docArrays) {
-    const doctypeId = doc[0];
-    let title;
-    let age;
-    let docGroupId;
-
-    if (doc[1] === '0') {
-      title = null;
-    } else {
-      title = doc[1];
-    }
-
-    if (doc[2] === '0') {
-      age = null;
-    } else {
-      age = +doc[2];
-    }
-
-    if (doc[3] === '0') {
-      docGroupId = null;
-    } else {
-      docGroupId = +doc[3];
-    }
-
-    docObjects.push({
-      doctypeId: doctypeId,
-      title: title,
-      age: age,
-      docGroupId: docGroupId,
-    });
-  }
-
-  const repeatedGroupIds = docObjects.map((obj) => {
-    return obj.docGroupId;
-  });
-  const groupIds = [];
-  for (const id of repeatedGroupIds) {
-    if (!groupIds.includes(id)) {
-      groupIds.push(id);
-    }
-  }
-
-  for (let groupId of groupIds) {
-    const group = docObjects.filter((obj) => {
-      return obj.docGroupId === groupId;
-    });
-    const requestedDocs = [];
-    for (let doc of group) {
-      const requestedDoc = new RequestedDoc({
-        requestId: request._id,
-        title: doc.title,
-        age: doc.age,
-        doctypeId: doc.doctypeId,
-      });
-      requestedDocs.push(requestedDoc);
-    }
-
-    for (let requestedDoc of requestedDocs) {
-      let siblingDocIds;
-      if (groupId) {
-        siblingDocIds = requestedDocs
-          .filter((d) => {
-            return d !== requestedDoc;
-          })
-          .map((d) => {
-            return d._id;
-          });
-      } else {
-        siblingDocIds = [];
-      }
-      requestedDoc.alternativeRequestedDocIds = siblingDocIds;
-
-      try {
-        await requestedDoc.save();
-        request.requestedDocIds.push(requestedDoc._id);
-      } catch (err) {
-        err.message =
-          'Un problème est survenu lors de la sauvegarde des documents requis. Nous travaillons à le réparer.';
-        return next(err);
-      }
-    }
-  }
-
-  try {
-    await request.save();
-    res.redirect(`/pro/swap-folders/${swapFolderId}`);
-  } catch (err) {
-    if (!err.message) {
-      err.message =
-        'Un problème est survenu lors de la sauvegarde de votre requête. Nous travaillons à le réparer.';
-    }
-    next(err);
-  }
-};
-
-exports.postDeleteRequest = async (req, res, next) => {
-  const requestId = req.params.requestId;
+exports.postEditRequest = async (req, res, next) => {
+  const requestId = req.body.requestId;
 
   try {
     const request = await Request.findById(requestId);
+
     if (!request) {
       const error = new Error('Requête non trouvée.');
       error.statusCode = 404;
       throw error;
     }
 
-    const swapFolder = await SwapFolder.findById(request.swapFolderId);
-    if (!swapFolder) {
-      const error = new Error('Dossier de prêt non trouvé.');
-      error.statusCode = 404;
-      throw error;
+    const docInputs = req.body.requestedDocs;
+    const docArrays = [];
+
+    if (typeof docInputs === 'string') {
+      docArrays.push(docInputs.split('///'));
+    } else {
+      for (let doc of docInputs) {
+        docArrays.push(doc.split('///'));
+      }
     }
 
-    await RequestedDoc.deleteMany({ requestId: request._id });
-    await Request.deleteOne({ _id: requestId });
+    let docObjects = [];
+    for (let doc of docArrays) {
+      const doctypeId = doc[0];
+      let title;
+      let age;
+      let docGroupId;
 
-    swapFolder.requestIds = swapFolder.requestIds.filter((id) => {
-      return id.toString() !== requestId.toString();
+      if (doc[1] === '0') {
+        title = null;
+      } else {
+        title = doc[1];
+      }
+
+      if (doc[2] === '0') {
+        age = null;
+      } else {
+        age = +doc[2];
+      }
+
+      if (doc[3] === '0') {
+        docGroupId = null;
+      } else {
+        docGroupId = +doc[3];
+      }
+
+      docObjects.push({
+        doctypeId: doctypeId,
+        title: title,
+        age: age,
+        docGroupId: docGroupId,
+      });
+    }
+
+    const repeatedGroupIds = docObjects.map((obj) => {
+      return obj.docGroupId;
     });
-    await swapFolder.save();
+    const groupIds = [];
+    for (const id of repeatedGroupIds) {
+      if (!groupIds.includes(id)) {
+        groupIds.push(id);
+      }
+    }
 
+    for (let groupId of groupIds) {
+      const group = docObjects.filter((obj) => {
+        return obj.docGroupId === groupId;
+      });
+      const requestedDocs = [];
+      for (let doc of group) {
+        const requestedDoc = new RequestedDoc({
+          requestId: request._id,
+          title: doc.title,
+          age: doc.age,
+          doctypeId: doc.doctypeId,
+        });
+        requestedDocs.push(requestedDoc);
+      }
+
+      for (let requestedDoc of requestedDocs) {
+        let siblingDocIds;
+        if (groupId) {
+          siblingDocIds = requestedDocs
+            .filter((d) => {
+              return d !== requestedDoc;
+            })
+            .map((d) => {
+              return d._id;
+            });
+        } else {
+          siblingDocIds = [];
+        }
+        requestedDoc.alternativeRequestedDocIds = siblingDocIds;
+
+        try {
+          await requestedDoc.save();
+          request.requestedDocIds.push(requestedDoc._id);
+        } catch (err) {
+          err.message =
+            'Un problème est survenu lors de la sauvegarde des documents requis. Nous travaillons à le réparer.';
+          return next(err);
+        }
+      }
+    }
+
+    await request.save();
+
+    const swapFolder = await SwapFolder.findOne({ proRequestId: requestId });
+    console.log(swapFolder);
     res.redirect(`/pro/swap-folders/${swapFolder._id}`);
   } catch (err) {
     if (!err.message) {
-      err.message =
-        'Un problème est survenu lors de la suppression de votre requête. Nous travaillons à le réparer.';
+      err.message = 'Un problème est survenu. Nous travaillons à le réparer.';
     }
-    return next(err);
+    next(err);
   }
 };

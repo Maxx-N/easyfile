@@ -16,29 +16,24 @@
               <p>Utilisateur : <%= swapFolder.userId.email %></p>
         </div>
         <div class="full-height half-flex">
-            <a class="btn btn-info" href="/pro/add-request/<%= swapFolder._id %>">Ajouter une requête de documents</a>
             <div id="requestsContainer" class="scrollable">
-                <% for (let request of swapFolder.requestIds) { %>
-                    <div class="request">
-                        <form action="/pro/delete-request/<%= request._id %>" method="POST">
-                            <button class="delete-cross" type="button"><i class="fa fa-times cross pointer"></i></button>
-                        </form>
-                        <% for (let group of makeGroupsOfRequestedDocs(request.requestedDocIds)) { %>
-                          <div class="list-group group">
-                                <% if (group.length > 1) { %>
-                                    <div class="choice">Au choix : </div>
-                                <% } %>
-                                <% for (let doc of group) { %>
-                                    <div class="list-group-item">
-                                        <span><%= doc.doctypeId.title %></span>
-                                        <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
-                                        <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
-                                    </div>
-                                <% } %>
-                            </div>
-                        <% } %>
-                    </div>
-                <% } %>
+                <div class="request">
+                    <a class="btn btn-info edit-btn" href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"><i class="fas fa-edit"></i></a>
+                    <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
+                        <div class="list-group group">
+                            <% if (group.length > 1) { %>
+                                <div class="choice">Au choix : </div>
+                            <% } %>
+                            <% for (let doc of group) { %>
+                                <div class="list-group-item">
+                                    <span><%= doc.doctypeId.title %></span>
+                                    <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
+                                    <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                </div>
             </div>
         </div>    
     </div>
