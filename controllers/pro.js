@@ -299,7 +299,7 @@ exports.getEditRequest = async (req, res, next) => {
     res.render('pro/edit-request', {
       pageTitle: 'Création de requête',
       path: '/swap-folders',
-      doctypes: doctypes,
+      doctypes: helpers.sortByTitle(doctypes),
       request: request,
     });
   } catch (err) {

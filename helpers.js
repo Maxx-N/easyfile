@@ -260,6 +260,12 @@ exports.hasUserTheRightDocument = (
   return answer;
 };
 
+exports.sortByTitle = (elements) => {
+  return elements.sort((e1, e2) => {
+    return e1.title > e2.title ? +1 : -1;
+  });
+};
+
 // PRIVATE
 
 function sortDocumentsByDoctypeTitle(documents) {
@@ -318,5 +324,3 @@ function calculateAgeInMonths(date) {
 
   return monthsBack;
 }
-
-
