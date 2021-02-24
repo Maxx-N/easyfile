@@ -5,11 +5,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const requestedDocSchema = new Schema({
-  requestId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Request',
-    required: true,
-  },
   title: {
     type: String,
   },

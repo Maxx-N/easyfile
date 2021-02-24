@@ -348,7 +348,7 @@ function addRow(docTable) {
   tr.setAttribute('doctypeId', selectedOption.value);
 
   const selectedAge = getSelectedAge();
-  if (selectedAge) {
+  if (selectedAge && selectedAge.value !== '') {
     tr.setAttribute('age', selectedAge.value);
   }
 
@@ -619,28 +619,24 @@ function createHiddenInputs() {
 }
 
 function makeADocHiddenInput(doc) {
-  let age = doc.getAttribute('age');
-  let title = doc.getAttribute('requestedDocTitle');
-  let docGroupId = doc.getAttribute('docGroupId');
+  const age = doc.getAttribute('age');
+  const title = doc.getAttribute('requestedDocTitle');
+  const docGroupId = doc.getAttribute('docGroupId');
   const doctypeId = doc.getAttribute('doctypeId');
+  const requestedDocId = doc.getAttribute('id');
 
-  if (!age) {
-    age = 0;
-  }
-  if (!title) {
-    title = 0;
-  }
-  if (!docGroupId) {
-    docGroupId = 0;
-  }
-
-  const valueArray = [doctypeId, title, age, docGroupId];
-  const valueString = valueArray.join('///');
+  const valueObject = {
+    age: age,
+    title: title,
+    docGroupId: docGroupId,
+    doctypeId: doctypeId,
+    requestedDocId: requestedDocId,
+  };
 
   const input = document.createElement('input');
   input.setAttribute('type', 'hidden');
   input.setAttribute('name', 'requestedDocs');
-  input.setAttribute('value', valueString);
+  input.setAttribute('value', JSON.stringify(valueObject));
 
   const form = document.getElementById('addRequestedDocForm');
   form.appendChild(input);

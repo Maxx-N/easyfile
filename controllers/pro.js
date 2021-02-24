@@ -319,72 +319,70 @@ exports.postEditRequest = async (req, res, next) => {
       throw error;
     }
 
-    const docInputs = req.body.requestedDocs;
-    const docArrays = [];
+    let docInputs = req.body.requestedDocs;
 
     if (typeof docInputs === 'string') {
-      docArrays.push(docInputs.split('///'));
-    } else {
-      for (let doc of docInputs) {
-        docArrays.push(doc.split('///'));
-      }
+      docInputs = [docInputs];
     }
 
-    let docObjects = [];
-    for (let doc of docArrays) {
-      const doctypeId = doc[0];
-      let title;
-      let age;
-      let docGroupId;
-
-      if (doc[1] === '0') {
-        title = null;
-      } else {
-        title = doc[1];
-      }
-
-      if (doc[2] === '0') {
-        age = null;
-      } else {
-        age = +doc[2];
-      }
-
-      if (doc[3] === '0') {
-        docGroupId = null;
-      } else {
-        docGroupId = +doc[3];
-      }
-
-      docObjects.push({
-        doctypeId: doctypeId,
-        title: title,
-        age: age,
-        docGroupId: docGroupId,
-      });
-    }
-
-    const repeatedGroupIds = docObjects.map((obj) => {
-      return obj.docGroupId;
+    const parsedInputs = docInputs.map((di) => {
+      return JSON.parse(di);
     });
-    const groupIds = [];
-    for (const id of repeatedGroupIds) {
-      if (!groupIds.includes(id)) {
-        groupIds.push(id);
+
+    const requestedDocsToAdd = parsedInputs.map((pi) => {
+      return {
+        age: pi.age ? +pi.age : null,
+        title: pi.title,
+        docGroupId: pi.docGroupId ? +pi.docGroupId : null,
+        doctypeId: pi.doctypeId,
+        requestedDocId: pi.requestedDocId,
+      };
+    });
+
+    // RD préexistants : suppression en base de ceux qui ont été supprimés
+    for (let rdId of request.requestedDocIds) {
+      if (
+        !requestedDocsToAdd.some((rdToAdd) => {
+          return (
+            rdToAdd.requestedDocId &&
+            rdToAdd.requestedDocId.toString() === rdId.toString()
+          );
+        })
+      ) {
+        await RequestedDoc.deleteOne({ _id: rdId });
+        request.requestedDocIds = request.requestedDocIds.filter((id) => {
+          return id.toString() !== rdId.toString();
+        });
       }
     }
 
-    for (let groupId of groupIds) {
-      const group = docObjects.filter((obj) => {
-        return obj.docGroupId === groupId;
+    const repeatedGroupIds = requestedDocsToAdd.map((rd) => {
+      return rd.docGroupId;
+    });
+    let docGroupIds = [];
+    for (let id of repeatedGroupIds) {
+      if (!docGroupIds.includes(id)) {
+        docGroupIds.push(id);
+      }
+    }
+
+    for (let groupId of docGroupIds) {
+      const group = requestedDocsToAdd.filter((rd) => {
+        return rd.docGroupId === groupId;
       });
+
       const requestedDocs = [];
-      for (let doc of group) {
-        const requestedDoc = new RequestedDoc({
-          requestId: request._id,
-          title: doc.title,
-          age: doc.age,
-          doctypeId: doc.doctypeId,
-        });
+      for (let rdToAdd of group) {
+        let requestedDoc;
+        if (rdToAdd.requestedDocId) {
+          requestedDoc = await RequestedDoc.findById(rdToAdd.requestedDocId);
+        } else {
+          requestedDoc = new RequestedDoc({
+            title: rdToAdd.title,
+            age: rdToAdd.age,
+            doctypeId: rdToAdd.doctypeId,
+          });
+        }
         requestedDocs.push(requestedDoc);
       }
 
@@ -392,11 +390,11 @@ exports.postEditRequest = async (req, res, next) => {
         let siblingDocIds;
         if (groupId) {
           siblingDocIds = requestedDocs
-            .filter((d) => {
-              return d !== requestedDoc;
+            .filter((rd) => {
+              return rd !== requestedDoc;
             })
-            .map((d) => {
-              return d._id;
+            .map((rd) => {
+              return rd._id;
             });
         } else {
           siblingDocIds = [];
@@ -405,7 +403,9 @@ exports.postEditRequest = async (req, res, next) => {
 
         try {
           await requestedDoc.save();
-          request.requestedDocIds.push(requestedDoc._id);
+          if (!request.requestedDocIds.includes(requestedDoc._id)) {
+            request.requestedDocIds.push(requestedDoc._id);
+          }
         } catch (err) {
           err.message =
             'Un problème est survenu lors de la sauvegarde des documents requis. Nous travaillons à le réparer.';
@@ -414,15 +414,13 @@ exports.postEditRequest = async (req, res, next) => {
       }
     }
 
+    // Sauvegarde de la requête
     await request.save();
 
+    // Redirection
     const swapFolder = await SwapFolder.findOne({ proRequestId: requestId });
-    console.log(swapFolder);
     res.redirect(`/pro/swap-folders/${swapFolder._id}`);
   } catch (err) {
-    if (!err.message) {
-      err.message = 'Un problème est survenu. Nous travaillons à le réparer.';
-    }
     next(err);
   }
 };
