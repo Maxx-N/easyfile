@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
@@ -349,7 +347,7 @@ exports.getSwapFolder = async (req, res, next) => {
     const swapFolder = await SwapFolder.findById(swapFolderId)
       .populate('userId')
       .populate({
-        path: 'requestIds',
+        path: 'proRequestId',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
       });
     if (!swapFolder) {
