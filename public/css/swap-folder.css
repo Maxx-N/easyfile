@@ -1,5 +1,5 @@
 .request {
-  padding: 0 1rem .5rem 1rem;
+  padding: 0 1rem 0.5rem 1rem;
   border-radius: 10px;
   margin: 2rem 0.5rem;
   /* border: 2px solid var(--gray); */
@@ -8,9 +8,9 @@
   position: relative;
 }
 
-.edit-btn {
-  margin: 0.5rem;
-  margin-bottom: 0;
+.request .btn {
+  font-size: 1rem;
+  height: 100%;
 }
 
 .cross {

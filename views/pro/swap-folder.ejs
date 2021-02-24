@@ -18,7 +18,12 @@
         <div class="full-height half-flex">
             <div id="requestsContainer" class="scrollable">
                 <div class="request">
-                    <a class="btn btn-info edit-btn" href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"><i class="fas fa-edit"></i></a>
+                    <div class="d-flex justify-content-around align-items-center">
+                        <a title="Modifier les documents demandés" class="btn btn-info edit-btn" href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"><i class="fas fa-edit"></i></a>
+                        <form id="resettingForm" action="/pro/reset-request/<%= swapFolder.proRequestId._id %>" method="POST">
+                            <button title="Supprimer tous les documents demandés" id="resettingButton" class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </div>
                     <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
                         <div class="list-group group">
                             <% if (group.length > 1) { %>

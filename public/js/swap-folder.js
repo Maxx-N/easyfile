@@ -1,3 +1,5 @@
+// SUPPRESSION DU SWAP FOLDER
+
 const button = document.getElementById('deletingButton');
 
 button.addEventListener('click', () => {
@@ -13,17 +15,17 @@ button.addEventListener('click', () => {
   }
 });
 
-const deleteRequestButtons = [
-  ...document.getElementsByClassName('delete-cross'),
-];
+// REINITIALISATION DE LA REQUEST
 
-for (let button of deleteRequestButtons) {
-  button.addEventListener('click', () => {
-    const form = button.parentElement;
-    if (
-      confirm(`Êtes-vous sûr(e) de vouloir supprimer la requête sélectionnée ?`)
-    ) {
-      form.submit();
-    }
-  });
-}
+const resettingButton = document.getElementById('resettingButton');
+resettingButton.addEventListener('click', () => {
+  const form = document.getElementById('resettingForm');
+
+  if (
+    confirm(
+      `Êtes-vous sûr(e) de vouloir supprimer toutes les pièces que vous avez requises ?`
+    )
+  ) {
+    form.submit();
+  }
+});

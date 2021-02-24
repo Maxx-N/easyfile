@@ -67,4 +67,6 @@ router.get('/edit-request/:requestId', isProAuth, proController.getEditRequest);
 
 router.post('/edit-request', isProAuth, proController.postEditRequest);
 
+router.post('/reset-request/:requestId', isProAuth, proController.postResetRequest)
+
 module.exports = router;

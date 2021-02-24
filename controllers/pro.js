@@ -7,6 +7,7 @@ const Doctype = require('../models/doctype');
 const RequestedDoc = require('../models/requested-doc');
 const Request = require('../models/request');
 const helpers = require('../helpers');
+const { request } = require('express');
 
 //
 
@@ -419,6 +420,32 @@ exports.postEditRequest = async (req, res, next) => {
 
     // Redirection
     const swapFolder = await SwapFolder.findOne({ proRequestId: requestId });
+    res.redirect(`/pro/swap-folders/${swapFolder._id}`);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postResetRequest = async (req, res, next) => {
+  const requestId = req.params.requestId;
+
+  try {
+    const request = await Request.findById(requestId);
+    if (!request) {
+      const error = new Error('Requête non trouvée');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    for (let requestedDocId of request.requestedDocIds) {
+      await RequestedDoc.deleteOne({ _id: requestedDocId });
+    }
+
+    request.requestedDocIds = [];
+
+    await request.save();
+
+    const swapFolder = await SwapFolder.findOne({ proRequestId: request._id });
     res.redirect(`/pro/swap-folders/${swapFolder._id}`);
   } catch (err) {
     next(err);
