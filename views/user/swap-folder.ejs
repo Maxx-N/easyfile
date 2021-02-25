@@ -32,10 +32,7 @@
                                     <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
                                     <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
                                     <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc)) { %>
-                                        <span 
-                                        class="check-container pointer <%= swapFolder.documentIds && hasUserTheRightDocuments(swapFolder.documentIds, allDoctypes, doc) ? 'check-success' : '' %>"
-                                        isAdded="<%= swapFolder.documentIds && hasUserTheRightDocuments(swapFolder.documentIds, allDoctypes, doc) %>"
-                                        >
+                                        <span class="check-container pointer">
                                             <i class="fas fa-check"></i>
                                         </span>
                                     <% } %>
@@ -50,7 +47,6 @@
 </main>
 <div id="userDocuments" class="hidden" userDocuments="<%= JSON.stringify(userDocuments) %>"></div>
 <div id="allDoctypes" class="hidden" allDoctypes="<%= JSON.stringify(allDoctypes) %>"></div>
-<div id="swapFolderId" class="hidden" swapFolderId="<%= swapFolder._id %>"></div>
 <%- include('../includes/scripts') %>
 <script src="/js/user-checklist.js"></script>
 </body>

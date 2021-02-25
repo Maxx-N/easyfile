@@ -178,15 +178,15 @@ router.get('/swap-folders', isAuth, userController.getSwapFolders);
 router.get('/swap-folders/:swapFolderId', isAuth, userController.getSwapFolder);
 
 router.post(
-  '/add-documents-to-swap-folders/:swapFolderId',
+  '/add-documents-to-requested-doc/:requestedDocId',
   isAuth,
-  userController.postAddDocumentsToSwapFolder
+  userController.postAddDocumentsToRequestedDoc
 );
 
 router.post(
-  '/delete-documents-from-swap-folders/:swapFolderId',
+  '/delete-documents-from-requested-doc/:requestedDocId',
   isAuth,
-  userController.postDeleteDocumentsFromSwapFolder
+  userController.postDeleteDocumentsFromRequestedDoc
 );
 
 module.exports = router;

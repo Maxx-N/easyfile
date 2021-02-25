@@ -15,6 +15,9 @@ const requestedDocSchema = new Schema({
   alternativeRequestedDocIds: [
     { type: Schema.Types.ObjectId, ref: 'RequestedDoc', required: true },
   ],
+  documentIds: [
+    { type: Schema.Types.ObjectId, ref: 'Document', required: true },
+  ],
 });
 
 module.exports = mongoose.model('RequestedDoc', requestedDocSchema);

@@ -2,8 +2,9 @@ const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
-const helpers = require('../helpers');
 const SwapFolder = require('../models/swap-folder');
+const RequestedDoc = require('../models/requested-doc');
+const helpers = require('../helpers');
 
 //
 
@@ -349,8 +350,7 @@ exports.getSwapFolder = async (req, res, next) => {
       .populate({
         path: 'proRequestId',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
-      })
-      .populate('documentIds');
+      });
     if (!swapFolder) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
       error.statusCode = 404;
@@ -372,19 +372,18 @@ exports.getSwapFolder = async (req, res, next) => {
   }
 };
 
-exports.postAddDocumentsToSwapFolder = async (req, res, next) => {
-  const swapFolderId = req.params.swapFolderId;
+exports.postAddDocumentsToRequestedDoc = async (req, res, next) => {
+  const requestedDocId = req.params.requestedDocId;
   const documentIds = req.body.documentIds.split(',');
-
   try {
-    const swapFolder = await SwapFolder.findById(swapFolderId);
+    const requestedDoc = await RequestedDoc.findById(requestedDocId);
 
     for (let id of documentIds) {
-      if (!swapFolder.documentIds.includes(id)) {
-        swapFolder.documentIds.push(id);
+      if (!requestedDoc.documentIds.includes(id)) {
+        requestedDoc.documentIds.push(id);
       }
     }
-    await swapFolder.save();
+    await requestedDoc.save();
   } catch (err) {
     next(err);
   }
@@ -392,20 +391,20 @@ exports.postAddDocumentsToSwapFolder = async (req, res, next) => {
   next();
 };
 
-exports.postDeleteDocumentsFromSwapFolder = async (req, res, next) => {
-  const swapFolderId = req.params.swapFolderId;
+exports.postDeleteDocumentsFromRequestedDoc = async (req, res, next) => {
+  const requestedDocId = req.params.requestedDocId;
   const documentIds = req.body.documentIds.split(',');
 
   try {
-    const swapFolder = await SwapFolder.findById(swapFolderId);
+    const requestedDoc = await RequestedDoc.findById(requestedDocId);
 
     for (let id of documentIds) {
-      swapFolder.documentIds = swapFolder.documentIds.filter((docId) => {
+      requestedDoc.documentIds = requestedDoc.documentIds.filter((docId) => {
         return docId.toString() !== id.toString();
       });
     }
 
-    await swapFolder.save();
+    await requestedDoc.save();
   } catch (err) {
     return next(err);
   }

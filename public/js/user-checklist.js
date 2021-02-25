@@ -8,15 +8,50 @@ const allDoctypes = JSON.parse(
 
 const checkContainers = [...document.getElementsByClassName('check-container')];
 
-// const requestedDocElements = [
-//   ...document.getElementsByClassName('user-requestedDoc'),
-// ];
+const requestedDocElements = [
+  ...document.getElementsByClassName('user-requested-doc'),
+];
 
-// for (let requestedDocElement of requestedDocElements) {
-//   if (requestedDocElement.getAttribute('documentIds')) {
-//     showRequestedDocAsAdded(requestedDocElement);
-//   }
-// }
+for (let requestedDocElement of requestedDocElements) {
+  const requestedDoc = getRequestedDoc(requestedDocElement);
+  if (requestedDoc.documentIds.length > 0) {
+    requestedDocElement.setAttribute('documentIds', requestedDoc.documentIds);
+    showRequestedDocAsAdded(requestedDocElement);
+    addListOfExistingTitles(requestedDocElement);
+  }
+}
+
+function addListOfExistingTitles(requestedDocElement) {
+  const requestedDoc = getRequestedDoc(requestedDocElement);
+
+  const documentTitles = userDocuments
+    .filter((doc) => {
+      return requestedDoc.documentIds.includes(doc._id);
+    })
+    .sort((doc1, doc2) => {
+      return getAgeOfADocument(doc1) - getAgeOfADocument(doc2);
+    })
+    .map((doc) => {
+      return doc.title;
+    });
+
+  const ul = document.createElement('ul');
+  ul.classList.add(
+    'list-group',
+    'd-flex',
+    'flex-row',
+    'justify-content-around',
+    'align-items-center'
+  );
+  requestedDocElement.appendChild(ul);
+
+  for (let title of documentTitles) {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item');
+    li.textContent = title;
+    ul.appendChild(li);
+  }
+}
 
 for (let checkContainer of checkContainers) {
   checkContainer.addEventListener('click', onCheckClick);
@@ -44,8 +79,6 @@ function onCheckClick() {
         select(requestedDocElement);
     }
   }
-
-  // addOrDeleteValidationAndCancelButtons(requestedDocElement);
 }
 
 function add(requestedDocElement) {
@@ -76,32 +109,30 @@ function add(requestedDocElement) {
 
   requestedDocElement.setAttribute('documentIds', documentIds);
 
-  addDocumentsToSwapFolder(requestedDocElement);
+  addDocumentsToRequestedDoc(requestedDocElement);
 }
 
-function addDocumentsToSwapFolder(requestedDocElement) {
-  const swapFolderId = document
-    .getElementById('swapFolderId')
-    .getAttribute('swapFolderId');
+function addDocumentsToRequestedDoc(requestedDocElement) {
+  const requestedDoc = getRequestedDoc(requestedDocElement);
 
   const data = {
     documentIds: requestedDocElement.getAttribute('documentIds'),
   };
 
-  $.post(`/add-documents-to-swap-folders/${swapFolderId}`, data, () => {
+  $.post(`/add-documents-to-requested-doc/${requestedDoc._id}`, data, () => {
+    addListOfTitlesFromSelectors(requestedDocElement);
     showRequestedDocAsAdded(requestedDocElement);
   });
 }
 
 function showRequestedDocAsAdded(requestedDocElement) {
-  addListOfTitles(requestedDocElement);
   unSelect(requestedDocElement);
   requestedDocElement.setAttribute('isAdded', 'true');
   const check = requestedDocElement.querySelector('.check-container');
   check.classList.add('check-success');
 }
 
-function addListOfTitles(requestedDocElement) {
+function addListOfTitlesFromSelectors(requestedDocElement) {
   const selectors = [
     ...requestedDocElement.querySelectorAll('.doc-selectors-container select'),
   ];
@@ -194,30 +225,32 @@ function createADocSelector(selectorsContainer, age) {
 }
 
 function unAdd(requestedDocElement) {
-  const swapFolderId = document
-    .getElementById('swapFolderId')
-    .getAttribute('swapFolderId');
+  const requestedDoc = getRequestedDoc(requestedDocElement);
 
   const data = {
     documentIds: requestedDocElement.getAttribute('documentIds'),
   };
 
-  $.post(`/delete-documents-from-swap-folders/${swapFolderId}`, data, () => {
-    const checkContainer = requestedDocElement.querySelector(
-      '.check-container'
-    );
+  $.post(
+    `/delete-documents-from-requested-doc/${requestedDoc._id}`,
+    data,
+    () => {
+      const checkContainer = requestedDocElement.querySelector(
+        '.check-container'
+      );
 
-    requestedDocElement.setAttribute('isAdded', 'false');
+      requestedDocElement.setAttribute('isAdded', 'false');
 
-    requestedDocElement.removeAttribute('documentIds');
-    checkContainer.classList.remove('check-success');
+      requestedDocElement.removeAttribute('documentIds');
+      checkContainer.classList.remove('check-success');
 
-    const titleList = requestedDocElement.querySelector('.list-group');
+      const titleList = requestedDocElement.querySelector('.list-group');
 
-    if (titleList) {
-      titleList.remove();
+      if (titleList) {
+        titleList.remove();
+      }
     }
-  });
+  );
 }
 
 function unSelect(requestedDocElement) {
@@ -240,6 +273,10 @@ function unSelect(requestedDocElement) {
 }
 
 // HELPERS
+
+function getRequestedDoc(requestedDocElement) {
+  return JSON.parse(requestedDocElement.getAttribute('requestedDoc'));
+}
 
 function findMatchingDocs(requestedDoc, age) {
   let matchingDocs;
