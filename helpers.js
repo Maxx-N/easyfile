@@ -186,7 +186,7 @@ exports.makeGroupsOfRequestedDocs = (requestedDocs) => {
   return groups;
 };
 
-exports.hasUserTheRightDocument = (
+exports.hasUserTheRightDocuments = (
   userDocuments,
   allDoctypes,
   populatedRequestedDoc

@@ -177,5 +177,16 @@ router.get('/swap-folders', isAuth, userController.getSwapFolders);
 
 router.get('/swap-folders/:swapFolderId', isAuth, userController.getSwapFolder);
 
+router.post(
+  '/add-documents-to-swap-folders/:swapFolderId',
+  isAuth,
+  userController.postAddDocumentsToSwapFolder
+);
+
+router.post(
+  '/delete-documents-from-swap-folders/:swapFolderId',
+  isAuth,
+  userController.postDeleteDocumentsFromSwapFolder
+);
 
 module.exports = router;

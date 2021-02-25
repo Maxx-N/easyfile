@@ -13,7 +13,7 @@
   height: 100%;
 }
 
-.cross {
+/* .cross {
   height: 1rem;
 }
 
@@ -27,7 +27,7 @@
 
 .delete-cross:hover {
   color: red;
-}
+} */
 
 .choice {
   background-color: var(--gray-dark);
@@ -59,8 +59,18 @@
   right: 1rem;
 }
 
+.user-requested-doc .cross-container {
+  position: absolute;
+  left: 1rem;
+  color: var(--warning);
+}
+
 .check-container.check-success {
   color: var(--success);
+}
+
+.check-container.check-warning {
+  color: var(--warning);
 }
 
 .doc-selectors-container {
@@ -73,4 +83,11 @@
   border-radius: 10px;
   margin-top: 0.5rem;
   padding: 0.25rem;
+}
+
+.user-requested-doc .list-group-item {
+  border: none;
+  color: var(--success);
+  padding: 0.25rem;
+
 }

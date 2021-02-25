@@ -349,7 +349,8 @@ exports.getSwapFolder = async (req, res, next) => {
       .populate({
         path: 'proRequestId',
         populate: { path: 'requestedDocIds', populate: 'doctypeId' },
-      });
+      })
+      .populate('documentIds');
     if (!swapFolder) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
       error.statusCode = 404;
@@ -362,11 +363,52 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolder: swapFolder,
       makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
       displayRequestedDocAge: helpers.displayRequestedDocAge,
-      hasUserTheRightDocument: helpers.hasUserTheRightDocument,
+      hasUserTheRightDocuments: helpers.hasUserTheRightDocuments,
       userDocuments: userDocuments,
       allDoctypes: allDoctypes,
     });
   } catch (err) {
     next(err);
   }
+};
+
+exports.postAddDocumentsToSwapFolder = async (req, res, next) => {
+  const swapFolderId = req.params.swapFolderId;
+  const documentIds = req.body.documentIds.split(',');
+
+  try {
+    const swapFolder = await SwapFolder.findById(swapFolderId);
+
+    for (let id of documentIds) {
+      if (!swapFolder.documentIds.includes(id)) {
+        swapFolder.documentIds.push(id);
+      }
+    }
+    await swapFolder.save();
+  } catch (err) {
+    next(err);
+  }
+
+  next();
+};
+
+exports.postDeleteDocumentsFromSwapFolder = async (req, res, next) => {
+  const swapFolderId = req.params.swapFolderId;
+  const documentIds = req.body.documentIds.split(',');
+
+  try {
+    const swapFolder = await SwapFolder.findById(swapFolderId);
+
+    for (let id of documentIds) {
+      swapFolder.documentIds = swapFolder.documentIds.filter((docId) => {
+        return docId.toString() !== id.toString();
+      });
+    }
+
+    await swapFolder.save();
+  } catch (err) {
+    return next(err);
+  }
+
+  next();
 };

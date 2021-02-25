@@ -11,6 +11,7 @@
         <div class="half-flex">        
             <div class="h3">Dossier de prêt numéro <%= swapFolder._id %></div>
             <p>Utilisateur : <%= swapFolder.userId.email %></p>
+            <%- include('./test-partial') %>  
         </div>
         <div class="full-height half-flex">
             <div id="requestsContainer" class="scrollable">
@@ -30,9 +31,12 @@
                                     <span><%= doc.doctypeId.title %></span>
                                     <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
                                     <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
-                                    <% if (hasUserTheRightDocument(userDocuments, allDoctypes, doc)) { %>
-                                        <span class="check-container pointer">
-                                            <i class="fas fa-check "></i>
+                                    <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc)) { %>
+                                        <span 
+                                        class="check-container pointer <%= swapFolder.documentIds && hasUserTheRightDocuments(swapFolder.documentIds, allDoctypes, doc) ? 'check-success' : '' %>"
+                                        isAdded="<%= swapFolder.documentIds && hasUserTheRightDocuments(swapFolder.documentIds, allDoctypes, doc) %>"
+                                        >
+                                            <i class="fas fa-check"></i>
                                         </span>
                                     <% } %>
                                 </div>
@@ -41,11 +45,12 @@
                     <% } %>
                 </div>
             </div>
-        </div>    
+        </div>  
     </div>
 </main>
 <div id="userDocuments" class="hidden" userDocuments="<%= JSON.stringify(userDocuments) %>"></div>
 <div id="allDoctypes" class="hidden" allDoctypes="<%= JSON.stringify(allDoctypes) %>"></div>
+<div id="swapFolderId" class="hidden" swapFolderId="<%= swapFolder._id %>"></div>
 <%- include('../includes/scripts') %>
 <script src="/js/user-checklist.js"></script>
 </body>
