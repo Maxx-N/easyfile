@@ -26,6 +26,8 @@ for (let requestedDocElement of requestedDocElements) {
   }
 }
 
+showAddedGroupsOfRequestedDocs();
+
 function addListOfExistingTitles(requestedDocElement) {
   const requestedDoc = getRequestedDoc(requestedDocElement);
 
@@ -153,32 +155,23 @@ function showRequestedDocAsAdded(requestedDocElement) {
   check.classList.add('check-success');
 }
 
-function addListOfTitlesFromSelectors(requestedDocElement) {
-  const selectors = [
-    ...requestedDocElement.querySelectorAll('.doc-selectors-container select'),
-  ];
+function showAddedGroupsOfRequestedDocs() {
+  const groups = [...document.getElementsByClassName('group')];
+  for (let group of groups) {
+    console.log(group);
+    const title = group.querySelector('.choice');
+    const items = [...group.getElementsByClassName('user-requested-doc')];
 
-  if (selectors.length > 0) {
-    const ul = document.createElement('ul');
-    ul.classList.add(
-      'list-group',
-      'd-flex',
-      'flex-row',
-      'justify-content-around',
-      'align-items-center'
-    );
-    requestedDocElement.appendChild(ul);
-
-    for (let selector of selectors) {
-      const selectedOption = [...selector.getElementsByTagName('option')].find(
-        (option) => {
-          return option.value === selector.value;
-        }
-      );
-      const li = document.createElement('li');
-      li.classList.add('list-group-item');
-      li.textContent = selectedOption.textContent;
-      ul.appendChild(li);
+    if (title) {
+      if (
+        items.some((item) => {
+          return item.getAttribute('isAdded') === 'true';
+        })
+      ) {
+        title.classList.add('added-group-title');
+      } else {
+        title.classList.remove('added-group-title');
+      }
     }
   }
 }
@@ -272,6 +265,8 @@ function unAdd(requestedDocElement) {
       }
 
       removeDocumentFromTheLeftColumn(requestedDoc);
+
+      showAddedGroupsOfRequestedDocs();
     }
   );
 }
