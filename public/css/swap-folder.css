@@ -89,5 +89,20 @@
   border: none;
   color: var(--success);
   padding: 0.25rem;
+}
 
+.table-container {
+  height: 80%;
+  overflow: auto;
+  margin: 0 1rem;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none;
+}
+
+.table-container th {
+  position: sticky;
+  top: 0;
+  border-top: 1rem;
 }

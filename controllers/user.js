@@ -4,6 +4,8 @@ const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const SwapFolder = require('../models/swap-folder');
 const RequestedDoc = require('../models/requested-doc');
+const Request = require('../models/request');
+
 const helpers = require('../helpers');
 
 //
@@ -349,7 +351,16 @@ exports.getSwapFolder = async (req, res, next) => {
       .populate('userId')
       .populate({
         path: 'proRequestId',
-        populate: { path: 'requestedDocIds', populate: 'doctypeId' },
+        populate: {
+          path: 'requestedDocIds',
+          populate: [
+            {
+              path: 'documentIds',
+              populate: 'doctypeId',
+            },
+            'doctypeId',
+          ],
+        },
       });
     if (!swapFolder) {
       const error = new Error("Le dossier de prêt n'a pu être trouvé.");
@@ -357,15 +368,26 @@ exports.getSwapFolder = async (req, res, next) => {
       throw error;
     }
 
+    const swapFolderDocuments = [];
+
+    for (let requestedDoc of swapFolder.proRequestId.requestedDocIds) {
+      swapFolderDocuments.push(...requestedDoc.documentIds);
+    }
+
     res.render('user/swap-folder', {
       pageTitle: 'Dossier de prêt',
       path: '/swap-folders',
       swapFolder: swapFolder,
+      userDocuments: userDocuments,
+      allDoctypes: allDoctypes,
+      swapFolderDocuments: swapFolderDocuments,
       makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
       displayRequestedDocAge: helpers.displayRequestedDocAge,
       hasUserTheRightDocuments: helpers.hasUserTheRightDocuments,
-      userDocuments: userDocuments,
-      allDoctypes: allDoctypes,
+      monthToString: helpers.monthToString,
+      displayDate: helpers.displayDate,
+      isPast: helpers.isPast,
+      isPresent: helpers.isPresent,
     });
   } catch (err) {
     next(err);
@@ -375,6 +397,7 @@ exports.getSwapFolder = async (req, res, next) => {
 exports.postAddDocumentsToRequestedDoc = async (req, res, next) => {
   const requestedDocId = req.params.requestedDocId;
   const documentIds = req.body.documentIds.split(',');
+
   try {
     const requestedDoc = await RequestedDoc.findById(requestedDocId);
 
@@ -384,11 +407,19 @@ exports.postAddDocumentsToRequestedDoc = async (req, res, next) => {
       }
     }
     await requestedDoc.save();
+
+    const requests = await Request.find();
+
+    const request = requests.find((r) => {
+      return r.requestedDocIds.includes(requestedDocId);
+    });
+
+    const swapFolder = await SwapFolder.findOne({ proRequestId: request._id });
+
+    res.redirect(`/swap-folders/${swapFolder._id}`);
   } catch (err) {
     next(err);
   }
-
-  next();
 };
 
 exports.postDeleteDocumentsFromRequestedDoc = async (req, res, next) => {
@@ -405,9 +436,8 @@ exports.postDeleteDocumentsFromRequestedDoc = async (req, res, next) => {
     }
 
     await requestedDoc.save();
+    next();
   } catch (err) {
     return next(err);
   }
-
-  next();
 };

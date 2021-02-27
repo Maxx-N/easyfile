@@ -140,11 +140,94 @@ function addDocumentsToRequestedDoc(requestedDocElement) {
   input.setAttribute('name', 'documentIds');
   input.setAttribute('value', data.documentIds);
 
+  console.log(data);
+
   form.appendChild(input);
   document.getElementsByTagName('main')[0].appendChild(form);
 
   form.submit();
+
+  // $.post(`/add-documents-to-requested-doc/${requestedDoc._id}`, data, () => {
+  //   addListOfTitlesFromSelectors(requestedDocElement);
+  //   showRequestedDocAsAdded(requestedDocElement);
+  // addDocumentsToSwapFolder(requestedDocElement);
+  // });
 }
+
+// function addDocumentsToSwapFolder(requestedDocElement) {
+//   const tableBody = document.getElementById('tableBody');
+//   const documents = userDocuments.filter((d) => {
+//     return requestedDocElement.getAttribute('documentIds').includes(d._id);
+//   });
+//   for (let doc of documents) {
+//     const doctype = allDoctypes.find((dt) => {
+//       return dt._id === doc.doctypeId;
+//     });
+
+//     const tr = document.createElement('tr');
+//     tr.classList.add('pointer', 'document-item', 'table-light');
+//     tr.setAttribute('title', doc.title ? doc.title : doctype.title);
+//     tableBody.appendChild(tr);
+
+//     const td1 = document.createElement('td');
+//     const a = document.createElement('a');
+//     a.setAttribute('href', `/documents/${doc._id}`);
+//     if (doctype.periodicity === 'month') {
+//       a.textContent = `${doctype.title} - ${monthAndYearToMonthFormat(
+//         doc.month,
+//         doc.year
+//       )}`;
+//       td1.appendChild(a);
+//     } else if (doctype.periodicity === 'year') {
+//       a.textContent = `${doctype.title} - ${doc.year}`;
+//       td1.appendChild(a);
+//     } else if (doc.title) {
+//       td1.textContent(' - ');
+//       a.textContent = doctype.title;
+//       td1.prepend(a);
+//       const span = document.createElement('span');
+//       span.classList.add('badge', 'badge-pill', 'badge-secondary');
+//       span.textContent = doc.title;
+//       td1.appendChild(span);
+//     } else {
+//       a.textContent = doctype.title;
+//       td1.appendChild(a);
+//     }
+//     tr.appendChild(td1);
+
+//     const td2 = document.createElement('td');
+//     if (doc.issuanceDate) {
+//       const span = document.createElement('span');
+//       span.classList.add('badge', 'badge-pill', 'badge-dark');
+//       span.textContent = displayDate(doc.issuanceDate);
+//       td2.appendChild('span');
+//     } else {
+//       td2.textContent = ' - ';
+//     }
+//     tr.appendChild(td2);
+
+//     const td3 = document.createElement('td');
+//     if (doc.expirationDate) {
+//       const span = document.createElement('span');
+//       span.classList.add('badge', 'badge-pill');
+//       span.classList.add(
+//         isPast(document.expirationDate)
+//           ? 'badge-danger'
+//           : isPresent(document.expirationDate)
+//           ? 'badge-warning'
+//           : 'badge-success'
+//       );
+
+//       span.textContent = displayDate(doc.expirationDate);
+//       td3.appendChild('span');
+//     } else {
+//       td3.textContent = ' - ';
+//     }
+//     tr.appendChild(td3);
+
+//   }
+//   console.log(tableBody);
+// }
 
 function showRequestedDocAsAdded(requestedDocElement) {
   unSelect(requestedDocElement);
@@ -270,23 +353,8 @@ function unAdd(requestedDocElement) {
       if (titleList) {
         titleList.remove();
       }
-
-      removeDocumentFromTheLeftColumn(requestedDoc);
     }
   );
-}
-
-function removeDocumentFromTheLeftColumn(requestedDoc) {
-  const rows = [...document.getElementsByClassName('document-item')];
-  const documentIds = requestedDoc.documentIds.map((d) => {
-    return d._id;
-  });
-  for (let documentId of documentIds) {
-    const rowToDelete = rows.find((row) => {
-      return row.id === documentId;
-    });
-    rowToDelete.remove();
-  }
 }
 
 function unSelect(requestedDocElement) {
@@ -391,4 +459,59 @@ function calculateAgeInMonths(stringDate) {
   }
 
   return monthsBack;
+}
+
+function monthToString(monthNumber) {
+  const monthsArray = [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
+  ];
+
+  return monthsArray[monthNumber - 1];
+}
+
+function monthAndYearToMonthFormat(month, year) {
+  let monthFormat;
+  if (month > 10) {
+    monthFormat = month.toString();
+  } else {
+    monthFormat = `0${month}`;
+  }
+
+  return `${year}-${monthFormat}`;
+}
+
+function displayDate(date) {
+  const day = date.getDate();
+  const month = monthToString(date.getMonth() + 1);
+  const year = date.getFullYear();
+
+  if (day === 1) {
+    return `${day}er ${month} ${year}`;
+  }
+  return `${day} ${month} ${year}`;
+}
+
+function isPast(date) {
+  const today = getCurrentDate();
+  return date < today;
+}
+
+function isFuture(date) {
+  const today = getCurrentDate();
+  return date > today;
+}
+
+function isPresent(date) {
+  return !isPast(date) && !isFuture(date);
 }
