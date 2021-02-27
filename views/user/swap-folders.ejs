@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('../includes/head') %>
-  </head>
-  <body>
-    <%- include('../includes/navbar') %>
-    <main class="text-center">
-      <a class="btn btn-info" href="/enter-client-email">Nouveau</a>
-      <div class="h1">Mes dossiers de prêt</div>
-      <ul>
-        <% for (let file of swapFolders) { %>
-          <li class="list-inline"><a href="/swap-folders/<%= file._id %>"><%= file.proId.email %></a></li>
+<head>
+  <%- include('../includes/head') %>
+  <link rel="stylesheet" href="/css/swap-folders.css" />
+</head>
+<body>
+<%- include('../includes/navbar') %>
+<main class="text-center">
+<div class="h1">Mes dossiers de prêt</div>
+    <div class="list-group">
+        <% for (let sf of swapFolders) { %>
+            <div 
+            id="<%= sf._id %>"
+            class="list-group-item d-flex justify-content-between pointer swap-folder-item"
+            >
+              <div>N° <%= sf._id %></div>
+                <a href="/swap-folders/<%= sf._id %>"><%= sf.proId.email %></a>
+                <div>
+                    Groupes de documents fournis :
+                    <span class="<%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) === 0 ? 'text-danger' : getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) < getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) ? 'text-warning' : 'text-success' %>">
+                        <%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) %> / <%= getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) %> 
+                    </span>
+                </div>
+            </div>
         <% } %>
-      </ul>
-    </main>
-    <%- include('../includes/scripts') %>
-  </body>
+    </div>
+</main>
+<div id="isPro" class="hidden" isPro="false"></div>
+<%- include('../includes/scripts') %>
+<script src="/js/swap-folders.js"></script>
+</body>
 </html>

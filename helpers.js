@@ -266,6 +266,36 @@ exports.sortByTitle = (elements) => {
   });
 };
 
+exports.getNumberOfRequestedGroups = (requestedDocs) => {
+  const requestedGroupIds = [];
+  for (let rd of requestedDocs) {
+    if (
+      !rd.alternativeRequestedDocIds ||
+      rd.alternativeRequestedDocIds.length === 0
+    ) {
+      requestedGroupIds.push(rd._id.toString());
+    } else if (
+      !rd.alternativeRequestedDocIds.some((id) => {
+        return requestedGroupIds.includes(id.toString());
+      })
+    ) {
+      requestedGroupIds.push(rd._id.toString());
+    }
+  }
+
+  return requestedGroupIds.length;
+};
+
+exports.getNumberOfCompletedGroups = (requestedDocs) => {
+  const completedRequestedDocs = [];
+  for (let rd of requestedDocs) {
+    if (rd.documentIds && rd.documentIds.length > 0) {
+      completedRequestedDocs.push(rd);
+    }
+  }
+  return this.getNumberOfRequestedGroups(completedRequestedDocs);
+};
+
 // PRIVATE
 
 function sortDocumentsByDoctypeTitle(documents) {

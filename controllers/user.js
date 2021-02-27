@@ -349,14 +349,24 @@ exports.getSwapFolders = async (req, res, next) => {
     const swapFolders = [];
 
     for (let swapFolderId of user.swapFolderIds) {
-      let file = await SwapFolder.findById(swapFolderId).populate('proId');
-      swapFolders.push(file);
+      let sf = await SwapFolder.findById(swapFolderId)
+        .populate('proId', 'email')
+        .populate({
+          path: 'proRequestId',
+          populate: {
+            path: 'requestedDocIds',
+            select: ['documentIds', 'alternativeRequestedDocIds'],
+          },
+        });
+      swapFolders.push(sf);
     }
 
     res.render('user/swap-folders', {
       pageTitle: 'Dossiers de prêt',
       path: '/swap-folders',
       swapFolders: swapFolders,
+      getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
+      getNumberOfCompletedGroups: helpers.getNumberOfCompletedGroups,
     });
   } catch (err) {
     return next(err);

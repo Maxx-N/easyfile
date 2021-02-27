@@ -9,7 +9,6 @@ const Request = require('../models/request');
 const Document = require('../models/document');
 
 const helpers = require('../helpers');
-const { request } = require('express');
 
 //
 
@@ -19,14 +18,24 @@ exports.getSwapFolders = async (req, res, next) => {
     const swapFolders = [];
 
     for (let swapFolderId of pro.swapFolderIds) {
-      let file = await SwapFolder.findById(swapFolderId).populate('userId');
-      swapFolders.push(file);
+      let sf = await SwapFolder.findById(swapFolderId)
+        .populate('userId', 'email')
+        .populate({
+          path: 'proRequestId',
+          populate: {
+            path: 'requestedDocIds',
+            select: ['documentIds', 'alternativeRequestedDocIds'],
+          },
+        });
+      swapFolders.push(sf);
     }
 
     res.render('pro/swap-folders', {
       pageTitle: 'Dossiers de prêt',
       path: '/swap-folders',
       swapFolders: swapFolders,
+      getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
+      getNumberOfCompletedGroups: helpers.getNumberOfCompletedGroups,
     });
   } catch (err) {
     return next(err);

@@ -1,0 +1,11 @@
+.list-group {
+  margin: 0 5rem;
+}
+
+.swap-folder-item {
+  border-radius: 50px;
+}
+
+.swap-folder-item:hover {
+  border: 0.2rem solid #1f9bcf;
+}
