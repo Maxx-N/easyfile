@@ -5,5 +5,8 @@ for (let doc of documents) {
 }
 
 function onNavigateToDetail() {
-  window.location.href = `/documents/${this.id}`;
+  const isPro =
+    document.getElementById('isPro').getAttribute('isPro') === 'true';
+
+  window.location.href = `${isPro ? '/pro' : ''}/documents/${this.id}`;
 }

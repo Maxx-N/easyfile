@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+  </head>
+  <body>
+    <%- include('../includes/navbar') %>
+    <main class="text-center">
+      <div class="h1"><%= document.doctypeId.title %></div>
+      <embed
+        src="../../<%= document.fileUrl %>"
+        width="1000vw"
+        height="500vh"
+        padding="0"
+      />
+      <ul class="list-group">
+        <% if (document.title) { %>
+        <li
+          class="list-group-item d-flex justify-content-around align-items-center"
+        >
+          <span class="h3"><%= document.title %></span>
+        </li>
+        <% } %> <% if (document.month) { %>
+        <li
+          class="list-group-item d-flex justify-content-around align-items-center"
+        >
+          <span class="h3"><%= monthToString(document.month) %></span>
+        </li>
+        <% } %> <% if (document.year) { %>
+        <li
+          class="list-group-item d-flex justify-content-around align-items-center"
+        >
+          <span class="h3"><%= document.year %></span>
+        </li>
+        <% } %> <% if (document.issuanceDate) { %>
+        <li
+          class="list-group-item d-flex justify-content-around align-items-center"
+        >
+          Date
+          <span class="badge badge-dark badge-pill">
+            <%= displayDate(document.issuanceDate) %>
+          </span>
+        </li>
+        <% } %> <% if (document.expirationDate) { %>
+        <li
+          class="list-group-item d-flex justify-content-around align-items-center"
+        >
+          Expiration
+          <span
+            class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' : isPresent(document.expirationDate) ? 'badge-warning' : 'badge-success' %>"
+          >
+            <%= displayDate(document.expirationDate) %>
+          </span>
+        </li>
+        <% } %>
+      </ul>
+      
+    </main>
+    <%- include('../includes/scripts') %>
+    <script src="/js/document.js"></script>
+
+  </body>
+</html>

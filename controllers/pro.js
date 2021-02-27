@@ -6,6 +6,8 @@ const SwapFolder = require('../models/swap-folder');
 const Doctype = require('../models/doctype');
 const RequestedDoc = require('../models/requested-doc');
 const Request = require('../models/request');
+const Document = require('../models/document');
+
 const helpers = require('../helpers');
 const { request } = require('express');
 
@@ -33,13 +35,23 @@ exports.getSwapFolders = async (req, res, next) => {
 
 exports.getSwapFolder = async (req, res, next) => {
   const swapFolderId = req.params.swapFolderId;
+  const allDoctypes = await Doctype.find();
 
   try {
     const swapFolder = await SwapFolder.findById(swapFolderId)
-      .populate('userId')
+      .populate({ path: 'userId', populate: 'documentIds' })
       .populate({
         path: 'proRequestId',
-        populate: { path: 'requestedDocIds', populate: 'doctypeId' },
+        populate: {
+          path: 'requestedDocIds',
+          populate: [
+            {
+              path: 'documentIds',
+              populate: 'doctypeId',
+            },
+            'doctypeId',
+          ],
+        },
       });
 
     if (!swapFolder) {
@@ -48,12 +60,76 @@ exports.getSwapFolder = async (req, res, next) => {
       throw error;
     }
 
+    const swapFolderDocuments = [];
+
+    for (let requestedDoc of swapFolder.proRequestId.requestedDocIds) {
+      swapFolderDocuments.push(...requestedDoc.documentIds);
+    }
+
     res.render('pro/swap-folder', {
       pageTitle: 'Dossier de prêt',
       path: '/swap-folders',
       swapFolder: swapFolder,
+      swapFolderDocuments: swapFolderDocuments,
+      userDocuments: swapFolder.userId.documentIds,
+      allDoctypes: allDoctypes,
       makeGroupsOfRequestedDocs: helpers.makeGroupsOfRequestedDocs,
       displayRequestedDocAge: helpers.displayRequestedDocAge,
+      hasUserTheRightDocuments: helpers.hasUserTheRightDocuments,
+      monthToString: helpers.monthToString,
+      displayDate: helpers.displayDate,
+      isPast: helpers.isPast,
+      isPresent: helpers.isPresent,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getDocument = async (req, res, next) => {
+  const documentId = req.params.documentId;
+  try {
+    const document = await Document.findById(documentId).populate(
+      'doctypeId',
+      'title'
+    );
+
+    if (!document) {
+      const error = new Error(
+        "Ce document n'a pas été trouvé. Merci de vérifier qu'il existe toujours."
+      );
+      error.statusCode = 404;
+      throw error;
+    }
+
+    // Autorisation
+    const requestedDoc = await RequestedDoc.findOne({
+      documentIds: documentId,
+    });
+    const request = requestedDoc
+      ? await Request.findOne({ requestedDocIds: requestedDoc._id })
+      : null;
+    const swapFolder = request
+      ? await SwapFolder.findOne({ proRequestId: request._id })
+      : null;
+
+    if (!swapFolder || !req.pro.swapFolderIds.includes(swapFolder._id)) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à accéder au document demandé."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+    //
+
+    res.render('pro/document', {
+      pageTitle: document.doctypeId.title,
+      path: '/documents',
+      document: document,
+      displayDate: helpers.displayDate,
+      monthToString: helpers.monthToString,
+      isPresent: helpers.isPresent,
+      isPast: helpers.isPast,
     });
   } catch (err) {
     next(err);

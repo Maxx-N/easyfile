@@ -12,6 +12,7 @@ const requestedDocElements = [
   ...document.getElementsByClassName('user-requested-doc'),
 ];
 
+// Documents déjà présents
 for (let requestedDocElement of requestedDocElements) {
   const requestedDoc = getRequestedDoc(requestedDocElement);
   if (requestedDoc.documentIds.length > 0) {

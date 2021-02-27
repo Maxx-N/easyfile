@@ -2,68 +2,67 @@
 <html lang="en">
 <head>
   <%- include('../includes/head') %>
+  <link rel="stylesheet" href="/css/swap-folder.css">
 </head>
 <body class="no-scroll">
 <%- include('../includes/navbar') %>
-<link rel="stylesheet" href="/css/swap-folder.css">
 <main class="text-center">
     <div class="d-flex justify-content-around full-height">
         <div class="half-flex">        
             <div class="h3">Dossier de prêt numéro <%= swapFolder._id %></div>
             <p>Utilisateur : <%= swapFolder.userId.email %></p>
-                <div class="table-container">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr class="table-primary">
-                                <th scope="col">Type</th>
-                                <th scope="col">Emis(e) le</th>
-                                <th scope="col">Expire le</th>
-                            </tr>
-                        </thead>
-                    <tbody id="tableBody">
-                        <% for (let document of swapFolderDocuments) { %>
-                            <tr 
-                            class="pointer document-item table-light" 
-                            title="<%= document.title ? document.title : document.doctypeId.title %>"
-                            id="<%= document._id %>"
-                            >
-                                <td>
-                                    <a href="/documents/<%= document._id %>">
-                                        <%= document.doctypeId.title %> <%= document.month && document.year ?
-                                        ` - ${monthToString(document.month)} ${document.year}` : document.year?
-                                        ` - ${document.year}` : '' %>
-                                    </a>
-                                    <% if(document.title && !document.month && !document.year) { %>
-                                        -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <% if (document.issuanceDate) { %>
-                                        <span class="badge badge-dark badge-pill">
-                                            <%= displayDate(document.issuanceDate) %>
-                                        </span>
-                                    <% } else { %>
-                                        <span> - </span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <% if (document.expirationDate) { %>
-                                        <span 
-                                        class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
-                                        : isPresent(document.expirationDate) ? 'badge-warning'
-                                        : 'badge-success' %>">
-                                            <%= displayDate(document.expirationDate) %>
-                                        </span>
-                                    <% } else { %>
-                                        <span> - </span>
-                                    <% } %> 
-                                </td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                    </table>
-                </div>
-    
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr class="table-primary">
+                            <th scope="col">Type</th>
+                            <th scope="col">Emis(e) le</th>
+                            <th scope="col">Expire le</th>
+                        </tr>
+                    </thead>
+                <tbody id="tableBody">
+                    <% for (let document of swapFolderDocuments) { %>
+                        <tr 
+                        class="pointer document-item table-light" 
+                        title="<%= document.title ? document.title : document.doctypeId.title %>"
+                        id="<%= document._id %>"
+                        >
+                            <td>
+                                <a href="/documents/<%= document._id %>">
+                                    <%= document.doctypeId.title %> <%= document.month && document.year ?
+                                    ` - ${monthToString(document.month)} ${document.year}` : document.year?
+                                    ` - ${document.year}` : '' %>
+                                </a>
+                                <% if(document.title && !document.month && !document.year) { %>
+                                    -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (document.issuanceDate) { %>
+                                    <span class="badge badge-dark badge-pill">
+                                        <%= displayDate(document.issuanceDate) %>
+                                    </span>
+                                <% } else { %>
+                                    <span> - </span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (document.expirationDate) { %>
+                                    <span 
+                                    class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
+                                    : isPresent(document.expirationDate) ? 'badge-warning'
+                                    : 'badge-success' %>">
+                                        <%= displayDate(document.expirationDate) %>
+                                    </span>
+                                <% } else { %>
+                                    <span> - </span>
+                                <% } %> 
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+                </table>
+            </div>
         </div>
         <div class="full-height half-flex">
             <div id="requestsContainer" class="scrollable">
@@ -97,6 +96,7 @@
         </div>  
     </div>
 </main>
+<div id="isPro" class="hidden" isPro="false"></div>
 <div id="userDocuments" class="hidden" userDocuments="<%= JSON.stringify(userDocuments) %>"></div>
 <div id="allDoctypes" class="hidden" allDoctypes="<%= JSON.stringify(allDoctypes) %>"></div>
 <%- include('../includes/scripts') %>
