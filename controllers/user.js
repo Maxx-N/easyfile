@@ -276,6 +276,17 @@ exports.postEditDocument = async (req, res, next) => {
 
     await document.save();
 
+    // Les documents des requestedDocs correspondants sont tous supprimés de ceux-ci
+    const parentRequestedDocs = await RequestedDoc.find({
+      documentIds: document._id,
+    });
+
+    for (let parentRequestedDoc of parentRequestedDocs) {
+      parentRequestedDoc.documentIds = [];
+      await parentRequestedDoc.save();
+    }
+    //
+
     if (!editMode) {
       req.user.documentIds.push(document._id);
       await req.user.save();
@@ -314,6 +325,18 @@ exports.postDeleteDocument = async (req, res, next) => {
       return docId.toString() !== document._id.toString();
     });
     await req.user.save();
+
+    // Les documents des requestedDocs correspondants sont tous supprimés de ceux-ci
+    const parentRequestedDocs = await RequestedDoc.find({
+      documentIds: document._id,
+    });
+
+    for (let parentRequestedDoc of parentRequestedDocs) {
+      parentRequestedDoc.documentIds = [];
+      await parentRequestedDoc.save();
+    }
+    //
+
     res.redirect('/documents');
   } catch (err) {
     next(err);
