@@ -17,13 +17,13 @@ exports.getSignup = (req, res, next) => {
       email: '',
       password: '',
       confirmPassword: '',
-      isBank: '0',
+      isPro: '0',
     },
   });
 };
 
 exports.postSignup = async (req, res, next) => {
-  const isClient = req.body.isBank !== '1';
+  const isClient = req.body.isPro !== '1';
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -43,7 +43,7 @@ exports.postSignup = async (req, res, next) => {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-        isBank: req.body.isBank,
+        isPro: req.body.isPro,
       },
     });
   }
@@ -90,7 +90,7 @@ exports.getLogin = (req, res, next) => {
     oldInput: {
       email: '',
       password: '',
-      isBank: '0',
+      isPro: '0',
     },
     validationErrors: [],
   });
@@ -99,7 +99,7 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const isClient = !req.body.isBank;
+  const isClient = !req.body.isPro;
 
   try {
     const errorsArray = [];
@@ -151,7 +151,7 @@ exports.postLogin = async (req, res, next) => {
         oldInput: {
           email: email,
           password: password,
-          isBank: isClient ? '0' : '1',
+          isPro: isClient ? '0' : '1',
         },
         validationErrors: errorsArray,
       });

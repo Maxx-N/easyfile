@@ -383,6 +383,10 @@ exports.getSwapFolder = async (req, res, next) => {
     const swapFolder = await SwapFolder.findById(swapFolderId)
       .populate('userId')
       .populate({
+        path: 'proId',
+        select: 'email',
+      })
+      .populate({
         path: 'proRequestId',
         populate: {
           path: 'requestedDocIds',

@@ -25,7 +25,7 @@ router.post(
       .isEmail()
       .withMessage('Merci de saisir un e-mail valide.')
       .custom((value, { req }) => {
-        const isClient = req.body.isBank !== '1';
+        const isClient = req.body.isPro !== '1';
         if (isClient) {
           return User.findOne({ email: value }).then((userDoc) => {
             if (userDoc) {
