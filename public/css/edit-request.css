@@ -52,12 +52,12 @@
 }
 
 #alternativeInstruction {
-  margin-top : 0.25rem;
   padding: 0.5rem;
-  font-size: 0.8rem;
+  height: 60px;
+  font-size: 14px;
   color: var(--blue);
-  max-height: calc(20% - 2rem);
   font-weight: bold;
+  margin: 5px;
 }
 
 .border-info {
@@ -65,7 +65,7 @@
 }
 
 #tableContainer {
-  height: calc(80% - 2rem);
+  height: calc(90% - 90px);
   overflow-x: hidden;
   overflow-y: auto;
   width: auto;
@@ -77,7 +77,7 @@
 }
 
 #tableContainer::-webkit-scrollbar {
-  width: 0.5rem;
+  width: 1em;
 }
 
 #tableContainer::-webkit-scrollbar-track {
@@ -98,3 +98,4 @@
   width: 95%;
   margin: 0 auto;
 }
+

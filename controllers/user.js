@@ -362,7 +362,7 @@ exports.getSwapFolders = async (req, res, next) => {
     }
 
     res.render('user/swap-folders', {
-      pageTitle: 'Dossiers de prêt',
+      pageTitle: 'Dossiers d\'échange',
       path: '/swap-folders',
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
@@ -400,7 +400,7 @@ exports.getSwapFolder = async (req, res, next) => {
         },
       });
     if (!swapFolder) {
-      const error = new Error("Le dossier de prêt n'a pu être trouvé.");
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
       error.statusCode = 404;
       throw error;
     }
@@ -412,7 +412,7 @@ exports.getSwapFolder = async (req, res, next) => {
     }
 
     res.render('user/swap-folder', {
-      pageTitle: 'Dossier de prêt',
+      pageTitle: 'Dossier d\'échange',
       path: '/swap-folders',
       swapFolder: swapFolder,
       userDocuments: userDocuments,

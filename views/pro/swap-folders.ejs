@@ -6,26 +6,28 @@
 </head>
 <body>
 <%- include('../includes/navbar') %>
+<%- include('../includes/page-title') %>
 <main class="text-center">
-<a class="btn btn-info" href="/pro/enter-client-email">Nouveau</a>
-<div class="h1">Les dossiers de prêt</div>
-<div class="list-group">
-  <% for (let sf of swapFolders) { %>
-      <div 
-      id="<%= sf._id %>"
-      class="list-group-item d-flex justify-content-between pointer swap-folder-item"
-      >
-        <div>N° <%= sf._id %></div>
-          <a href="/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
-          <div>
-              Groupes de documents fournis :
-              <span class="<%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) === 0 ? 'text-danger' : getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) < getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) ? 'text-warning' : 'text-success' %>">
-                  <%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) %> / <%= getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) %> 
-              </span>
+    <div class="top-btn-container">
+        <a class="btn btn-info" href="/pro/enter-client-email">Nouveau</a>
+    </div>
+    <div class="list-group scroll-container-if-top-btn">
+      <% for (let sf of swapFolders) { %>
+          <div 
+          id="<%= sf._id %>"
+          class="list-group-item d-flex justify-content-between pointer swap-folder-item"
+          >
+            <div>N° <%= sf._id %></div>
+              <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
+              <div>
+                  Groupes de documents fournis :
+                  <span class="<%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) === 0 ? 'text-danger' : getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) < getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) ? 'text-warning' : 'text-success' %>">
+                      <%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) %> / <%= getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) %> 
+                  </span>
+              </div>
           </div>
-      </div>
-  <% } %>
-</div>
+      <% } %>
+    </div>
 </main>
 <div id="isPro" class="hidden" isPro="true"></div>
 <%- include('../includes/scripts') %>

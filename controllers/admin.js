@@ -10,7 +10,7 @@ exports.getDoctypes = async (req, res, next) => {
     const doctypes = await Doctype.find();
     helpers.sortByTitle(doctypes);
     res.render('admin/doctypes', {
-      pageTitle: 'Doc Types',
+      pageTitle: 'Les types de documents',
       path: '/admin/doctypes',
       doctypes: doctypes,
     });
@@ -23,7 +23,7 @@ exports.getDoctypes = async (req, res, next) => {
 
 exports.getAddDoctype = (req, res, next) => {
   res.render('admin/add-doctype', {
-    pageTitle: 'Nouveau Doctype',
+    pageTitle: 'Nouveau type de document',
     path: '/admin/doctypes',
     validationErrors: [],
     errorMessages: [],

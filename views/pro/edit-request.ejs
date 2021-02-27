@@ -7,9 +7,11 @@
 </head>
 <body class="no-scroll">
 <%- include('../includes/navbar') %>
+<%- include('../includes/page-title') %>
 <main class="text-center">
     <div class="d-flex justify-content-around full-height">        
-        <div id="firstColumn" class="text-center center-half full-flex">
+        <div id="firstColumn" class="text-center full-flex full-height">
+            <div class="top-btn-container"></div>
             <div id="infoList" class="list-group"></div>
             <div id="selectors" class="form-group">
                 <select
@@ -34,13 +36,14 @@
             </div>
         </div>
 
-        <div id="secondColumn" class="full-flex full-height invisible">   
+        <div id="secondColumn" class="full-flex invisible full-height">   
             <form         
             method="POST"
             action="/pro/edit-request"
             id="addRequestedDocForm"
+            class="top-btn-container"
             >     
-            <input type="hidden" name="requestId" value="<%= request._id %>">  
+            <input type="hidden" name="requestId" value="<%= request._id %>"/> 
                 <button id="submitBtn" type="button" class="btn btn-primary">
                   Valider la requête
                 </button>

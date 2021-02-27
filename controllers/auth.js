@@ -187,7 +187,7 @@ exports.getEditProfile = (req, res, next) => {
   if (req.user) {
     const user = req.user;
     return res.render('auth/edit-profile', {
-      pageTitle: 'Modification du profil',
+      pageTitle: `Modification du profil - ${user.email}`,
       path: '/edit-profile',
       email: user.email,
       errorMessages: [],

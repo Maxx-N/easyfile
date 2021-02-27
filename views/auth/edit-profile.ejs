@@ -6,13 +6,16 @@
   </head>
   <body>
     <%- include('../includes/navbar') %>
+    <%- include('../includes/page-title') %>
     <main class="text-center">
-      <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
+      <div class="top-btn-container">
+          <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
+      </div>
       <%- include('../includes/error-feedback') %>
       <% if (isAuthenticated) { %>
+        <div class="scroll-container-if-top-btn">
             <form class="text-center center-half" method="POST" action="/edit-profile">
                 <fieldset>
-                <legend><%= email %></legend>
                 <div class="form-group">
                     <label for="doctypeId">Genre</label>
                     <select
@@ -98,6 +101,7 @@
                 <button type="submit" class="btn btn-primary">Modifier</button>
                 </fieldset>
             </form>
+            </div>
       <% } %>
     </main>
     <%- include('../includes/scripts') %>

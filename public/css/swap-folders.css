@@ -7,5 +7,5 @@
 }
 
 .swap-folder-item:hover {
-  border: 0.2rem solid #1f9bcf;
+  border: 0.2rem solid var(--info);
 }

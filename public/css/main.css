@@ -1,20 +1,83 @@
 @import '/css/fontawesome.min.css';
 
-main {
-  height: calc(100vh - 110px - 1rem);
-  padding: 1rem;
+body {
+  height: 100vh;
+  overflow: hidden;
 }
 
 .navbar {
-  height: 90px;
+  height: 80px;
+}
+
+#pageTitle {
+  height: 60px;
+  font-size: 30px;
+  margin: 0;
+  color: whitesmoke;
+  background-color: var(--info);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  height: calc(100vh - 170px);
+  margin: 20px;
+  margin-bottom: 10px;
+  /* border : 2px solid black; */
+}
+
+.top-btn-container {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-container-if-top-btn {
+  height: calc(90% - 20px);
+  overflow: auto;
+}
+
+.table-container-if-top-btn::-webkit-scrollbar {
+  width: 1em;
+}
+.table-container-if-top-btn::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+.table-container-if-top-btn th {
+  position: sticky;
+  top: 0;
+  border-top: 1rem;
+  background-color: whitesmoke;
+}
+
+.scroll-container-if-top-btn {
+  height: calc(90% - 20px);
+  overflow: auto;
+}
+
+.scroll-container-if-top-btn::-webkit-scrollbar {
+  width: 1em;
+}
+.scroll-container-if-top-btn::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+#pageTitle div {
+  vertical-align: middle;
+}
+
+.btn-info {
+  background-color: var(--blue);
 }
 
 .full-height {
   height: 100%;
-}
-
-.full-flex {
-  flex-basis: 100%;
 }
 
 .half-flex {
@@ -23,12 +86,6 @@ main {
 
 .btn {
   border-radius: 2rem;
-  margin: 1rem;
-}
-
-.center-half {
-  width: 50%;
-  margin: auto;
 }
 
 .pointer {
@@ -37,7 +94,7 @@ main {
 
 a:hover {
   text-decoration: none;
-  color: #1f9bcf;
+  color: var(--blue);
 }
 
 .list-inline {
@@ -46,7 +103,7 @@ a:hover {
 
 .full-flex {
   flex-basis: 100%;
-  margin: 2rem;
+  margin: 0 2rem;
 }
 
 .column-separation {
@@ -101,12 +158,12 @@ a:hover {
   width: 80%;
   margin: 1rem auto;
   padding: 0.5rem 0;
-  border: 1px solid #1f9bcf;
-  color: #1f9bcf;
+  border: 1px solid var(--blue);
+  color: var(--blue);
 }
 
 .user-messages .h3 {
-  color: #1f9bcf;
+  color: var(--blue);
 }
 
 ul.user-messages li {
@@ -120,21 +177,41 @@ ul.user-messages li {
 
 /* documents */
 
+.embed-doc {
+  width: 100%;
+  height: calc(70% - 20px);
+}
+
+.document-detail-list-container {
+  height: calc(30% - 20px);
+  overflow-y: auto;
+}
+
+.document-detail-list-container::-webkit-scrollbar {
+  width: 1em;
+}
+.document-detail-list-container::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
 .document-item {
   border-radius: 50px;
 }
 
 .document-item:hover {
-  border: 0.2rem solid #1f9bcf;
+  border-top: 0.2rem solid var(--blue);
+  border-bottom: 0.2rem solid var(--blue);
+  width: calc(100% - 0.4rem);
 }
 
-.list-group-item > .h3 {
+/* .list-group-item > .h3 {
   margin: auto;
-}
+} */
 
 #oldFile {
-  color: #1f9bcf;
-  border: #1f9bcf solid 0.1rem;
+  color: var(--blue);
+  border: var(--blue) solid 0.1rem;
   padding: 0.1rem;
   margin: 0.5rem;
   display: block;

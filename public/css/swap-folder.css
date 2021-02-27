@@ -1,33 +1,11 @@
 .request {
-  padding: 0 1rem 0.5rem 1rem;
   border-radius: 10px;
-  margin: 2rem 0.5rem;
-  /* border: 2px solid var(--gray); */
-  position: relative;
   max-width: 100%;
-  position: relative;
 }
 
 .request .btn {
   font-size: 1rem;
-  height: 100%;
 }
-
-/* .cross {
-  height: 1rem;
-}
-
-.delete-cross {
-  position: absolute;
-  right: 0.5rem;
-  top: 0.5rem;
-  border: none;
-  background-color: transparent;
-}
-
-.delete-cross:hover {
-  color: red;
-} */
 
 .choice {
   background-color: var(--gray-dark);
@@ -36,18 +14,14 @@
 }
 
 .group {
-  margin: 0.5rem 0;
+  margin: 0;
+  margin-bottom: 0.5rem;
   border-radius: 10px;
   border: 1px solid var(--gray);
 }
 
 .list-group-item {
   border-radius: 10px;
-}
-
-#requestsContainer {
-  height: 90%;
-  width: 100%;
 }
 
 .user-requested-doc {
@@ -91,22 +65,14 @@
   padding: 0.25rem;
 }
 
-.table-container {
-  height: 80%;
-  overflow: auto;
-  margin: 0 1rem;
-}
-
-.table-container::-webkit-scrollbar {
-  display: none;
-}
-
-.table-container th {
-  position: sticky;
-  top: 0;
-  border-top: 1rem;
-}
-
 .added-group-title {
   background-color: var(--success);
+}
+
+.left {
+  margin-right: 10px;
+}
+
+.right {
+  margin-left: 10px;
 }

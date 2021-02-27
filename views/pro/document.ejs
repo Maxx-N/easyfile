@@ -5,15 +5,14 @@
   </head>
   <body>
     <%- include('../includes/navbar') %>
+    <%- include('../includes/page-title') %>
     <main class="text-center">
-      <div class="h1"><%= document.doctypeId.title %></div>
       <embed
         src="../../<%= document.fileUrl %>"
-        width="1000vw"
-        height="500vh"
-        padding="0"
+        class="embed-doc"
       />
-      <ul class="list-group">
+      <div class="document-detail-list-container">
+      <ul class="list-group ">
         <% if (document.title) { %>
         <li
           class="list-group-item d-flex justify-content-around align-items-center"
@@ -54,6 +53,7 @@
         </li>
         <% } %>
       </ul>
+    </div>
       
     </main>
     <%- include('../includes/scripts') %>

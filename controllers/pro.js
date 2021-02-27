@@ -31,7 +31,7 @@ exports.getSwapFolders = async (req, res, next) => {
     }
 
     res.render('pro/swap-folders', {
-      pageTitle: 'Dossiers de prêt',
+      pageTitle: "Dossiers d'échange",
       path: '/swap-folders',
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
@@ -64,7 +64,7 @@ exports.getSwapFolder = async (req, res, next) => {
       });
 
     if (!swapFolder) {
-      const error = new Error("Le dossier de prêt n'a pu être trouvé.");
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
       error.statusCode = 404;
       throw error;
     }
@@ -76,7 +76,7 @@ exports.getSwapFolder = async (req, res, next) => {
     }
 
     res.render('pro/swap-folder', {
-      pageTitle: 'Dossier de prêt',
+      pageTitle: `Client : ${swapFolder.userId.email} - Dossier d'échange n° ${swapFolder._id}`,
       path: '/swap-folders',
       swapFolder: swapFolder,
       swapFolderDocuments: swapFolderDocuments,
@@ -151,7 +151,7 @@ exports.postDeleteSwapFolder = async (req, res, next) => {
   try {
     const swapFolder = await SwapFolder.findById(swapFolderId);
     if (!swapFolder) {
-      const error = new Error("Le dossier de prêt n'a pu être trouvé.");
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
       error.statusCode = 404;
       throw error;
     }
@@ -159,7 +159,7 @@ exports.postDeleteSwapFolder = async (req, res, next) => {
     const user = await User.findById(swapFolder.userId);
     if (!user) {
       const error = new Error(
-        "L'utilisateur correspondant à ce dossier de prêt n'a pu être trouvé."
+        "L'utilisateur correspondant à ce dossier d'échange n'a pu être trouvé."
       );
       error.statusCode = 404;
       throw error;
@@ -200,7 +200,7 @@ exports.postDeleteSwapFolder = async (req, res, next) => {
 
 exports.getEnterClientEmail = (req, res, next) => {
   res.render('pro/enter-client-email', {
-    pageTitle: 'Dossiers de prêt',
+    pageTitle: "Nouveau dossier d'échange",
     path: '/swap-folders',
     oldInput: {
       email: '',
@@ -219,7 +219,7 @@ exports.postEnterClientEmail = async (req, res, next) => {
       return err.msg;
     });
     return res.render('pro/enter-client-email', {
-      pageTitle: 'Dossiers de prêt',
+      pageTitle: "Dossiers d'échange",
       path: '/swap-folders',
       oldInput: {
         email: email,
@@ -312,7 +312,7 @@ exports.getAddSwapFolder = async (req, res, next) => {
     }
 
     res.render('pro/add-swap-folder', {
-      pageTitle: 'Nouveau dossier de prêt',
+      pageTitle: "Nouveau dossier d'échange",
       path: '/swap-folders',
       user: user,
     });
@@ -383,7 +383,7 @@ exports.getEditRequest = async (req, res, next) => {
       throw error;
     }
     res.render('pro/edit-request', {
-      pageTitle: 'Création de requête',
+      pageTitle: 'Edition de requête',
       path: '/swap-folders',
       doctypes: helpers.sortByTitle(doctypes),
       request: request,

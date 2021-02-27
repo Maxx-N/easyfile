@@ -6,9 +6,9 @@
   </head>
   <body>
     <%- include('../includes/navbar') %>
+    <%- include('../includes/page-title') %>
     <main class="text-center">
-      <div class="h1">Création du dossier de prêt</div>
-      <div class="p">Formulaire ici (<%= user.email %>)</div>
+<div class="top-btn-container">
       <form
         class="text-center center-half"
         method="POST"
@@ -35,6 +35,7 @@
           </button>
         </fieldset>
       </form>
+    </div>
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>

@@ -131,8 +131,8 @@ function createDoctype() {
   const selectedOption = getSelectedOption();
   createListItem(selectedOption.textContent);
   hide(doctypeSelector);
-  createCancelButton();
   createAddButton();
+  createCancelButton();
   createAgeSelector(selectedOption);
   createTitleInput();
 }
@@ -173,7 +173,7 @@ function createCancelButton() {
   button.id = 'cancelDocButton';
   button.classList.add('btn', 'btn-danger');
   button.textContent = 'Annuler';
-  firstColumn.prepend(button);
+  document.getElementsByClassName('top-btn-container')[0].appendChild(button);
   button.addEventListener('click', clearDoc);
 }
 
@@ -182,7 +182,7 @@ function createAddButton() {
   button.id = 'addDocButton';
   button.classList.add('btn', 'btn-info');
   button.textContent = 'Ajouter à la requête';
-  firstColumn.prepend(button);
+  document.getElementsByClassName('top-btn-container')[0].appendChild(button);
   button.addEventListener('click', addDoc);
 }
 

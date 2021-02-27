@@ -6,6 +6,7 @@
   </head>
   <body>
     <%- include('../includes/navbar') %>
+    <%- include('../includes/page-title') %>
     <main>
       <%- include('../includes/error-feedback') %>
       <form
@@ -14,7 +15,6 @@
         action="/admin/add-doctype"
       >
         <fieldset>
-          <legend>Nouveau type de document</legend>
           <div class="form-group">
             <label for="title">Nom</label>
             <input
