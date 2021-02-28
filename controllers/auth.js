@@ -220,7 +220,7 @@ exports.postEditProfile = async (req, res, next) => {
   const gender = req.body.gender ? req.body.gender : null;
   const firstName = req.body.firstName ? req.body.firstName : null;
   const lastName = req.body.lastName ? req.body.lastName : null;
-  const birthDate = new Date(req.body.birthDate ? req.body.birthDate : null);
+  const birthDate = req.body.birthDate ? new Date(req.body.birthDate) : null;
   const phoneNumber = req.body.phoneNumber ? req.body.phoneNumber : null;
   const address = req.body.address ? req.body.address : null;
 
@@ -340,5 +340,3 @@ exports.postEditPassword = async (req, res, next) => {
     return next(err);
   }
 };
-
-
