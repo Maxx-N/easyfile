@@ -72,33 +72,43 @@
         <div class="full-height half-flex right">
             <div id="requestsContainer" class="full-height">
                 <div class="request full-height">
-                    <div class="d-flex justify-content-around align-items-center top-btn-container">
+                    <div class="top-btn-container">
                         <a title="Modifier les documents demandés" class="btn btn-info edit-btn" href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"><i class="fas fa-edit"></i></a>
                         <form id="resettingForm" action="/pro/reset-request/<%= swapFolder.proRequestId._id %>" method="POST">
                             <button title="Supprimer tous les documents demandés" id="resettingButton" class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button>
                         </form>
                     </div>
-                    <div class="scroll-container-if-top-btn">
-                        <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
-                            <div class="list-group group">
-                                <% if (group.length > 1) { %>
-                                    <div class="choice">Au choix : </div>
-                                <% } %>
-                                <% for (let doc of group) { %>
-                                    <div class="list-group-item user-requested-doc" requestedDoc="<%= JSON.stringify(doc) %>">
-                                        <span><%= doc.doctypeId.title %></span>
-                                        <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
-                                        <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
-                                        <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
-                                            <span class="check-container">
-                                                <i class="fas fa-check"></i>
-                                            </span>
-                                        <% } %>
-                                    </div>
-                                <% } %>
-                            </div>
-                        <% } %>
-                    </div>
+
+                    <% if (swapFolder.proRequestId.requestedDocIds.length > 0) { %>
+                        <div class="scroll-container-if-top-btn">
+                            <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
+                                <div class="list-group group">
+                                    <% if (group.length > 1) { %>
+                                        <div class="choice">Au choix : </div>
+                                    <% } %>
+                                    <% for (let doc of group) { %>
+                                        <div class="list-group-item user-requested-doc" requestedDoc="<%= JSON.stringify(doc) %>">
+                                            <span><%= doc.doctypeId.title %></span>
+                                            <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
+                                            <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
+                                            <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
+                                                <span class="check-container">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <div class="welcome-messages-container noRequestedDocMessage">
+                                <div>Vous n'avez actuellement demandé aucun document.</div>
+                                <div>Cliquez sur le <span class="blue-text">bouton bleu</span> pour en demander.</div>
+                                <div><i class="fas fa-check"></i> Les documents que votre client possède déjà seront cochés.</div>
+                                <div><i class="fas fa-check check-success"></i> Les coches passeront au <span class="check-success">vert</span> et les documents seront ajoutés à gauche au fur et à mesure que votre client vous les partagera.</div>
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </div>    

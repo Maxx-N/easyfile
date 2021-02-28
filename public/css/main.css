@@ -61,8 +61,7 @@ main {
   overflow: auto;
 }
 
-::-webkit-scrollbar
- {
+::-webkit-scrollbar {
   width: 1em;
 }
 ::-webkit-scrollbar-track {
@@ -256,4 +255,27 @@ span.email {
   align-items: center;
   font-size: 2em;
   border-radius: 50px;
+  max-height: calc(90% - 20px);
+  overflow: auto;
 }
+
+.welcome-messages-container.noRequestedDocMessage {
+  width: 100%;
+  height: calc(90% - 20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  font-size: 1.5em;
+}
+
+
+
+.noRequestedDocMessage .check-success {
+  color: var(--success);
+}
+
+.blue-text {
+  color: var(--blue) !important;
+}
+
+

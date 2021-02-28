@@ -11,23 +11,30 @@
     <div class="top-btn-container">
         <a class="btn btn-info" href="/pro/enter-client-email">Nouveau</a>
     </div>
-    <div class="list-group scroll-container-if-top-btn">
-      <% for (let sf of swapFolders) { %>
-          <div 
-          id="<%= sf._id %>"
-          class="list-group-item d-flex justify-content-between pointer swap-folder-item"
-          >
-            <div>N° <%= sf._id %></div>
-              <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
-              <div>
-                  Groupes de documents fournis :
-                  <span class="<%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) === 0 ? 'text-danger' : getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) < getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) ? 'text-warning' : 'text-success' %>">
-                      <%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) %> / <%= getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) %> 
-                  </span>
-              </div>
-          </div>
-      <% } %>
-    </div>
+    <% if (swapFolders.length > 0) { %>
+        <div class="list-group scroll-container-if-top-btn">
+            <% for (let sf of swapFolders) { %>
+                <div 
+                id="<%= sf._id %>"
+                class="list-group-item d-flex justify-content-between pointer swap-folder-item"
+                >
+                    <div>N° <%= sf._id %></div>
+                    <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
+                    <div>
+                        Groupes de documents fournis :
+                        <span class="<%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) === 0 ? 'text-danger' : getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) < getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) ? 'text-warning' : 'text-success' %>">
+                            <%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) %> / <%= getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) %> 
+                        </span>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    <% } else { %>
+        <div class="welcome-messages-container">
+            <span>Vous n'avez actuellement aucun dossier d'échange.</span>
+            <span> Ajoutez-en un pour accéder à la liste !</span>
+        </div>
+    <% } %>
 </main>
 <div id="isPro" class="hidden" isPro="true"></div>
 <%- include('../includes/scripts') %>

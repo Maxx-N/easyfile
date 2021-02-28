@@ -383,7 +383,7 @@ exports.getEditRequest = async (req, res, next) => {
       throw error;
     }
     res.render('pro/edit-request', {
-      pageTitle: 'Edition de requête',
+      pageTitle: 'Demande de documents',
       path: '/swap-folders',
       doctypes: helpers.sortByTitle(doctypes),
       request: request,

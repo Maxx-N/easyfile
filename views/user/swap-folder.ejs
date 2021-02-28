@@ -8,92 +8,99 @@
 <%- include('../includes/navbar') %>
 <%- include('../includes/page-title') %>
 <main class="text-center">
-    <div class="d-flex justify-content-around full-height">
-        <div class="half-flex full-height left">        
-            <div class="table-container">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="table-primary">
-                            <th scope="col">Type</th>
-                            <th scope="col">Emis(e) le</th>
-                            <th scope="col">Expire le</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        <% for (let document of swapFolderDocuments) { %>
-                            <tr 
-                            class="pointer document-item table-light" 
-                            title="<%= document.title ? document.title : document.doctypeId.title %>"
-                            id="<%= document._id %>"
-                            >
-                                <td>
-                                    <a href="/documents/<%= document._id %>">
-                                        <%= document.doctypeId.title %> <%= document.month && document.year ?
-                                        ` - ${monthToString(document.month)} ${document.year}` : document.year?
-                                        ` - ${document.year}` : '' %>
-                                    </a>
-                                    <% if(document.title && !document.month && !document.year) { %>
-                                        -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <% if (document.issuanceDate) { %>
-                                        <span class="badge badge-dark badge-pill">
-                                            <%= displayDate(document.issuanceDate) %>
-                                        </span>
-                                    <% } else { %>
-                                        <span> - </span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <% if (document.expirationDate) { %>
-                                        <span 
-                                        class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
-                                        : isPresent(document.expirationDate) ? 'badge-warning'
-                                        : 'badge-success' %>">
-                                            <%= displayDate(document.expirationDate) %>
-                                        </span>
-                                    <% } else { %>
-                                        <span> - </span>
-                                    <% } %> 
-                                </td>
+    <% if (swapFolder.proRequestId.requestedDocIds.length > 0) { %>
+        <div class="d-flex justify-content-around full-height">
+            <div class="half-flex full-height left">        
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr class="table-primary">
+                                <th scope="col">Type</th>
+                                <th scope="col">Emis(e) le</th>
+                                <th scope="col">Expire le</th>
                             </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="full-height half-flex right">
-            <div id="requestsContainer" class="scroll-container">
-                <div class="request">
-                    <button class="btn btn-primary validate-button hidden">Envoyer</button>
-                    <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
-                        <div class="list-group group">
-                            <% if (group.length > 1) { %>
-                                <div class="choice">Au choix : </div>
-                            <% } %>
-                            <% for (let doc of group) { %>
-                                <div 
-                                class="list-group-item user-requested-doc"
-                                requestedDoc="<%= JSON.stringify(doc) %>"
-                                isSelected="false"
+                        </thead>
+                        <tbody id="tableBody">
+                            <% for (let document of swapFolderDocuments) { %>
+                                <tr 
+                                class="pointer document-item table-light" 
+                                title="<%= document.title ? document.title : document.doctypeId.title %>"
+                                id="<%= document._id %>"
                                 >
-                                    <span><%= doc.doctypeId.title %></span>
-                                    <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
-                                    <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
-                                    <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
-                                        <span class="check-container pointer">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                    <% } %>
-                                </div>
+                                    <td>
+                                        <a href="/documents/<%= document._id %>">
+                                            <%= document.doctypeId.title %> <%= document.month && document.year ?
+                                            ` - ${monthToString(document.month)} ${document.year}` : document.year?
+                                            ` - ${document.year}` : '' %>
+                                        </a>
+                                        <% if(document.title && !document.month && !document.year) { %>
+                                            -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if (document.issuanceDate) { %>
+                                            <span class="badge badge-dark badge-pill">
+                                                <%= displayDate(document.issuanceDate) %>
+                                            </span>
+                                        <% } else { %>
+                                            <span> - </span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if (document.expirationDate) { %>
+                                            <span 
+                                            class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
+                                            : isPresent(document.expirationDate) ? 'badge-warning'
+                                            : 'badge-success' %>">
+                                                <%= displayDate(document.expirationDate) %>
+                                            </span>
+                                        <% } else { %>
+                                            <span> - </span>
+                                        <% } %> 
+                                    </td>
+                                </tr>
                             <% } %>
-                        </div>
-                    <% } %>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>  
-    </div>
+            <div class="full-height half-flex right">
+                <div id="requestsContainer" class="scroll-container">
+                    <div class="request">
+                        <button class="btn btn-primary validate-button hidden">Envoyer</button>
+                        <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
+                            <div class="list-group group">
+                                <% if (group.length > 1) { %>
+                                    <div class="choice">Au choix : </div>
+                                <% } %>
+                                <% for (let doc of group) { %>
+                                    <div 
+                                    class="list-group-item user-requested-doc"
+                                    requestedDoc="<%= JSON.stringify(doc) %>"
+                                    isSelected="false"
+                                    >
+                                        <span><%= doc.doctypeId.title %></span>
+                                        <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
+                                        <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
+                                        <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
+                                            <span class="check-container pointer">
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>  
+        </div>
+    <% } else{ %>
+        <div class="welcome-messages-container">
+            <span>Aucun document n'a actuellement été requis</span>
+            <span>dans ce dossier d'échange </span>
+        </div>
+    <% } %>
 </main>
 <div id="isPro" class="hidden" isPro="false"></div>
 <div id="userDocuments" class="hidden" userDocuments="<%= JSON.stringify(userDocuments) %>"></div>
