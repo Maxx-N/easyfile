@@ -99,7 +99,7 @@ exports.getEditDocument = async (req, res, next) => {
       oldFileName = oldFileArray.join('-');
 
       return res.render('user/edit-document', {
-        pageTitle: 'Modification de document',
+        pageTitle: `Modification de votre document`,
         path: '/documents',
         doctypes: doctypes,
         validationErrors: [],
@@ -362,7 +362,7 @@ exports.getSwapFolders = async (req, res, next) => {
     }
 
     res.render('user/swap-folders', {
-      pageTitle: 'Dossiers d\'échange',
+      pageTitle: 'Mes dossiers d\'échange',
       path: '/swap-folders',
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
@@ -412,7 +412,7 @@ exports.getSwapFolder = async (req, res, next) => {
     }
 
     res.render('user/swap-folder', {
-      pageTitle: 'Dossier d\'échange',
+      pageTitle: `Professionnel : ${swapFolder.proId.email} - Dossier d'échange n° ${swapFolder._id}`,
       path: '/swap-folders',
       swapFolder: swapFolder,
       userDocuments: userDocuments,

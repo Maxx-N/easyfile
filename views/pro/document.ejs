@@ -7,10 +7,12 @@
     <%- include('../includes/navbar') %>
     <%- include('../includes/page-title') %>
     <main class="text-center">
-      <embed
-        src="../../<%= document.fileUrl %>"
-        class="embed-doc"
-      />
+      <div class="embed-doc-container">
+          <embed
+          src="../../<%= document.fileUrl %>"
+          class="embed-doc"
+          />
+      </div>
       <div class="document-detail-list-container">
       <ul class="list-group ">
         <% if (document.title) { %>
@@ -54,7 +56,6 @@
         <% } %>
       </ul>
     </div>
-      
     </main>
     <%- include('../includes/scripts') %>
     <script src="/js/document.js"></script>

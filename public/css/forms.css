@@ -2,10 +2,6 @@ select {
   text-align-last: center;
 }
 
-legend {
-  margin: 2rem auto;
-}
-
 .form-group {
   padding-bottom: 1rem;
 }

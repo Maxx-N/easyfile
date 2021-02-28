@@ -10,13 +10,15 @@
     <main>
       <%- include('../includes/error-feedback') %>
       <form
-        class="text-center center-half"
+        class="text-center center-half full-height"
         method="POST"
         action="/edit-document<%= editMode ? '?edit=true' : '' %>"
         enctype="multipart/form-data"
       >
-        <fieldset>
-          <legend><%= editMode ? 'Modification de ' : 'Nouveau ' %>document</legend>
+      <div class="top-btn-container">
+      <button type="submit" class="btn btn-primary"><%= editMode ? 'Modifier !' : 'Ajouter !' %></button>
+    </div>
+    <div class="scroll-container-if-top-btn">
           <div class="form-group">
             <label for="file">Fichier</label>
             <input
@@ -120,11 +122,10 @@
             />
             <small class="form-text text-muted">Passée ou actuelle.</small>
           </div>
+        </div>
           <% if (editMode) { %>
               <input type="hidden" name="documentId" value="<%= documentId %>" />
           <% } %>
-          <button type="submit" class="btn btn-primary"><%= editMode ? 'Modifier !' : 'Ajouter !' %></button>
-        </fieldset>
       </form>
     </main>
     <%- include('../includes/scripts') %>

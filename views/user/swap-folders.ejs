@@ -8,8 +8,7 @@
 <%- include('../includes/navbar') %>
 <%- include('../includes/page-title') %>
 <main class="text-center">
-<div class="h1">Mes dossiers d'échange</div>
-    <div class="list-group">
+    <div class="list-group scroll-container">
         <% for (let sf of swapFolders) { %>
             <div 
             id="<%= sf._id %>"

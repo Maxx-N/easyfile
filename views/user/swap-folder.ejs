@@ -4,14 +4,12 @@
   <%- include('../includes/head') %>
   <link rel="stylesheet" href="/css/swap-folder.css">
 </head>
-<body class="no-scroll">
+<body>
 <%- include('../includes/navbar') %>
 <%- include('../includes/page-title') %>
 <main class="text-center">
     <div class="d-flex justify-content-around full-height">
-        <div class="half-flex">        
-            <div class="h3">Dossier d'échange n° <%= swapFolder._id %></div>
-            <p>Professionnel : <%= swapFolder.proId.email %></p>
+        <div class="half-flex full-height left">        
             <div class="table-container">
                 <table class="table table-hover">
                     <thead>
@@ -21,52 +19,52 @@
                             <th scope="col">Expire le</th>
                         </tr>
                     </thead>
-                <tbody id="tableBody">
-                    <% for (let document of swapFolderDocuments) { %>
-                        <tr 
-                        class="pointer document-item table-light" 
-                        title="<%= document.title ? document.title : document.doctypeId.title %>"
-                        id="<%= document._id %>"
-                        >
-                            <td>
-                                <a href="/documents/<%= document._id %>">
-                                    <%= document.doctypeId.title %> <%= document.month && document.year ?
-                                    ` - ${monthToString(document.month)} ${document.year}` : document.year?
-                                    ` - ${document.year}` : '' %>
-                                </a>
-                                <% if(document.title && !document.month && !document.year) { %>
-                                    -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <% if (document.issuanceDate) { %>
-                                    <span class="badge badge-dark badge-pill">
-                                        <%= displayDate(document.issuanceDate) %>
-                                    </span>
-                                <% } else { %>
-                                    <span> - </span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <% if (document.expirationDate) { %>
-                                    <span 
-                                    class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
-                                    : isPresent(document.expirationDate) ? 'badge-warning'
-                                    : 'badge-success' %>">
-                                        <%= displayDate(document.expirationDate) %>
-                                    </span>
-                                <% } else { %>
-                                    <span> - </span>
-                                <% } %> 
-                            </td>
-                        </tr>
-                    <% } %>
-                </tbody>
+                    <tbody id="tableBody">
+                        <% for (let document of swapFolderDocuments) { %>
+                            <tr 
+                            class="pointer document-item table-light" 
+                            title="<%= document.title ? document.title : document.doctypeId.title %>"
+                            id="<%= document._id %>"
+                            >
+                                <td>
+                                    <a href="/documents/<%= document._id %>">
+                                        <%= document.doctypeId.title %> <%= document.month && document.year ?
+                                        ` - ${monthToString(document.month)} ${document.year}` : document.year?
+                                        ` - ${document.year}` : '' %>
+                                    </a>
+                                    <% if(document.title && !document.month && !document.year) { %>
+                                        -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (document.issuanceDate) { %>
+                                        <span class="badge badge-dark badge-pill">
+                                            <%= displayDate(document.issuanceDate) %>
+                                        </span>
+                                    <% } else { %>
+                                        <span> - </span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (document.expirationDate) { %>
+                                        <span 
+                                        class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
+                                        : isPresent(document.expirationDate) ? 'badge-warning'
+                                        : 'badge-success' %>">
+                                            <%= displayDate(document.expirationDate) %>
+                                        </span>
+                                    <% } else { %>
+                                        <span> - </span>
+                                    <% } %> 
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
                 </table>
             </div>
         </div>
-        <div class="full-height half-flex">
-            <div id="requestsContainer" class="scrollable">
+        <div class="full-height half-flex right">
+            <div id="requestsContainer" class="scroll-container">
                 <div class="request">
                     <button class="btn btn-primary validate-button hidden">Envoyer</button>
                     <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
