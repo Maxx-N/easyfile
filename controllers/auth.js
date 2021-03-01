@@ -159,12 +159,12 @@ exports.postLogin = async (req, res, next) => {
     if (isClient) {
       req.session.user = user;
       req.session.pro = null;
-      await req.session.save();
     } else {
       req.session.pro = pro;
       req.session.user = null;
-      await req.session.save();
     }
+    
+    await req.session.save();
     return res.redirect('/');
   } catch (err) {
     err.message =
