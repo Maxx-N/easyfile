@@ -12,13 +12,15 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const proRoutes = require('./routes/pro');
 
-const MONGODB_URI = require('./private').MONGODB_URI;
-const SECRET_SESSION = require('./private').SECRET_SESSION;
-const ADMIN_EMAIL = require('./private').ADMIN_EMAIL;
 const User = require('./models/user');
 const Pro = require('./models/pro');
 const isAdmin = require('./middleware/is-admin');
 
+// Variables d'environnement
+const MONGODB_URI = process.env.MONGODB_URI;
+const SECRET_SESSION = process.env.SECRET_SESSION;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const PORT = process.env.PORT;
 //
 
 const app = express();
@@ -144,5 +146,6 @@ app.use((err, req, res, next) => {
 });
 
 mongoose.connect(MONGODB_URI).then(() => {
-  app.listen(3000, { useNewUrlParser: true });
+  // app.listen(3000, { useNewUrlParser: true });
+  app.listen(PORT || 3000, { useNewUrlParser: true });
 });

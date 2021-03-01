@@ -11,3 +11,8 @@ select.invalid {
   border: 1px red solid;
 }
 
+.center-half {
+  width: 50%;
+  margin: 0 auto;
+}
+
