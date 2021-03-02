@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const multer = require('multer');
+// const helmet = require('helmet');
+// const compression = require('compression');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
@@ -45,6 +47,9 @@ const fileFilter = (req, file, cb) => {
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
+// app.use(helmet());
+// app.use(compression());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -107,7 +112,6 @@ app.use(async (req, res, next) => {
 
 app.use('/admin', isAdmin, adminRoutes);
 app.use(authRoutes);
-
 app.use(userRoutes);
 app.use('/pro', proRoutes);
 
@@ -119,6 +123,7 @@ app.use('/', (req, res, next) => {
   }
   res.redirect('/login');
 });
+
 
 app.use((err, req, res, next) => {
   if (!err.statusCode) {
@@ -146,6 +151,5 @@ app.use((err, req, res, next) => {
 });
 
 mongoose.connect(MONGODB_URI).then(() => {
-  // app.listen(3000, { useNewUrlParser: true });
   app.listen(PORT || 3000, { useNewUrlParser: true });
 });

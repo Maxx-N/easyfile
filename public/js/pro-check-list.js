@@ -45,6 +45,9 @@ function addListOfExistingTitles(requestedDocElement) {
         })
         .includes(doc._id);
     })
+    .filter((doc) => {
+      return doc.title;
+    })
     .sort((doc1, doc2) => {
       return getAgeOfADocument(doc1) - getAgeOfADocument(doc2);
     })

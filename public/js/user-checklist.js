@@ -40,6 +40,9 @@ function addListOfExistingTitles(requestedDocElement) {
         })
         .includes(doc._id);
     })
+    .filter((doc) => {
+      return doc.title;
+    })
     .sort((doc1, doc2) => {
       return getAgeOfADocument(doc1) - getAgeOfADocument(doc2);
     })
@@ -159,7 +162,6 @@ function showRequestedDocAsAdded(requestedDocElement) {
 function showAddedGroupsOfRequestedDocs() {
   const groups = [...document.getElementsByClassName('group')];
   for (let group of groups) {
-    console.log(group);
     const title = group.querySelector('.choice');
     const items = [...group.getElementsByClassName('user-requested-doc')];
 

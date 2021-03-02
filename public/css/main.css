@@ -11,7 +11,7 @@ body {
 
 #pageTitle {
   height: 60px;
-  font-size: 30px;
+  font-size: auto;
   margin: 0;
   color: whitesmoke;
   background-color: var(--info);
@@ -24,7 +24,6 @@ main {
   height: calc(100vh - 170px);
   margin: 20px;
   margin-bottom: 10px;
-  /* border: 2px solid black; */
 }
 
 .top-btn-container {
