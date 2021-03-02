@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,7 +8,8 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const multer = require('multer');
 // const helmet = require('helmet');
-// const compression = require('compression');
+const compression = require('compression');
+const morgan = require('morgan');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
@@ -48,8 +50,14 @@ const fileFilter = (req, file, cb) => {
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+
 // app.use(helmet());
-// app.use(compression());
+app.use(compression());
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -123,7 +131,6 @@ app.use('/', (req, res, next) => {
   }
   res.redirect('/login');
 });
-
 
 app.use((err, req, res, next) => {
   if (!err.statusCode) {
