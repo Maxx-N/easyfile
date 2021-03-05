@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 
@@ -135,6 +137,7 @@ exports.getDocument = async (req, res, next) => {
       pageTitle: document.doctypeId.title,
       path: '/documents',
       document: document,
+      doesFileExist : fs.existsSync(document.fileUrl),
       displayDate: helpers.displayDate,
       monthToString: helpers.monthToString,
       isPresent: helpers.isPresent,

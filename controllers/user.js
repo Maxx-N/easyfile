@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
@@ -67,6 +69,7 @@ exports.getDocument = async (req, res, next) => {
       pageTitle: document.doctypeId.title,
       path: '/documents',
       document: document,
+      doesFileExist : fs.existsSync(document.fileUrl),
       displayDate: helpers.displayDate,
       monthToString: helpers.monthToString,
       isPresent: helpers.isPresent,
@@ -362,7 +365,7 @@ exports.getSwapFolders = async (req, res, next) => {
     }
 
     res.render('user/swap-folders', {
-      pageTitle: 'Mes dossiers d\'échange',
+      pageTitle: "Mes dossiers d'échange",
       path: '/swap-folders',
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,

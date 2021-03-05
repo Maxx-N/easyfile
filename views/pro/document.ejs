@@ -8,11 +8,18 @@
     <%- include('../includes/page-title') %>
     <main class="text-center">
       <div class="embed-doc-container">
-          <embed
-          src="../../<%= document.fileUrl %>"
-          class="embed-doc"
-          />
+        <% if (doesFileExist) { %>
+            <iframe
+            src="../../<%= document.fileUrl %>"
+            class="embed-doc"
+            ></iframe>
+        <% } else { %>
+            <div class="welcome-messages-container full-height ">
+                Fichier introuvable.
+            </div>
+        <% } %>
       </div>
+
       <div class="document-detail-list-container">
       <ul class="list-group ">
         <% if (document.title) { %>

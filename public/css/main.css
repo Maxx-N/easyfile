@@ -180,6 +180,7 @@ ul.user-messages li {
 .embed-doc {
   height: 100%;
   width: 100%;
+  border: none;
 }
 
 .embed-doc-container {
@@ -266,8 +267,6 @@ span.email {
   justify-content: space-around;
   font-size: 1.5em;
 }
-
-
 
 .noRequestedDocMessage .check-success {
   color: var(--success);
