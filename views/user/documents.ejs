@@ -28,13 +28,21 @@
                             id="<%= document._id %>"
                             >
                                 <td>
-                                    <a href="/documents/<%= document._id %>">
+                                    <a 
+                                    href="/documents/<%= document._id %>"
+                                    >
                                         <%= document.doctypeId.title %> <%= document.month && document.year ?
                                         ` - ${monthToString(document.month)} ${document.year}` : document.year?
                                         ` - ${document.year}` : '' %>
                                     </a>
                                     <% if(document.title && !document.month && !document.year) { %>
                                         -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
+                                    <% } %>
+                                    <% if (!doesFileExist(document)) { %>
+                                        <div class="text-danger">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <span>Fichier introuvable</span>
+                                        </div>
                                     <% } %>
                                 </td>
                                 <td>

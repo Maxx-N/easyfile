@@ -276,4 +276,6 @@ span.email {
   color: var(--blue) !important;
 }
 
-
+.no-file {
+  background-color: var(--gray);
+}

@@ -4,6 +4,10 @@ const User = require('./models/user');
 
 //
 
+exports.doesFileExist = (document) => {
+  return fs.existsSync(document.fileUrl);
+}
+
 exports.getUserDoctypeIds = async (user) => {
   let userDoctypeIds = await User.findById(user._id).populate(
     'documentIds',

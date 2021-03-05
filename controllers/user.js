@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
@@ -31,6 +29,7 @@ exports.getDocuments = async (req, res, next) => {
       displayDate: helpers.displayDate,
       isPast: helpers.isPast,
       isPresent: helpers.isPresent,
+      doesFileExist: helpers.doesFileExist,
     });
   } catch (err) {
     if (!err.message) {
@@ -69,7 +68,7 @@ exports.getDocument = async (req, res, next) => {
       pageTitle: document.doctypeId.title,
       path: '/documents',
       document: document,
-      doesFileExist : fs.existsSync(document.fileUrl),
+      doesFileExist: helpers.doesFileExist(document),
       displayDate: helpers.displayDate,
       monthToString: helpers.monthToString,
       isPresent: helpers.isPresent,
@@ -428,6 +427,7 @@ exports.getSwapFolder = async (req, res, next) => {
       displayDate: helpers.displayDate,
       isPast: helpers.isPast,
       isPresent: helpers.isPresent,
+      doesFileExist: helpers.doesFileExist,
     });
   } catch (err) {
     next(err);
