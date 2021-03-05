@@ -25,6 +25,10 @@ exports.getSwapFolders = async (req, res, next) => {
           populate: {
             path: 'requestedDocIds',
             select: ['documentIds', 'alternativeRequestedDocIds'],
+            populate: {
+              path: 'documentIds',
+              select: 'fileUrl',
+            },
           },
         });
       swapFolders.push(sf);
@@ -36,6 +40,7 @@ exports.getSwapFolders = async (req, res, next) => {
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
       getNumberOfCompletedGroups: helpers.getNumberOfCompletedGroups,
+      hasSwapFolderMissingFiles: helpers.hasSwapFolderMissingFiles,
     });
   } catch (err) {
     return next(err);

@@ -19,7 +19,15 @@
                 class="list-group-item d-flex justify-content-between pointer swap-folder-item"
                 >
                     <div>N° <%= sf._id %></div>
-                    <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
+                    <div>
+                        <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
+                        <% if (hasSwapFolderMissingFiles(sf)) { %>
+                            <div class="text-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Fichiers introuvables</span>
+                            </div>
+                        <% } %>
+                    </div>
                     <div>
                         Groupes de documents fournis :
                         <span class="<%= getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) === 0 ? 'text-danger' : getNumberOfCompletedGroups(sf.proRequestId.requestedDocIds) < getNumberOfRequestedGroups(sf.proRequestId.requestedDocIds) ? 'text-warning' : 'text-success' %>">

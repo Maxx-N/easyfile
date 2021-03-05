@@ -6,7 +6,15 @@ const User = require('./models/user');
 
 exports.doesFileExist = (document) => {
   return fs.existsSync(document.fileUrl);
-}
+};
+
+exports.hasSwapFolderMissingFiles = (swapFolder) => {
+  return swapFolder.proRequestId.requestedDocIds.some((rd) => {
+    return rd.documentIds.some((doc) => {
+      return !this.doesFileExist(doc);
+    });
+  });
+};
 
 exports.getUserDoctypeIds = async (user) => {
   let userDoctypeIds = await User.findById(user._id).populate(
