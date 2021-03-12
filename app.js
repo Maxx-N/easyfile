@@ -6,10 +6,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const multer = require('multer');
 // const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
+
+// File storage imports
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
@@ -25,27 +29,13 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const SECRET_SESSION = process.env.SECRET_SESSION;
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const PORT = process.env.PORT;
+const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+
 //
 
 const app = express();
 const store = new MongoDBStore({ uri: MONGODB_URI, collection: 'sessions' });
-
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'files');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now().toString() + '-' + file.originalname);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'application/pdf') {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -60,6 +50,37 @@ app.use(compression());
 app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.urlencoded({ extended: false }));
+
+//// FILE STORAGE
+
+const s3 = new aws.S3({
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+});
+
+const myBucket = 'swapfile';
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const fileStorage = multerS3({
+  s3: s3,
+  bucket: myBucket,
+  acl: 'public-read',
+  contentType: multerS3.AUTO_CONTENT_TYPE,
+  metadata: (req, file, cb) => {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    cb(null, Date.now().toString() + '-' + file.originalname);
+  },
+});
+
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('file')
 );

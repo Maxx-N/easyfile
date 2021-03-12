@@ -206,11 +206,15 @@ exports.postEditDocument = async (req, res, next) => {
 
     let document;
 
+  console.log(file.location);
+
+
     if (!editMode) {
       document = new Document({
         userId: req.user._id,
         doctypeId: doctypeId,
-        fileUrl: file.path,
+        // fileUrl: file.path,
+        fileUrl: file.location,
       });
     } else {
       document = await Document.findById(req.body.documentId);
@@ -230,8 +234,8 @@ exports.postEditDocument = async (req, res, next) => {
         throw error;
       }
       if (file) {
-        helpers.deleteFile(document.fileUrl);
-        document.fileUrl = file.path;
+        // helpers.deleteFile(document.fileUrl);
+        document.fileUrl = file.location;
       }
       document.doctypeId = doctypeId;
     }
@@ -358,10 +362,10 @@ exports.getSwapFolders = async (req, res, next) => {
           populate: {
             path: 'requestedDocIds',
             select: ['documentIds', 'alternativeRequestedDocIds'],
-            populate : {
-              path : 'documentIds',
-              select : 'fileUrl'
-            }
+            populate: {
+              path: 'documentIds',
+              select: 'fileUrl',
+            },
           },
         });
       swapFolders.push(sf);

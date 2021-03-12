@@ -5,7 +5,8 @@ const User = require('./models/user');
 //
 
 exports.doesFileExist = (document) => {
-  return fs.existsSync(document.fileUrl);
+  // return fs.existsSync(document.fileUrl);
+  return true;
 };
 
 exports.hasSwapFolderMissingFiles = (swapFolder) => {
