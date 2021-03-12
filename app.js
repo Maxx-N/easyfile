@@ -73,6 +73,7 @@ const fileStorage = multerS3({
   bucket: myBucket,
   acl: 'public-read',
   contentType: multerS3.AUTO_CONTENT_TYPE,
+  contentDisposition : 'inline',
   metadata: (req, file, cb) => {
     cb(null, { fieldName: file.fieldname });
   },
