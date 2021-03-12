@@ -10,7 +10,7 @@
       <div class="embed-doc-container">
         <% if (doesFileExist) { %>
             <iframe
-            src="<%= document.fileUrl %>"
+            src="<%= process.env.AWS_PATH + document.fileUrl %>"
             class="embed-doc"
             ></iframe>
         <% } else { %>

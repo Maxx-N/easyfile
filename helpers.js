@@ -1,8 +1,34 @@
-const fs = require('fs');
+// const fs = require('fs');
 
 const User = require('./models/user');
 
-//
+//// FILES MANAGEMENT
+
+const aws = require('aws-sdk');
+
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+exports.deleteFile = (fileLocation) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET,
+    Key: fileLocation.split('/')[fileLocation.split('/').length - 1],
+  };
+  s3.deleteObject(params, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+  // if (fs.existsSync(filePath)) {
+  //   fs.unlink(filePath, (err) => {
+  //     if (err) {
+  //       throw err;
+  //     }
+  //   });
+  // }
+};
 
 exports.doesFileExist = (document) => {
   // return fs.existsSync(document.fileUrl);
@@ -16,6 +42,8 @@ exports.hasSwapFolderMissingFiles = (swapFolder) => {
     });
   });
 };
+
+//
 
 exports.getUserDoctypeIds = async (user) => {
   let userDoctypeIds = await User.findById(user._id).populate(
@@ -78,16 +106,6 @@ exports.calculateAge = (date) => {
   }
 
   return age;
-};
-
-exports.deleteFile = (filePath) => {
-  if (fs.existsSync(filePath)) {
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        throw err;
-      }
-    });
-  }
 };
 
 exports.monthToString = (monthNumber) => {

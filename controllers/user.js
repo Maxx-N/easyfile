@@ -174,7 +174,8 @@ exports.postEditDocument = async (req, res, next) => {
         validationErrors.push(...errors.array());
       }
       if (file) {
-        helpers.deleteFile(file.path);
+        // helpers.deleteFile(file.path);
+        helpers.deleteFile(file.location);
       } else if (!editMode) {
         validationErrors.push({
           msg: 'Vous devez sélectionner un fichier au format PDF.',
@@ -206,15 +207,11 @@ exports.postEditDocument = async (req, res, next) => {
 
     let document;
 
-  console.log(file.location);
-
-
     if (!editMode) {
       document = new Document({
         userId: req.user._id,
         doctypeId: doctypeId,
-        // fileUrl: file.path,
-        fileUrl: file.location,
+        fileUrl: file.location.split('/')[file.location.split('/').length - 1],
       });
     } else {
       document = await Document.findById(req.body.documentId);
@@ -225,7 +222,8 @@ exports.postEditDocument = async (req, res, next) => {
       }
       if (document.userId.toString() !== req.user._id.toString()) {
         if (req.file) {
-          helpers.deleteFile(req.file.path);
+          // helpers.deleteFile(req.file.path);
+          helpers.deleteFile(req.file.location);
         }
         const error = new Error(
           "Vous n'avez pas l'autorisation de modifier ce document."
@@ -234,8 +232,10 @@ exports.postEditDocument = async (req, res, next) => {
         throw error;
       }
       if (file) {
-        // helpers.deleteFile(document.fileUrl);
-        document.fileUrl = file.location;
+        helpers.deleteFile(process.env.AWS_PATH + document.fileUrl);
+        document.fileUrl = file.location.split('/')[
+          file.location.split('/').length - 1
+        ];
       }
       document.doctypeId = doctypeId;
     }
@@ -325,7 +325,7 @@ exports.postDeleteDocument = async (req, res, next) => {
       throw error;
     }
 
-    helpers.deleteFile(document.fileUrl);
+    helpers.deleteFile(process.env.AWS_PATH + document.fileUrl);
     await Document.deleteOne({ _id: document._id });
     req.user.documentIds = req.user.documentIds.filter((docId) => {
       return docId.toString() !== document._id.toString();

@@ -24,18 +24,13 @@ const User = require('./models/user');
 const Pro = require('./models/pro');
 const isAdmin = require('./middleware/is-admin');
 
-// Variables d'environnement
-const MONGODB_URI = process.env.MONGODB_URI;
-const SECRET_SESSION = process.env.SECRET_SESSION;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const PORT = process.env.PORT;
-const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-
 //
 
 const app = express();
-const store = new MongoDBStore({ uri: MONGODB_URI, collection: 'sessions' });
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URI,
+  collection: 'sessions',
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -54,11 +49,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //// FILE STORAGE
 
 const s3 = new aws.S3({
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
-
-const myBucket = 'swapfile';
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'application/pdf') {
@@ -70,10 +63,10 @@ const fileFilter = (req, file, cb) => {
 
 const fileStorage = multerS3({
   s3: s3,
-  bucket: myBucket,
+  bucket: process.env.AWS_BUCKET,
   acl: 'public-read',
   contentType: multerS3.AUTO_CONTENT_TYPE,
-  contentDisposition : 'inline',
+  contentDisposition: 'inline',
   metadata: (req, file, cb) => {
     cb(null, { fieldName: file.fieldname });
   },
@@ -91,7 +84,7 @@ app.use('/files', express.static(path.join(__dirname, 'files')));
 
 app.use(
   session({
-    secret: SECRET_SESSION,
+    secret: process.env.SECRET_SESSION,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -104,7 +97,7 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user;
   res.locals.pro = req.session.pro;
   res.locals.isAdmin =
-    !!req.session.user && req.session.user.email === ADMIN_EMAIL;
+    !!req.session.user && req.session.user.email === process.env.ADMIN_EMAIL;
   next();
 });
 
@@ -179,6 +172,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-mongoose.connect(MONGODB_URI).then(() => {
-  app.listen(PORT || 3000, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI).then(() => {
+  app.listen(process.env.PORT || 3000, { useNewUrlParser: true });
 });
