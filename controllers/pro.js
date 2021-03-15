@@ -34,13 +34,18 @@ exports.getSwapFolders = async (req, res, next) => {
       swapFolders.push(sf);
     }
 
+    const swapFoldersWithMissingFiles = await helpers.getSwapFoldersWithMissingFiles(
+      swapFolders
+    );
+
     res.render('pro/swap-folders', {
       pageTitle: "Dossiers d'échange",
       path: '/swap-folders',
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
       getNumberOfCompletedGroups: helpers.getNumberOfCompletedGroups,
-      hasSwapFolderMissingFiles: helpers.hasSwapFolderMissingFiles,
+      swapFoldersWithMissingFiles: swapFoldersWithMissingFiles,
+      isSwapFolderPartOf: helpers.isSwapFolderPartOf,
     });
   } catch (err) {
     return next(err);
@@ -80,6 +85,10 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolderDocuments.push(...requestedDoc.documentIds);
     }
 
+    const swapFolderDocumentsWithMissingFiles = await helpers.getDocumentsWithMissingFiles(
+      swapFolderDocuments
+    );
+
     res.render('pro/swap-folder', {
       pageTitle: `Client : ${swapFolder.userId.email} - Dossier d'échange n° ${swapFolder._id}`,
       path: '/swap-folders',
@@ -94,7 +103,8 @@ exports.getSwapFolder = async (req, res, next) => {
       displayDate: helpers.displayDate,
       isPast: helpers.isPast,
       isPresent: helpers.isPresent,
-      doesFileExist: helpers.doesFileExist,
+      isDocumentPartOf: helpers.isDocumentPartOf,
+      swapFolderDocumentsWithMissingFiles: swapFolderDocumentsWithMissingFiles,
     });
   } catch (err) {
     next(err);
@@ -135,13 +145,14 @@ exports.getDocument = async (req, res, next) => {
       error.statusCode = 403;
       throw error;
     }
-    //
+    
+    const doesFileExist = await helpers.doesFileExist(document);
 
     res.render('pro/document', {
       pageTitle: document.doctypeId.title,
       path: '/documents',
       document: document,
-      doesFileExist: helpers.doesFileExist(document),
+      doesFileExist: doesFileExist,
       displayDate: helpers.displayDate,
       monthToString: helpers.monthToString,
       isPresent: helpers.isPresent,

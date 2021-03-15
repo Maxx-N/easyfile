@@ -21,6 +21,11 @@ exports.getDocuments = async (req, res, next) => {
       throw error;
     }
     helpers.sortDocuments(documents);
+
+    const documentsWithMissingFiles = await helpers.getDocumentsWithMissingFiles(
+      documents
+    );
+
     res.render('user/documents', {
       pageTitle: 'Mes documents',
       path: '/documents',
@@ -29,7 +34,8 @@ exports.getDocuments = async (req, res, next) => {
       displayDate: helpers.displayDate,
       isPast: helpers.isPast,
       isPresent: helpers.isPresent,
-      doesFileExist: helpers.doesFileExist,
+      documentsWithMissingFiles: documentsWithMissingFiles,
+      isDocumentPartOf: helpers.isDocumentPartOf,
     });
   } catch (err) {
     if (!err.message) {
@@ -64,11 +70,13 @@ exports.getDocument = async (req, res, next) => {
       throw error;
     }
 
+    const doesFileExist = await helpers.doesFileExist(document);
+
     res.render('user/document', {
       pageTitle: document.doctypeId.title,
       path: '/documents',
       document: document,
-      doesFileExist: helpers.doesFileExist(document),
+      doesFileExist: doesFileExist,
       displayDate: helpers.displayDate,
       monthToString: helpers.monthToString,
       isPresent: helpers.isPresent,
@@ -371,13 +379,18 @@ exports.getSwapFolders = async (req, res, next) => {
       swapFolders.push(sf);
     }
 
+    const swapFoldersWithMissingFiles = await helpers.getSwapFoldersWithMissingFiles(
+      swapFolders
+    );
+
     res.render('user/swap-folders', {
       pageTitle: "Mes dossiers d'échange",
       path: '/swap-folders',
       swapFolders: swapFolders,
       getNumberOfRequestedGroups: helpers.getNumberOfRequestedGroups,
       getNumberOfCompletedGroups: helpers.getNumberOfCompletedGroups,
-      hasSwapFolderMissingFiles: helpers.hasSwapFolderMissingFiles,
+      swapFoldersWithMissingFiles: swapFoldersWithMissingFiles,
+      isSwapFolderPartOf: helpers.isSwapFolderPartOf,
     });
   } catch (err) {
     return next(err);
@@ -422,6 +435,10 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolderDocuments.push(...requestedDoc.documentIds);
     }
 
+    const swapFolderDocumentsWithMissingFiles = await helpers.getDocumentsWithMissingFiles(
+      swapFolderDocuments
+    );
+
     res.render('user/swap-folder', {
       pageTitle: `Professionnel : ${swapFolder.proId.email} - Dossier d'échange n° ${swapFolder._id}`,
       path: '/swap-folders',
@@ -436,7 +453,8 @@ exports.getSwapFolder = async (req, res, next) => {
       displayDate: helpers.displayDate,
       isPast: helpers.isPast,
       isPresent: helpers.isPresent,
-      doesFileExist: helpers.doesFileExist,
+      isDocumentPartOf: helpers.isDocumentPartOf,
+      swapFolderDocumentsWithMissingFiles: swapFolderDocumentsWithMissingFiles,
     });
   } catch (err) {
     next(err);

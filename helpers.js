@@ -1,5 +1,3 @@
-// const fs = require('fs');
-
 const User = require('./models/user');
 
 //// FILES MANAGEMENT
@@ -21,26 +19,71 @@ exports.deleteFile = (fileLocation) => {
       console.log(err);
     }
   });
-  // if (fs.existsSync(filePath)) {
-  //   fs.unlink(filePath, (err) => {
-  //     if (err) {
-  //       throw err;
-  //     }
-  //   });
-  // }
 };
 
-exports.doesFileExist = (document) => {
-  // return fs.existsSync(document.fileUrl);
-  return true;
+exports.doesFileExist = async (document) => {
+  const params = {
+    Bucket: process.env.AWS_BUCKET,
+    Key: document.fileUrl,
+  };
+
+  try {
+    await s3.headObject(params).promise();
+    return true;
+  } catch (err) {
+    return false;
+  }
 };
 
-exports.hasSwapFolderMissingFiles = (swapFolder) => {
-  return swapFolder.proRequestId.requestedDocIds.some((rd) => {
-    return rd.documentIds.some((doc) => {
-      return !this.doesFileExist(doc);
-    });
-  });
+exports.getDocumentsWithMissingFiles = async (documents) => {
+  const documentsWithMissingFiles = [];
+
+  for (let document of documents) {
+    if (!(await this.doesFileExist(document))) {
+      documentsWithMissingFiles.push(document);
+    }
+  }
+
+  return documentsWithMissingFiles;
+};
+
+exports.isDocumentPartOf = (document, documents) => {
+  return documents
+    .map((doc) => {
+      return doc._id;
+    })
+    .includes(document._id);
+};
+
+exports.hasSwapFolderMissingFiles = async (swapFolder) => {
+  for (let rd of swapFolder.proRequestId.requestedDocIds) {
+    for (let doc of rd.documentIds) {
+      if (!(await this.doesFileExist(doc))) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+exports.getSwapFoldersWithMissingFiles = async (swapFolders) => {
+  const swapFoldersWithMissingFiles = [];
+
+  for (let swapFolder of swapFolders) {
+    if (await this.hasSwapFolderMissingFiles(swapFolder)) {
+      swapFoldersWithMissingFiles.push(swapFolder);
+    }
+  }
+
+  return swapFoldersWithMissingFiles;
+};
+
+exports.isSwapFolderPartOf = (swapFolder, swapFolders) => {
+  return swapFolders
+    .map((sf) => {
+      return sf._id;
+    })
+    .includes(swapFolder._id);
 };
 
 //
