@@ -24,6 +24,8 @@ for (let requestedDocElement of requestedDocElements) {
   }
 }
 
+showAddedGroupsOfRequestedDocs();
+
 function getRequestedDoc(requestedDocElement) {
   return JSON.parse(requestedDocElement.getAttribute('requestedDoc'));
 }
@@ -32,6 +34,26 @@ function showRequestedDocAsAdded(requestedDocElement) {
   requestedDocElement.setAttribute('isAdded', 'true');
   const check = requestedDocElement.querySelector('.check-container');
   check.classList.add('check-success');
+}
+
+function showAddedGroupsOfRequestedDocs() {
+  const groups = [...document.getElementsByClassName('group')];
+  for (let group of groups) {
+    const title = group.querySelector('.choice');
+    const items = [...group.getElementsByClassName('user-requested-doc')];
+
+    if (title) {
+      if (
+        items.some((item) => {
+          return item.getAttribute('isAdded') === 'true';
+        })
+      ) {
+        title.classList.add('added-group-title');
+      } else {
+        title.classList.remove('added-group-title');
+      }
+    }
+  }
 }
 
 function addListOfExistingTitles(requestedDocElement) {
