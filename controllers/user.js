@@ -7,6 +7,7 @@ const RequestedDoc = require('../models/requested-doc');
 const Request = require('../models/request');
 
 const helpers = require('../helpers');
+const User = require('../models/user');
 
 //
 
@@ -182,7 +183,6 @@ exports.postEditDocument = async (req, res, next) => {
         validationErrors.push(...errors.array());
       }
       if (file) {
-        // helpers.deleteFile(file.path);
         helpers.deleteFile(file.location);
       } else if (!editMode) {
         validationErrors.push({
@@ -228,9 +228,9 @@ exports.postEditDocument = async (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+
       if (document.userId.toString() !== req.user._id.toString()) {
         if (req.file) {
-          // helpers.deleteFile(req.file.path);
           helpers.deleteFile(req.file.location);
         }
         const error = new Error(

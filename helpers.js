@@ -118,6 +118,7 @@ exports.dateToInputFormat = (date) => {
 
 exports.isPast = (date) => {
   const today = this.getCurrentDate();
+  console.log(today);
   return date < today;
 };
 
