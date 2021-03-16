@@ -99,18 +99,6 @@ exports.getUserDoctypeIds = async (user) => {
 };
 
 exports.getCurrentDate = () => {
-  // let todayString = new Date().toLocaleDateString();
-
-  // const todayArray = [];
-  // todayArray[0] = todayString.split('/')[2];
-  // todayArray[1] = todayString.split('/')[1];
-  // todayArray[2] = todayString.split('/')[0];
-
-  // todayString = todayArray.join('-');
-  // today = new Date(todayString);
-
-  // return today;
-
   return new Date(new Date().setUTCHours(0, 0, 0, 0));
 };
 
@@ -124,7 +112,6 @@ exports.isPast = (date) => {
 };
 
 exports.isPresent = (date) => {
-  // return !this.isPast(date) && !this.isFuture(date);
   return date.getTime() === this.getCurrentDate().getTime();
 };
 
