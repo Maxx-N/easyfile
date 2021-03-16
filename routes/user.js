@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const userController = require('../controllers/user');
 const isAuth = require('../middleware/is-auth');
 const Doctype = require('../models/doctype');
+const Document = require('../models/document');
 const helpers = require('../helpers');
 
 //
@@ -31,7 +32,7 @@ router.post(
       .isEmpty()
       .withMessage("Merci d'ajouter un type de document.")
       .custom(async (value, { req }) => {
-        if (req.body.doctypeId && !req.query.edit) {
+        if (req.body.doctypeId) {
           const doctype = await Doctype.findById(value);
           if (doctype.isUnique) {
             const userDoctypeIds = await helpers.getUserDoctypeIds(req.user);
@@ -40,9 +41,15 @@ router.post(
                 (docId) => docId.toString() === value.toString()
               )
             ) {
-              return Promise.reject(
-                `Votre ${doctype.title.toLowerCase()} est un document unique que vous avez déjà mis en ligne. Pour le remplacer, vous pouvez le modifier directement.`
-              );
+              const document = await Document.findById(req.body.documentId);
+              if (
+                !req.query.edit ||
+                document.doctypeId.toString() !== req.body.doctypeId.toString()
+              ) {
+                return Promise.reject(
+                  `Votre ${doctype.title.toLowerCase()} est un document unique que vous avez déjà mis en ligne. Pour le remplacer, vous pouvez le modifier directement.`
+                );
+              }
             }
           }
         }
