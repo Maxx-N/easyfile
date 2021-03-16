@@ -193,6 +193,13 @@ exports.postEditDocument = async (req, res, next) => {
 
       const errorMessages = validationErrors.map((err) => err.msg);
 
+      if (editMode) {
+        const editedDoc = await Document.findById(req.body.documentId);
+        const oldFileArray = editedDoc.fileUrl.split('-');
+        oldFileArray.shift();
+        oldFileName = oldFileArray.join('-');
+      }
+
       const doctypes = await Doctype.find();
       return res.status(422).render('user/edit-document', {
         pageTitle: editMode ? 'Modification de document' : 'Nouveau document',
@@ -207,6 +214,7 @@ exports.postEditDocument = async (req, res, next) => {
           month: req.body.month,
           year: req.body.year,
           title: title,
+          fileName: editMode ? oldFileName : null,
         },
         editMode: editMode,
         documentId: editMode ? req.body.documentId : null,
