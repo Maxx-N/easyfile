@@ -111,7 +111,7 @@ exports.getCurrentDate = () => {
 
   // return today;
 
-  return new Date();
+  return new Date(new Date().setHours(0, 0, 0));
 };
 
 exports.dateToInputFormat = (date) => {
