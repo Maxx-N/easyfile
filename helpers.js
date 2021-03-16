@@ -99,17 +99,19 @@ exports.getUserDoctypeIds = async (user) => {
 };
 
 exports.getCurrentDate = () => {
-  let todayString = new Date().toLocaleDateString();
+  // let todayString = new Date().toLocaleDateString();
 
-  const todayArray = [];
-  todayArray[0] = todayString.split('/')[2];
-  todayArray[1] = todayString.split('/')[1];
-  todayArray[2] = todayString.split('/')[0];
+  // const todayArray = [];
+  // todayArray[0] = todayString.split('/')[2];
+  // todayArray[1] = todayString.split('/')[1];
+  // todayArray[2] = todayString.split('/')[0];
 
-  todayString = todayArray.join('-');
-  today = new Date(todayString);
+  // todayString = todayArray.join('-');
+  // today = new Date(todayString);
 
-  return today;
+  // return today;
+
+  return new Date();
 };
 
 exports.dateToInputFormat = (date) => {
@@ -118,7 +120,6 @@ exports.dateToInputFormat = (date) => {
 
 exports.isPast = (date) => {
   const today = this.getCurrentDate();
-  console.log(today);
   return date < today;
 };
 
