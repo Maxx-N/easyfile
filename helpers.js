@@ -111,7 +111,7 @@ exports.getCurrentDate = () => {
 
   // return today;
 
-  return new Date(new Date().setHours(0, 0, 0));
+  return new Date(new Date().setUTCHours(0, 0, 0, 0));
 };
 
 exports.dateToInputFormat = (date) => {
@@ -124,7 +124,8 @@ exports.isPast = (date) => {
 };
 
 exports.isPresent = (date) => {
-  return !this.isPast(date) && !this.isFuture(date);
+  // return !this.isPast(date) && !this.isFuture(date);
+  return date.getTime() === this.getCurrentDate().getTime();
 };
 
 exports.isFuture = (date) => {
