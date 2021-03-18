@@ -598,14 +598,8 @@ function onSubmitForm() {
   const docs = [...document.getElementsByClassName('doc')];
   if (docs && docs.length >= 0) {
     const form = document.getElementById('addRequestedDocForm');
-    if (
-      confirm(
-        'Une fois la requête créée, vous ne pourrez plus la modifier. Êtes-vous sûr(e) ?'
-      )
-    ) {
       createHiddenInputs();
       form.submit();
-    }
   } else {
     alert("Merci d'ajouter au moins un document avant de valider la requête.");
   }
