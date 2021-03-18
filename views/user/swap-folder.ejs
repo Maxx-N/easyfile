@@ -87,7 +87,7 @@
                                     >
                                         <span><%= doc.doctypeId.title %></span>
                                         <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
-                                        <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
+                                        <span><%= doc.age !== null && doc.age !== undefined ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
                                         <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
                                             <span class="check-container pointer">
                                                 <i class="fas fa-check"></i>

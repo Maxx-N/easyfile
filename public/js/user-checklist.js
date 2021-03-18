@@ -213,7 +213,7 @@ function createDivOfSelectors(requestedDocElement) {
   requestedDocElement.appendChild(selectorsContainer);
 
   if (!requestedDoctype.isUnique) {
-    if (requestedDoctype.periodicity !== 'none') {
+    if (requestedDoctype.periodicity !== 'none' && requestedDoc.age > 0) {
       for (let i = 1; i <= requestedDoc.age; i++) {
         createADocSelector(selectorsContainer, i);
       }
@@ -316,7 +316,7 @@ function findMatchingDocs(requestedDoc, age) {
   let matchingDocs;
   const requestedDoctype = requestedDoc.doctypeId;
 
-  if (age) {
+  if (age !== null && age !== undefined) {
     if (requestedDoctype.periodicity === 'none') {
       matchingDocs = userDocuments.filter((doc) => {
         return (
@@ -325,13 +325,22 @@ function findMatchingDocs(requestedDoc, age) {
         );
       });
     } else {
-      matchingDocs = userDocuments.filter((doc) => {
-        return (
-          doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-          getAgeOfADocument(doc) > 0 &&
-          getAgeOfADocument(doc) === age
-        );
-      });
+      if (age > 0) {
+        matchingDocs = userDocuments.filter((doc) => {
+          return (
+            doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+            getAgeOfADocument(doc) > 0 &&
+            getAgeOfADocument(doc) === age
+          );
+        });
+      } else {
+        matchingDocs = userDocuments.filter((doc) => {
+          return (
+            doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+            getAgeOfADocument(doc) === age
+          );
+        });
+      }
     }
   } else {
     matchingDocs = userDocuments.filter((doc) => {

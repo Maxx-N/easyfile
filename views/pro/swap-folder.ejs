@@ -96,7 +96,7 @@
                                         <div class="list-group-item user-requested-doc" requestedDoc="<%= JSON.stringify(doc) %>">
                                             <span><%= doc.doctypeId.title %></span>
                                             <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
-                                            <span><%= doc.age ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
+                                            <span><%= doc.age || doc.age === 0 ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
                                             <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
                                                 <span class="check-container">
                                                     <i class="fas fa-check"></i>

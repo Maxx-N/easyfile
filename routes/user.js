@@ -163,7 +163,7 @@ router.post(
 
             if (selectedYear > currentYear) {
               return Promise.reject(
-                `Votre ${doctype.title.toLowerCase()} ne peut concerner une année future.`
+                `Votre ${doctype.title.toLowerCase()} ne peut pas avoir été émis(e) dans le futur.`
               );
             }
           }

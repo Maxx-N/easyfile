@@ -71,10 +71,16 @@ function displayAge(age, doctype) {
     }
 
     if (doctype.periodicity === 'year') {
-      if (+age === 1) {
-        displayedAge = 'Année dernière';
+      const currentYear = new Date().getFullYear();
+      const numAge = +age;
+      if (numAge === 0) {
+        displayedAge = `Daté(e) de ${currentYear}`;
+      } else if (numAge === 1) {
+        displayedAge = `Daté(e) de ${currentYear - numAge}`;
       } else {
-        displayedAge = `${age} dernières années`;
+        displayedAge = `Daté(e)s de ${currentYear - numAge} à ${
+          currentYear - 1
+        } inclus`;
       }
     }
 
@@ -234,13 +240,18 @@ function createMonthOption(select) {
 }
 
 function createYearOption(select) {
-  for (let i = 1; i <= 10; i++) {
+  const currentYear = new Date().getFullYear();
+  for (let i = 0; i <= 9; i++) {
     const option = document.createElement('option');
     option.value = i;
-    if (i === 1) {
-      option.textContent = 'Année dernière';
+    if (i === 0) {
+      option.textContent = `Daté(e) de ${currentYear}`;
+    } else if (i === 1) {
+      option.textContent = `Daté(e) de ${currentYear - i}`;
     } else {
-      option.textContent = `${i} dernières années`;
+      option.textContent = `Daté(e)s de ${currentYear - i} à ${
+        currentYear - 1
+      } inclus`;
     }
     select.appendChild(option);
   }
@@ -598,8 +609,8 @@ function onSubmitForm() {
   const docs = [...document.getElementsByClassName('doc')];
   if (docs && docs.length >= 0) {
     const form = document.getElementById('addRequestedDocForm');
-      createHiddenInputs();
-      form.submit();
+    createHiddenInputs();
+    form.submit();
   } else {
     alert("Merci d'ajouter au moins un document avant de valider la requête.");
   }

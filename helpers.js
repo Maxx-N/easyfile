@@ -199,7 +199,7 @@ exports.sortDocuments = (documents) => {
 exports.displayRequestedDocAge = (populatedRequestedDoc) => {
   const age = populatedRequestedDoc.age;
 
-  if (age) {
+  if (age !== null && age !== undefined) {
     let displayedAge;
 
     if (populatedRequestedDoc.doctypeId.periodicity === 'month') {
@@ -209,10 +209,15 @@ exports.displayRequestedDocAge = (populatedRequestedDoc) => {
         displayedAge = `${age} derniers mois`;
       }
     } else if (populatedRequestedDoc.doctypeId.periodicity === 'year') {
-      if (age === 1) {
-        displayedAge = 'Année dernière';
+      const currentYear = new Date().getFullYear();
+      if (age === 0) {
+        displayedAge = `Daté(e) de ${currentYear}`;
+      } else if (age === 1) {
+        displayedAge = `Daté(e) de ${currentYear - age}`;
       } else {
-        displayedAge = `${age} dernières années`;
+        displayedAge = `Daté(e)s de ${currentYear - age} à ${
+          currentYear - 1
+        } inclus`;
       }
     } else {
       displayedAge = `Datant d'il y a moins de ${age} mois`;
@@ -261,7 +266,7 @@ exports.hasUserTheRightDocuments = (
 
   let answer;
 
-  if (populatedRequestedDoc.age) {
+  if (populatedRequestedDoc.age !== null && populatedRequestedDoc.age !== undefined) {
     switch (requestedDoctype.periodicity) {
       case 'month':
         answer = true;
@@ -282,18 +287,28 @@ exports.hasUserTheRightDocuments = (
       case 'year':
         answer = true;
         const currentYear = new Date().getFullYear();
-        for (let i = populatedRequestedDoc.age; i > 0; i--) {
-          if (
-            !userDocuments.some((doc) => {
-              return (
-                doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-                currentYear - doc.year === i
-              );
-            })
-          ) {
-            answer = false;
-            break;
+        if (populatedRequestedDoc.age > 0) {
+          for (let i = populatedRequestedDoc.age; i > 0; i--) {
+            if (
+              !userDocuments.some((doc) => {
+                return (
+                  doc.doctypeId.toString() ===
+                    requestedDoctype._id.toString() &&
+                  currentYear - doc.year === i
+                );
+              })
+            ) {
+              answer = false;
+              break;
+            }
           }
+        } else {
+          answer = userDocuments.some((doc) => {
+            return (
+              doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+              currentYear - doc.year === populatedRequestedDoc.age
+            );
+          });
         }
         break;
       default:
