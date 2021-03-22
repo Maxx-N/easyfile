@@ -9,22 +9,22 @@
     <%- include('../includes/page-title') %>
     <main class="text-center">
         <%- include('../includes/error-feedback') %>
-        <form class="text-center center-half" method="POST" action="/pro/enter-client-email">
-            <fieldset>
-              <div class="form-group">
-                <label for="email">E-mail du client</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value="<%= oldInput.email %>"
-                  class="form-control text-center <%= validationErrors.some(err => err.param === 'email') ? 'invalid' : '' %>"
-                  aria-describedby="emailHelp"
-                />
-              </div>
-              <button type="submit" class="btn btn-primary">Valider</button>
-            </fieldset>
-          </form>
+        <div class="<%= errorMessages.length > 0 ? 'scroll-container-if-errors' : 'scroll-container' %>">
+            <form class="text-center center-half" method="POST" action="/pro/enter-client-email">
+                  <div class="form-group">
+                    <label for="email">E-mail du client</label>
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value="<%= oldInput.email %>"
+                      class="form-control text-center <%= validationErrors.some(err => err.param === 'email') ? 'invalid' : '' %>"
+                      aria-describedby="emailHelp"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary">Valider</button>
+            </form>
+        </div>
     
     </main>
     <%- include('../includes/scripts') %>

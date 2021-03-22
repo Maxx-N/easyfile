@@ -9,7 +9,7 @@
     <%- include('../includes/page-title') %>
     <main>
       <%- include('../includes/error-feedback') %>
-      <div class="scroll-container">
+      <div class="<%= errorMessages.length > 0 ? 'scroll-container-if-errors' : 'scroll-container' %>">
           <form class="text-center center-half" method="POST" action="/login">
               <div class="form-group">
                 <label for="email">Mon e-mail</label>

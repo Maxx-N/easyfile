@@ -19,37 +19,36 @@
         </ol>
       </div>
       <%- include('../includes/error-feedback') %>
-
-      <form class="text-center center-half" method="POST" action="/pro/add-client">
-        <fieldset>
-          <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              value="<%= oldInput.password %>"
-              class="form-control text-center <%= validationErrors.some(err => err.param === 'password') ? 'invalid' : '' %>"
-            />
-            <small class="form-text text-muted"
-              >Au moins 8 caractères dont : une majuscule, une minuscule, un
-              chiffre et un symbole.</small
-            >
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirmation du mot de passe</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              id="confirmPassword"
-              value="<%= oldInput.confirmPassword %>"
-              class="form-control text-center <%= validationErrors.some(err => err.param === 'confirmPassword') ? 'invalid' : '' %>"
-            />
-          </div>
-          <input type="hidden" name="email" value="<%= email %>" />
-          <button type="submit" class="btn btn-primary">Inscription</button>
-        </fieldset>
-      </form>
+      <div class="<%= errorMessages.length > 0 ? 'scroll-container-if-errors-and-user-message' : 'scroll-container-if-errors' %>">
+          <form class="text-center center-half" method="POST" action="/pro/add-client">
+              <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  value="<%= oldInput.password %>"
+                  class="form-control text-center <%= validationErrors.some(err => err.param === 'password') ? 'invalid' : '' %>"
+                />
+                <small class="form-text text-muted"
+                  >Au moins 8 caractères dont : une majuscule, une minuscule, un
+                  chiffre et un symbole.</small
+                >
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword">Confirmation du mot de passe</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  value="<%= oldInput.confirmPassword %>"
+                  class="form-control text-center <%= validationErrors.some(err => err.param === 'confirmPassword') ? 'invalid' : '' %>"
+                />
+              </div>
+              <input type="hidden" name="email" value="<%= email %>" />
+              <button type="submit" class="btn btn-primary">Inscription</button>
+          </form>
+      </div>
       <%- include('../includes/scripts') %>
     </main>
     <%- include('../includes/scripts') %>

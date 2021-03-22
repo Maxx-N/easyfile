@@ -12,7 +12,7 @@
       <%- include('../includes/error-feedback') %>
       <% if (isAuthenticated) { %>
         <div class="full-height">
-            <form class="text-center center-half full-height" method="POST" action="/edit-profile">
+            <form class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>" method="POST" action="/edit-profile">
                 <div class="top-btn-container">
                     <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
                     <button type="submit" class="btn btn-primary">Valider !</button>

@@ -10,7 +10,7 @@
     <main>
       <%- include('../includes/error-feedback') %>
       <form
-        class="text-center center-half full-height"
+        class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>"
         method="POST"
         action="/edit-document<%= editMode ? '?edit=true' : '' %>"
         enctype="multipart/form-data"
