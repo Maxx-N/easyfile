@@ -1,4 +1,6 @@
 const User = require('./models/user');
+const Request = require('./models/request');
+const SwapFolder = require('./models/swap-folder');
 
 //// FILES MANAGEMENT
 
@@ -266,7 +268,10 @@ exports.hasUserTheRightDocuments = (
 
   let answer;
 
-  if (populatedRequestedDoc.age !== null && populatedRequestedDoc.age !== undefined) {
+  if (
+    populatedRequestedDoc.age !== null &&
+    populatedRequestedDoc.age !== undefined
+  ) {
     switch (requestedDoctype.periodicity) {
       case 'month':
         answer = true;
@@ -374,6 +379,58 @@ exports.getNumberOfCompletedGroups = (requestedDocs) => {
   }
   return this.getNumberOfRequestedGroups(completedRequestedDocs);
 };
+
+//// INTERACTIONS ENTRE LES MODELES
+
+exports.getSwapFolderOfRequestedDocId = async (requestedDocId) => {
+  const request = await Request.findOne({ requestedDocIds: requestedDocId });
+  const swapFolder = await SwapFolder.findOne({
+    $or: [{ userRequestId: request._id }, { proRequestId: request._id }],
+  });
+  return swapFolder;
+};
+
+exports.getSwapFolderDocumentIds = async (swapFolder) => {
+  const requestedDocs = await this.getSwapFolderRequestedDocs(swapFolder);
+  const groupsOfDocumentIds = requestedDocs.map((rd) => {
+    return rd.documentIds;
+  });
+
+  const documentIds = [];
+
+  for (let groupOfDocumentIds of groupsOfDocumentIds) {
+    documentIds.push(...groupOfDocumentIds);
+  }
+
+  return documentIds;
+};
+
+exports.getSwapFolderRequestedDocs = async (swapFolder) => {
+  const requests = await this.getSwapFolderRequests(swapFolder);
+
+  const requestedDocs = [];
+
+  for (let request of requests) {
+    const populatedRequest = await request
+      .populate('requestedDocIds')
+      .execPopulate();
+    for (let requestedDoc of populatedRequest.requestedDocIds) {
+      requestedDocs.push(requestedDoc);
+    }
+  }
+
+  return requestedDocs;
+};
+
+exports.getSwapFolderRequests = async (swapFolder) => {
+  const populatedSwapFolder = await swapFolder
+    .populate('proRequestId userRequestId')
+    .execPopulate();
+
+  return [populatedSwapFolder.proRequestId, populatedSwapFolder.userRequestId];
+};
+
+//
 
 // PRIVATE
 

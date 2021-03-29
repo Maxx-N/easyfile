@@ -476,20 +476,30 @@ exports.postAddDocumentsToRequestedDoc = async (req, res, next) => {
   try {
     const requestedDoc = await RequestedDoc.findById(requestedDocId);
 
-    for (let id of documentIds) {
-      if (!requestedDoc.documentIds.includes(id)) {
-        requestedDoc.documentIds.push(id);
+    const swapFolder = await helpers.getSwapFolderOfRequestedDocId(
+      requestedDocId
+    );
+
+    const swapFolderDocumentIds = await helpers.getSwapFolderDocumentIds(
+      swapFolder
+    );
+
+    if (
+      !documentIds.some((id) => {
+        return swapFolderDocumentIds
+          .map((docId) => {
+            return docId.toString();
+          })
+          .includes(id.toString());
+      })
+    ) {
+      for (let id of documentIds) {
+        if (!requestedDoc.documentIds.includes(id)) {
+          requestedDoc.documentIds.push(id);
+        }
       }
+      await requestedDoc.save();
     }
-    await requestedDoc.save();
-
-    const requests = await Request.find();
-
-    const request = requests.find((r) => {
-      return r.requestedDocIds.includes(requestedDocId);
-    });
-
-    const swapFolder = await SwapFolder.findOne({ proRequestId: request._id });
 
     res.redirect(`/swap-folders/${swapFolder._id}`);
   } catch (err) {
