@@ -1,131 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <%- include('../includes/head') %>
-  <link rel="stylesheet" href="/css/swap-folder.css">
-</head>
-<body>
-<%- include('../includes/navbar') %>
-<%- include('../includes/page-title') %>
-<link rel="stylesheet" href="/css/swap-folder.css">
-<main class="text-center">
-    <div class="d-flex justify-content-around full-height">
+  <head>
+    <%- include('../includes/head') %>
+    <link rel="stylesheet" href="/css/swap-folder.css" />
+  </head>
+  <body>
+    <%- include('../includes/navbar') %> <%- include('../includes/page-title')
+    %>
+    <link rel="stylesheet" href="/css/swap-folder.css" />
+    <main class="text-center">
+      <div class="d-flex justify-content-around full-height">
         <div class="full-height half-flex left">
-            <div class="top-btn-container">
-                <form id="deletingForm" clientEmail="<%= swapFolder.userId.email %>" action="/pro/delete-swap-folder/<%= swapFolder._id %>" method="POST">
-                    <button id="deletingButton" class="btn btn-danger" type="button">Supprimer le dossier d'échange</button>
-                </form>
-            </div>
-            <div class="table-container-if-top-btn">
-                <table class="table table-hover">
-                    <thead>
-                        <tr class="table-primary">
-                            <th scope="col">Type</th>
-                            <th scope="col">Emis(e) le</th>
-                            <th scope="col">Expire le</th>
-                        </tr>
-                    </thead>
-                <tbody id="tableBody">
-                    <% for (let document of swapFolderDocuments) { %>
-                        <tr 
-                        class="pointer document-item table-light" 
-                        title="<%= document.title ? document.title : document.doctypeId.title %>"
-                        id="<%= document._id %>"
-                        >
-                            <td>
-                                <a href="/pro/documents/<%= document._id %>">
-                                    <%= document.doctypeId.title %> <%= document.month && document.year ?
-                                    ` - ${monthToString(document.month)} ${document.year}` : document.year?
-                                    ` - ${document.year}` : '' %>
-                                </a>
-                                <% if(document.title && !document.month && !document.year) { %>
-                                    -<span class="badge badge-pill badge-secondary">"<%= document.title %>"</span>
-                                <% } %>
-                                <% if (isDocumentPartOf(document, swapFolderDocumentsWithMissingFiles)) { %>
-                                    <div class="text-danger">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <span>Fichier introuvable</span>
-                                    </div>
-                                <% } %>
-                            </td>
-                            <td>
-                                <% if (document.issuanceDate) { %>
-                                    <span class="badge badge-dark badge-pill">
-                                        <%= displayDate(document.issuanceDate) %>
-                                    </span>
-                                <% } else { %>
-                                    <span> - </span>
-                                <% } %>
-                            </td>
-                            <td>
-                                <% if (document.expirationDate) { %>
-                                    <span 
-                                    class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' 
-                                    : isPresent(document.expirationDate) ? 'badge-warning'
-                                    : 'badge-success' %>">
-                                        <%= displayDate(document.expirationDate) %>
-                                    </span>
-                                <% } else { %>
-                                    <span> - </span>
-                                <% } %> 
-                            </td>
-                        </tr>
+          <div class="top-btn-container">
+            <form
+              id="deletingForm"
+              clientEmail="<%= swapFolder.userId.email %>"
+              action="/pro/delete-swap-folder/<%= swapFolder._id %>"
+              method="POST"
+            >
+              <button id="deletingButton" class="btn btn-danger" type="button">
+                Supprimer le dossier d'échange
+              </button>
+            </form>
+          </div>
+          <div class="table-container-if-top-btn">
+            <table class="table table-hover">
+              <thead>
+                <tr class="table-primary">
+                  <th scope="col">Type</th>
+                  <th scope="col">Emis(e) le</th>
+                  <th scope="col">Expire le</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <% for (let document of swapFolderDocuments) { %>
+                <tr
+                  class="pointer document-item table-light"
+                  title="<%= document.title ? document.title : document.doctypeId.title %>"
+                  id="<%= document._id %>"
+                >
+                  <td>
+                    <a href="/pro/documents/<%= document._id %>">
+                      <%= document.doctypeId.title %> <%= document.month &&
+                      document.year ? ` - ${monthToString(document.month)}
+                      ${document.year}` : document.year? ` - ${document.year}` :
+                      '' %>
+                    </a>
+                    <% if(document.title && !document.month && !document.year) {
+                    %> -<span class="badge badge-pill badge-secondary"
+                      >"<%= document.title %>"</span
+                    >
+                    <% } %> <% if (isDocumentPartOf(document,
+                    swapFolderDocumentsWithMissingFiles)) { %>
+                    <div class="text-danger">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      <span>Fichier introuvable</span>
+                    </div>
                     <% } %>
-                </tbody>
-                </table>
-            </div>
+                  </td>
+                  <td>
+                    <% if (document.issuanceDate) { %>
+                    <span class="badge badge-dark badge-pill">
+                      <%= displayDate(document.issuanceDate) %>
+                    </span>
+                    <% } else { %>
+                    <span> - </span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (document.expirationDate) { %>
+                    <span
+                      class="badge badge-pill <%= isPast(document.expirationDate) ? 'badge-danger' : isPresent(document.expirationDate) ? 'badge-warning' : 'badge-success' %>"
+                    >
+                      <%= displayDate(document.expirationDate) %>
+                    </span>
+                    <% } else { %>
+                    <span> - </span>
+                    <% } %>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="full-height half-flex right">
-            <div id="requestsContainer" class="full-height">
-                <div class="request full-height">
-                    <div class="top-btn-container">
-                        <a title="Modifier les documents demandés" class="btn btn-info edit-btn" href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"><i class="fas fa-edit"></i></a>
-                        <form id="resettingForm" action="/pro/reset-request/<%= swapFolder.proRequestId._id %>" method="POST">
-                            <button title="Supprimer tous les documents demandés" id="resettingButton" class="btn btn-danger" type="button"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </div>
+          <div id="requestsContainer" class="full-height">
+            <div class="request full-height">
+              <div class="top-btn-container">
+                <a
+                  title="Modifier les documents demandés"
+                  class="btn btn-info edit-btn"
+                  href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"
+                  ><i class="fas fa-edit"></i
+                ></a>
+                <form
+                  id="resettingForm"
+                  action="/pro/reset-request/<%= swapFolder.proRequestId._id %>"
+                  method="POST"
+                >
+                  <button
+                    title="Supprimer tous les documents demandés"
+                    id="resettingButton"
+                    class="btn btn-danger"
+                    type="button"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
 
-                    <% if (swapFolder.proRequestId.requestedDocIds.length > 0) { %>
-                        <div class="scroll-container-if-top-btn">
-                            <% for (let group of makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds)) { %>
-                                <div class="list-group group">
-                                    <% if (group.length > 1) { %>
-                                        <div class="choice">Au choix : </div>
-                                    <% } %>
-                                    <% for (let doc of group) { %>
-                                        <div class="list-group-item user-requested-doc" requestedDoc="<%= JSON.stringify(doc) %>">
-                                            <span><%= doc.doctypeId.title %></span>
-                                            <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
-                                            <span><%= doc.age || doc.age === 0 ? ' - ' + displayRequestedDocAge(doc) : '' %></span>
-                                            <% if (hasUserTheRightDocuments(userDocuments, allDoctypes, doc) || doc.documentIds.length > 0) { %>
-                                                <span class="check-container">
-                                                    <i class="fas fa-check"></i>
-                                                </span>
-                                            <% } %>
-                                        </div>
-                                    <% } %>
-                                </div>
-                            <% } %>
-                        </div>
-                    <% } else { %>
-                        <div class="welcome-messages-container noRequestedDocMessage">
-                                <div>Vous n'avez actuellement demandé aucun document.</div>
-                                <div>Cliquez sur le <span class="blue-text">bouton bleu</span> pour en demander.</div>
-                                <div><i class="fas fa-check"></i> Les documents que votre client possède déjà seront cochés.</div>
-                                <div><i class="fas fa-check check-success"></i> Les coches passeront au <span class="check-success">vert</span> et les documents seront ajoutés à gauche au fur et à mesure que votre client vous les partagera.</div>
-                        </div>
+              <% if (swapFolder.proRequestId.requestedDocIds.length > 0) { %>
+              <div class="scroll-container-if-top-btn">
+                <% for (let group of
+                makeGroupsOfRequestedDocs(swapFolder.proRequestId.requestedDocIds))
+                { %>
+                <div class="list-group group">
+                  <% if (group.length > 1) { %>
+                  <div class="choice">Au choix :</div>
+                  <% } %> <% for (let doc of group) { %>
+                  <div
+                    class="list-group-item user-requested-doc"
+                    requestedDoc="<%= JSON.stringify(doc) %>"
+                  >
+                    <span><%= doc.doctypeId.title %></span>
+                    <span><%= doc.title ? ' "' + doc.title + '"' : '' %></span>
+                    <span
+                      ><%= doc.age || doc.age === 0 ? ' - ' +
+                      displayRequestedDocAge(doc) : '' %></span
+                    >
+                    <% if (hasUserTheRightDocuments(userDocuments, allDoctypes,
+                    doc, swapFolderDocuments) || doc.documentIds.length > 0) {
+                    %>
+                    <span class="check-container">
+                      <i class="fas fa-check"></i>
+                    </span>
                     <% } %>
+                  </div>
+                  <% } %>
                 </div>
+                <% } %>
+              </div>
+              <% } else { %>
+              <div class="welcome-messages-container noRequestedDocMessage">
+                <div>Vous n'avez actuellement demandé aucun document.</div>
+                <div>
+                  Cliquez sur le <span class="blue-text">bouton bleu</span> pour
+                  en demander.
+                </div>
+                <div>
+                  <i class="fas fa-check"></i> Les documents que votre client
+                  possède déjà seront cochés.
+                </div>
+                <div>
+                  <i class="fas fa-check check-success"></i> Les coches
+                  passeront au <span class="check-success">vert</span> et les
+                  documents seront ajoutés à gauche au fur et à mesure que votre
+                  client vous les partagera.
+                </div>
+              </div>
+              <% } %>
             </div>
-        </div>    
-    </div>
-</main>
-<div id="isPro" class="hidden" isPro="true"></div>
-<div id="userDocuments" class="hidden" userDocuments="<%= JSON.stringify(userDocuments) %>"></div>
-<div id="allDoctypes" class="hidden" allDoctypes="<%= JSON.stringify(allDoctypes) %>"></div>
-<%- include('../includes/scripts') %>
-<script src="/js/swap-folder.js"></script>
-<script src="/js/documents.js"></script>
-<script src="/js/pro-check-list.js"></script>
-</body>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="isPro" class="hidden" isPro="true"></div>
+    <div
+      id="userDocuments"
+      class="hidden"
+      userDocuments="<%= JSON.stringify(userDocuments) %>"
+    ></div>
+    <div
+      id="allDoctypes"
+      class="hidden"
+      allDoctypes="<%= JSON.stringify(allDoctypes) %>"
+    ></div>
+    <%- include('../includes/scripts') %>
+    <script src="/js/swap-folder.js"></script>
+    <script src="/js/documents.js"></script>
+    <script src="/js/pro-check-list.js"></script>
+  </body>
 </html>

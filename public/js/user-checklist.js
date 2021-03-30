@@ -6,7 +6,7 @@ const allDoctypes = JSON.parse(
   document.getElementById('allDoctypes').getAttribute('allDoctypes')
 );
 
-const swapFolderDocumentsIds = getSwapFolderDocumentIds();
+// const swapFolderDocumentsIds = getSwapFolderDocumentIds();
 
 const checkContainers = [...document.getElementsByClassName('check-container')];
 
@@ -274,19 +274,39 @@ function unAdd(requestedDocElement) {
         titleList.remove();
       }
 
-      for (let id of data.documentIds) {
-        swapFolderDocumentsIds.splice(swapFolderDocumentsIds.indexOf(id), 1);
-      }
+      // for (let id of data.documentIds) {
+      //   swapFolderDocumentsIds.splice(swapFolderDocumentsIds.indexOf(id), 1);
+      // }
+
+      removeDocumentFromTheLeftColumn(requestedDoc);
 
       for (let requestedDocElement of requestedDocElements) {
         unSelect(requestedDocElement);
+        if (hasUserTheRightDocuments(requestedDocElement)) {
+          addCheckContainer(requestedDocElement);
+        }
       }
-
-      removeDocumentFromTheLeftColumn(requestedDoc);
 
       showAddedGroupsOfRequestedDocs();
     }
   );
+}
+
+function addCheckContainer(requestedDocElement) {
+  const existingContainer = requestedDocElement.querySelector(
+    '.check-container'
+  );
+
+  if (!existingContainer) {
+    const checkContainer = document.createElement('span');
+    requestedDocElement.appendChild(checkContainer);
+    checkContainer.classList.add('check-container', 'pointer');
+    const check = document.createElement('i');
+    checkContainer.appendChild(check);
+    check.classList.add('fas', 'fa-check');
+
+    checkContainer.addEventListener('click', onCheckClick);
+  }
 }
 
 function removeDocumentFromTheLeftColumn(requestedDoc) {
@@ -326,18 +346,16 @@ function unSelect(requestedDocElement) {
 // HELPERS
 
 function getSwapFolderDocumentIds() {
-  const swapFolderDocuments = JSON.parse(
-    document
-      .getElementById('swapFolderDocuments')
-      .getAttribute('swapFolderDocuments')
-  );
-  return swapFolderDocuments.map((doc) => {
-    return doc._id;
+  const documentElements = [
+    ...document.getElementsByClassName('document-item'),
+  ];
+  return documentElements.map((doc) => {
+    return doc.getAttribute('id');
   });
 }
 
 function isDocumentIdAlreadyPartOfSwapFolder(documentId) {
-  return swapFolderDocumentsIds.includes(documentId);
+  return getSwapFolderDocumentIds().includes(documentId);
 }
 
 function getRequestedDoc(requestedDocElement) {
@@ -436,4 +454,141 @@ function calculateAgeInMonths(stringDate) {
   }
 
   return monthsBack;
+}
+
+////////
+
+function hasUserTheRightDocuments(requestedDocElement) {
+  const requestedDoc = getRequestedDoc(requestedDocElement);
+  const swapFolderDocuments = userDocuments.filter((doc) => {
+    return getSwapFolderDocumentIds().includes(doc._id);
+  });
+
+  const requestedDoctype = allDoctypes.find((dt) => {
+    return dt._id.toString() === requestedDoc.doctypeId._id.toString();
+  });
+
+  let answer;
+
+  if (requestedDoc.age !== null && requestedDoc.age !== undefined) {
+    switch (requestedDoctype.periodicity) {
+      case 'month':
+        answer = true;
+        for (let i = requestedDoc.age; i > 0; i--) {
+          if (
+            !userDocuments.some((doc) => {
+              return (
+                doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+                getMonthsBack(doc.month, doc.year) === i &&
+                isDocumentStillAvailableInThisSwapFolder(
+                  doc,
+                  requestedDoc,
+                  swapFolderDocuments
+                )
+              );
+            })
+          ) {
+            answer = false;
+            break;
+          }
+        }
+        break;
+      case 'year':
+        answer = true;
+        const currentYear = new Date().getFullYear();
+        if (requestedDoc.age > 0) {
+          for (let i = requestedDoc.age; i > 0; i--) {
+            if (
+              !userDocuments.some((doc) => {
+                return (
+                  doc.doctypeId.toString() ===
+                    requestedDoctype._id.toString() &&
+                  currentYear - doc.year === i &&
+                  isDocumentStillAvailableInThisSwapFolder(
+                    doc,
+                    requestedDoc,
+                    swapFolderDocuments
+                  )
+                );
+              })
+            ) {
+              answer = false;
+              break;
+            }
+          }
+        } else {
+          answer = userDocuments.some((doc) => {
+            return (
+              doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+              currentYear - doc.year === requestedDoc.age &&
+              isDocumentStillAvailableInThisSwapFolder(
+                doc,
+                requestedDoc,
+                swapFolderDocuments
+              )
+            );
+          });
+        }
+        break;
+      default:
+        if (
+          userDocuments.some((doc) => {
+            return (
+              doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+              calculateAgeInMonths(doc.issuanceDate) < requestedDoc.age &&
+              isDocumentStillAvailableInThisSwapFolder(
+                doc,
+                requestedDoc,
+                swapFolderDocuments
+              )
+            );
+          })
+        ) {
+          answer = true;
+        }
+    }
+  } else {
+    if (
+      userDocuments.some((doc) => {
+        return (
+          doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+          (doc.expirationDate ? !isPast(doc.expirationDate) : true) &&
+          isDocumentStillAvailableInThisSwapFolder(
+            doc,
+            requestedDoc,
+            swapFolderDocuments
+          )
+        );
+      })
+    ) {
+      answer = true;
+    }
+  }
+
+  return answer;
+}
+
+function isDocumentStillAvailableInThisSwapFolder(
+  document,
+  requestedDoc,
+  swapFolderDocuments
+) {
+  const isDocumentUnavailable =
+    swapFolderDocuments
+      .map((doc) => {
+        return doc._id.toString();
+      })
+      .includes(document._id.toString()) &&
+    !requestedDoc.documentIds
+      .map((docId) => {
+        return docId.toString();
+      })
+      .includes(document._id.toString());
+
+  return !isDocumentUnavailable;
+}
+
+function isPast(date) {
+  const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+  return date < today;
 }

@@ -60,7 +60,7 @@ exports.getSwapFolder = async (req, res, next) => {
     const swapFolder = await SwapFolder.findById(swapFolderId)
       .populate({ path: 'userId', populate: 'documentIds' })
       .populate({
-        path: 'proRequestId',
+        path: 'proRequestId userRequestId',
         populate: {
           path: 'requestedDocIds',
           populate: [
@@ -81,7 +81,10 @@ exports.getSwapFolder = async (req, res, next) => {
 
     const swapFolderDocuments = [];
 
-    for (let requestedDoc of swapFolder.proRequestId.requestedDocIds) {
+    for (let requestedDoc of [
+      ...swapFolder.proRequestId.requestedDocIds,
+      ...swapFolder.userRequestId.requestedDocIds,
+    ]) {
       swapFolderDocuments.push(...requestedDoc.documentIds);
     }
 

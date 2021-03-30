@@ -52,9 +52,9 @@ exports.getDocumentsWithMissingFiles = async (documents) => {
 exports.isDocumentPartOf = (document, documents) => {
   return documents
     .map((doc) => {
-      return doc._id;
+      return doc._id.toString();
     })
-    .includes(document._id);
+    .includes(document._id.toString());
 };
 
 exports.hasSwapFolderMissingFiles = async (swapFolder) => {
@@ -260,7 +260,8 @@ exports.makeGroupsOfRequestedDocs = (requestedDocs) => {
 exports.hasUserTheRightDocuments = (
   userDocuments,
   allDoctypes,
-  populatedRequestedDoc
+  populatedRequestedDoc,
+  swapFolderDocuments
 ) => {
   const requestedDoctype = allDoctypes.find((dt) => {
     return dt._id.toString() === populatedRequestedDoc.doctypeId._id.toString();
@@ -280,7 +281,12 @@ exports.hasUserTheRightDocuments = (
             !userDocuments.some((doc) => {
               return (
                 doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-                getMonthsBack(doc.month, doc.year) === i
+                getMonthsBack(doc.month, doc.year) === i &&
+                this.isDocumentStillAvailableInThisSwapFolder(
+                  doc,
+                  populatedRequestedDoc,
+                  swapFolderDocuments
+                )
               );
             })
           ) {
@@ -299,7 +305,12 @@ exports.hasUserTheRightDocuments = (
                 return (
                   doc.doctypeId.toString() ===
                     requestedDoctype._id.toString() &&
-                  currentYear - doc.year === i
+                  currentYear - doc.year === i &&
+                  this.isDocumentStillAvailableInThisSwapFolder(
+                    doc,
+                    populatedRequestedDoc,
+                    swapFolderDocuments
+                  )
                 );
               })
             ) {
@@ -311,7 +322,12 @@ exports.hasUserTheRightDocuments = (
           answer = userDocuments.some((doc) => {
             return (
               doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-              currentYear - doc.year === populatedRequestedDoc.age
+              currentYear - doc.year === populatedRequestedDoc.age &&
+              this.isDocumentStillAvailableInThisSwapFolder(
+                doc,
+                populatedRequestedDoc,
+                swapFolderDocuments
+              )
             );
           });
         }
@@ -321,7 +337,13 @@ exports.hasUserTheRightDocuments = (
           userDocuments.some((doc) => {
             return (
               doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-              calculateAgeInMonths(doc.issuanceDate) < populatedRequestedDoc.age
+              calculateAgeInMonths(doc.issuanceDate) <
+                populatedRequestedDoc.age &&
+              this.isDocumentStillAvailableInThisSwapFolder(
+                doc,
+                populatedRequestedDoc,
+                swapFolderDocuments
+              )
             );
           })
         ) {
@@ -333,7 +355,12 @@ exports.hasUserTheRightDocuments = (
       userDocuments.some((doc) => {
         return (
           doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-          (doc.expirationDate ? !this.isPast(doc.expirationDate) : true)
+          (doc.expirationDate ? !this.isPast(doc.expirationDate) : true) &&
+          this.isDocumentStillAvailableInThisSwapFolder(
+            doc,
+            populatedRequestedDoc,
+            swapFolderDocuments
+          )
         );
       })
     ) {
@@ -342,6 +369,26 @@ exports.hasUserTheRightDocuments = (
   }
 
   return answer;
+};
+
+exports.isDocumentStillAvailableInThisSwapFolder = (
+  document,
+  populatedRequestedDoc,
+  swapFolderDocuments
+) => {
+  const isDocumentUnavailable =
+    swapFolderDocuments
+      .map((doc) => {
+        return doc._id.toString();
+      })
+      .includes(document._id.toString()) &&
+    !populatedRequestedDoc.documentIds
+      .map((docId) => {
+        return docId.toString();
+      })
+      .includes(document._id.toString());
+
+  return !isDocumentUnavailable;
 };
 
 exports.sortByTitle = (elements) => {
