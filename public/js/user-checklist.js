@@ -105,28 +105,33 @@ function add(requestedDocElement) {
 
   const documentIds = [];
 
-  if (selectors.length > 0) {
-    for (let selector of selectors) {
-      const selectedOption = [...selector.getElementsByTagName('option')].find(
-        (option) => {
+  try {
+    if (selectors.length > 0) {
+      for (let selector of selectors) {
+        const selectedOption = [
+          ...selector.getElementsByTagName('option'),
+        ].find((option) => {
           return option.value === selector.value;
-        }
+        });
+        documentIds.push(selectedOption.value);
+      }
+    } else {
+      const requestedDoc = JSON.parse(
+        requestedDocElement.getAttribute('requestedDoc')
       );
-      documentIds.push(selectedOption.value);
+      const matchingDocId = userDocuments.find((doc) => {
+        return doc.doctypeId === requestedDoc.doctypeId._id;
+      })._id;
+      documentIds.push(matchingDocId);
     }
-  } else {
-    const requestedDoc = JSON.parse(
-      requestedDocElement.getAttribute('requestedDoc')
-    );
-    const matchingDocId = userDocuments.find((doc) => {
-      return doc.doctypeId === requestedDoc.doctypeId._id;
-    })._id;
-    documentIds.push(matchingDocId);
+
+    requestedDocElement.setAttribute('documentIds', documentIds);
+
+    addDocumentsToRequestedDoc(requestedDocElement);
+  } catch (error) {
+    unSelect(requestedDocElement);
+    alert('Ajout impossible.');
   }
-
-  requestedDocElement.setAttribute('documentIds', documentIds);
-
-  addDocumentsToRequestedDoc(requestedDocElement);
 }
 
 function addDocumentsToRequestedDoc(requestedDocElement) {
