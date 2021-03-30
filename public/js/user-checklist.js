@@ -270,10 +270,11 @@ function unAdd(requestedDocElement) {
       }
 
       for (let id of data.documentIds) {
-        swapFolderDocumentsIds.splice(
-          swapFolderDocumentsIds.indexOf(id),
-          1
-        );
+        swapFolderDocumentsIds.splice(swapFolderDocumentsIds.indexOf(id), 1);
+      }
+
+      for (let requestedDocElement of requestedDocElements) {
+        unSelect(requestedDocElement);
       }
 
       removeDocumentFromTheLeftColumn(requestedDoc);
@@ -307,7 +308,9 @@ function unSelect(requestedDocElement) {
     selectorsContainer.remove();
   }
 
-  checkContainer.classList.remove('check-warning');
+  if (checkContainer) {
+    checkContainer.classList.remove('check-warning');
+  }
 
   const crossContainer = requestedDocElement.querySelector('.cross-container');
   if (crossContainer) {
