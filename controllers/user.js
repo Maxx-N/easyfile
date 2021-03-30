@@ -4,10 +4,8 @@ const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const SwapFolder = require('../models/swap-folder');
 const RequestedDoc = require('../models/requested-doc');
-const Request = require('../models/request');
 
 const helpers = require('../helpers');
-const User = require('../models/user');
 
 //
 

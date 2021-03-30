@@ -6,6 +6,8 @@ const allDoctypes = JSON.parse(
   document.getElementById('allDoctypes').getAttribute('allDoctypes')
 );
 
+const swapFolderDocumentsIds = getSwapFolderDocumentIds();
+
 const checkContainers = [...document.getElementsByClassName('check-container')];
 
 const requestedDocElements = [
@@ -267,6 +269,13 @@ function unAdd(requestedDocElement) {
         titleList.remove();
       }
 
+      for (let id of data.documentIds) {
+        swapFolderDocumentsIds.splice(
+          swapFolderDocumentsIds.indexOf(id),
+          1
+        );
+      }
+
       removeDocumentFromTheLeftColumn(requestedDoc);
 
       showAddedGroupsOfRequestedDocs();
@@ -308,6 +317,21 @@ function unSelect(requestedDocElement) {
 
 // HELPERS
 
+function getSwapFolderDocumentIds() {
+  const swapFolderDocuments = JSON.parse(
+    document
+      .getElementById('swapFolderDocuments')
+      .getAttribute('swapFolderDocuments')
+  );
+  return swapFolderDocuments.map((doc) => {
+    return doc._id;
+  });
+}
+
+function isDocumentIdAlreadyPartOfSwapFolder(documentId) {
+  return swapFolderDocumentsIds.includes(documentId);
+}
+
 function getRequestedDoc(requestedDocElement) {
   return JSON.parse(requestedDocElement.getAttribute('requestedDoc'));
 }
@@ -321,7 +345,8 @@ function findMatchingDocs(requestedDoc, age) {
       matchingDocs = userDocuments.filter((doc) => {
         return (
           doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-          getAgeOfADocument(doc) < age
+          getAgeOfADocument(doc) < age &&
+          !isDocumentIdAlreadyPartOfSwapFolder(doc._id)
         );
       });
     } else {
@@ -330,21 +355,26 @@ function findMatchingDocs(requestedDoc, age) {
           return (
             doc.doctypeId.toString() === requestedDoctype._id.toString() &&
             getAgeOfADocument(doc) > 0 &&
-            getAgeOfADocument(doc) === age
+            getAgeOfADocument(doc) === age &&
+            !isDocumentIdAlreadyPartOfSwapFolder(doc._id)
           );
         });
       } else {
         matchingDocs = userDocuments.filter((doc) => {
           return (
             doc.doctypeId.toString() === requestedDoctype._id.toString() &&
-            getAgeOfADocument(doc) === age
+            getAgeOfADocument(doc) === age &&
+            !isDocumentIdAlreadyPartOfSwapFolder(doc._id)
           );
         });
       }
     }
   } else {
     matchingDocs = userDocuments.filter((doc) => {
-      return doc.doctypeId.toString() === requestedDoctype._id.toString();
+      return (
+        doc.doctypeId.toString() === requestedDoctype._id.toString() &&
+        !isDocumentIdAlreadyPartOfSwapFolder(doc._id)
+      );
     });
   }
 
