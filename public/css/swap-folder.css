@@ -76,3 +76,7 @@
 .right {
   margin-left: 10px;
 }
+
+.unnecessary-to-add {
+  display: none;
+}
