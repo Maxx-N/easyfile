@@ -15,7 +15,7 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarColor02">
-    <% if(isAuthenticated) { %>
+    <% if(isClientAuthenticated) { %>
     <ul class="navbar-nav mr-auto">
       <% if(isAdmin) { %>
       <li class="nav-item">
@@ -56,7 +56,7 @@
     <% } %>
 
     <ul class="navbar-nav ml-auto">
-      <% if (!isAuthenticated && !isProAuthenticated) { %>
+      <% if (!isClientAuthenticated && !isProAuthenticated) { %>
       <li
         class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>"
       >
@@ -94,7 +94,7 @@
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          ><%= isAuthenticated ? (user.lastName? `${user.firstName}
+          ><%= isClientAuthenticated ? (user.lastName? `${user.firstName}
           ${user.lastName}` :user.email) : (pro.company? pro.company :
           pro.email) %></a
         >

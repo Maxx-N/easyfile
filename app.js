@@ -92,7 +92,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  res.locals.isAuthenticated = !!req.session.user;
+  res.locals.isClientAuthenticated = !!req.session.user;
   res.locals.isProAuthenticated = !!req.session.pro;
   res.locals.user = req.session.user;
   res.locals.pro = req.session.pro;
@@ -161,9 +161,9 @@ app.use((err, req, res, next) => {
     errorStatus: err.statusCode,
     errorMessage: err.message,
     isAdmin: req.locals && !!req.locals.isAdmin ? req.locals.isAdmin : false,
-    isAuthenticated:
-      req.locals && !!req.locals.isAuthenticated
-        ? req.locals.isAuthenticated
+    isClientAuthenticated:
+      req.locals && !!req.locals.isClientAuthenticated
+        ? req.locals.isClientAuthenticated
         : false,
     isProAuthenticated:
       req.locals && !!req.locals.isProAuthenticated

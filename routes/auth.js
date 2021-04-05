@@ -5,6 +5,7 @@ const authController = require('../controllers/auth');
 const User = require('../models/user');
 const Pro = require('../models/pro');
 const isAuth = require('../middleware/is-auth');
+const isClientAuth = require('../middleware/is-client-auth');
 const isProAuth = require('../middleware/is-pro-auth');
 const helpers = require('../helpers');
 
@@ -110,7 +111,7 @@ router.get('/edit-profile', authController.getEditProfile);
 
 router.post(
   '/edit-profile',
-  isAuth,
+  isClientAuth,
   [
     body('firstName', 'Votre prénom doit contenir entre 2 et 16 caractères.')
       .trim()

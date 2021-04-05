@@ -2,7 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 
 const userController = require('../controllers/user');
-const isAuth = require('../middleware/is-auth');
+const isClientAuth = require('../middleware/is-client-auth');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const helpers = require('../helpers');
@@ -11,21 +11,21 @@ const helpers = require('../helpers');
 
 const router = express.Router();
 
-router.get('/documents', isAuth, userController.getDocuments);
+router.get('/documents', isClientAuth, userController.getDocuments);
 
-router.get('/documents/:documentId', isAuth, userController.getDocument);
+router.get('/documents/:documentId', isClientAuth, userController.getDocument);
 
-router.get('/add-document', isAuth, userController.getEditDocument);
+router.get('/add-document', isClientAuth, userController.getEditDocument);
 
 router.get(
   '/edit-document/:documentId',
-  isAuth,
+  isClientAuth,
   userController.getEditDocument
 );
 
 router.post(
   '/edit-document',
-  isAuth,
+  isClientAuth,
   [
     body('doctypeId')
       .not()
@@ -176,23 +176,23 @@ router.post(
 
 router.post(
   '/delete-document/:documentId',
-  isAuth,
+  isClientAuth,
   userController.postDeleteDocument
 );
 
-router.get('/swap-folders', isAuth, userController.getSwapFolders);
+router.get('/swap-folders', isClientAuth, userController.getSwapFolders);
 
-router.get('/swap-folders/:swapFolderId', isAuth, userController.getSwapFolder);
+router.get('/swap-folders/:swapFolderId', isClientAuth, userController.getSwapFolder);
 
 router.post(
   '/add-documents-to-requested-doc/:requestedDocId',
-  isAuth,
+  isClientAuth,
   userController.postAddDocumentsToRequestedDoc
 );
 
 router.post(
   '/delete-documents-from-requested-doc/:requestedDocId',
-  isAuth,
+  isClientAuth,
   userController.postDeleteDocumentsFromRequestedDoc
 );
 

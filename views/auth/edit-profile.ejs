@@ -10,7 +10,7 @@
     <main class="text-center">
 
       <%- include('../includes/error-feedback') %>
-      <% if (isAuthenticated) { %>
+      <% if (isClientAuthenticated) { %>
         <div class="full-height">
             <form class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>" method="POST" action="/edit-profile">
                 <div class="top-btn-container">

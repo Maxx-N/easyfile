@@ -344,53 +344,72 @@ exports.postEditPassword = async (req, res, next) => {
   const confirmPassword = req.body.confirmPassword;
 
   const user = req.user;
+  const pro = req.pro;
 
   try {
-    let errorsArray = [];
+    if (pro || user) {
+      let errorsArray = [];
 
-    const doMatch = await bcrypt.compare(oldPassword, user.password);
+      const doMatch = await bcrypt.compare(
+        oldPassword,
+        user ? user.password : pro.password
+      );
 
-    if (!doMatch) {
-      errorsArray.push({
-        param: 'oldPassword',
-        msg: 'Mot de passe actuel incorrect.',
-      });
-    }
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      errorsArray.push(...errors.array());
-    }
-
-    if (errorsArray.length > 0) {
-      const errorMessages = errorsArray.map((err) => {
-        return err.msg;
-      });
-
-      return res.render('auth/edit-password', {
-        pageTitle: 'Modification du mot de passe',
-        path: '/edit-profile',
-        errorMessages: errorMessages,
-        validationErrors: errorsArray,
-        oldInput: {
-          oldPassword: oldPassword,
-          password: password,
-          confirmPassword: confirmPassword,
-        },
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-    user.password = hashedPassword;
-    await user.save((err) => {
-      if (err) {
-        err.message =
-          "Un problème est survenu et les modifications n'ont pu être enregistrées. Nous travaillons sur ce problème et vous prions de nous excuser.";
-        throw err;
+      if (!doMatch) {
+        errorsArray.push({
+          param: 'oldPassword',
+          msg: 'Mot de passe actuel incorrect.',
+        });
       }
-    });
-    res.redirect('/documents');
+
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        errorsArray.push(...errors.array());
+      }
+
+      if (errorsArray.length > 0) {
+        const errorMessages = errorsArray.map((err) => {
+          return err.msg;
+        });
+
+        return res.render('auth/edit-password', {
+          pageTitle: 'Modification du mot de passe',
+          path: '/edit-profile',
+          errorMessages: errorMessages,
+          validationErrors: errorsArray,
+          oldInput: {
+            oldPassword: oldPassword,
+            password: password,
+            confirmPassword: confirmPassword,
+          },
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      if (user) {
+        user.password = hashedPassword;
+        await user.save((err) => {
+          if (err) {
+            err.message =
+              "Un problème est survenu et les modifications n'ont pu être enregistrées. Nous travaillons sur ce problème et vous prions de nous excuser.";
+            throw err;
+          }
+        });
+      } else {
+        pro.password = hashedPassword;
+        await pro.save((err) => {
+          if (err) {
+            err.message =
+              "Un problème est survenu et les modifications n'ont pu être enregistrées. Nous travaillons sur ce problème et vous prions de nous excuser.";
+            throw err;
+          }
+        });
+      }
+
+      res.redirect('/');
+    }
   } catch (err) {
     return next(err);
   }
