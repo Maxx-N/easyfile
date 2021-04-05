@@ -18,9 +18,14 @@
               action="/pro/delete-swap-folder/<%= swapFolder._id %>"
               method="POST"
             >
-              <button id="deletingButton" class="btn btn-danger" type="button">
-                Supprimer le dossier d'échange
-              </button>
+              <button
+              title="Supprimer le dossier d'échange"
+              id="deletingButton"
+              class="btn btn-danger"
+              type="button"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
             </form>
           </div>
           <div class="table-container-if-top-btn">
@@ -92,8 +97,8 @@
                   title="Modifier les documents demandés"
                   class="btn btn-info edit-btn"
                   href="/pro/edit-request/<%= swapFolder.proRequestId._id %>"
-                  ><i class="fas fa-edit"></i
-                ></a>
+                  ><i class="fas fa-edit"></i>
+                </a>
                 <form
                   id="resettingForm"
                   action="/pro/reset-request/<%= swapFolder.proRequestId._id %>"

@@ -8,7 +8,7 @@ button.addEventListener('click', () => {
 
   if (
     confirm(
-      `Êtes-vous sûr(e) de vouloir supprimer le dossier de prêt de votre client ${clientEmail} ?`
+      `Êtes-vous sûr(e) de vouloir supprimer le dossier d'échange de votre client ${clientEmail} ?`
     )
   ) {
     form.submit();
