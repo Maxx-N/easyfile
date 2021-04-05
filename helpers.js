@@ -254,7 +254,9 @@ exports.makeGroupsOfRequestedDocs = (requestedDocs) => {
     }
   }
 
-  return groups;
+  return groups.sort((g1, g2) => {
+    return g1.length - g2.length;
+  });
 };
 
 exports.hasUserTheRightDocuments = (
