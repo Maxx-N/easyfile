@@ -179,10 +179,10 @@ function showAddedGroupsOfRequestedDocs() {
         })
       ) {
         title.classList.add('added-group-title');
-        const check = document.createElement('i');
-        title.textContent = '';
-        title.appendChild(check);
-        check.classList.add('fas', 'fa-check');
+        // const check = document.createElement('i');
+        // title.textContent = '';
+        // title.appendChild(check);
+        // check.classList.add('fas', 'fa-check');
 
         const addedDocs = items.filter((item) => {
           return item.getAttribute('isAdded') === 'true';

@@ -24,6 +24,9 @@ exports.getSignup = (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   const isClient = req.body.isPro !== '1';
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const company = req.body.company;
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -44,6 +47,9 @@ exports.postSignup = async (req, res, next) => {
         password: password,
         confirmPassword: confirmPassword,
         isPro: req.body.isPro,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        company: req.body.company,
       },
     });
   }
@@ -52,6 +58,8 @@ exports.postSignup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 12);
     if (isClient) {
       const user = new User({
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: hashedPassword,
       });
@@ -66,7 +74,11 @@ exports.postSignup = async (req, res, next) => {
       });
     }
     if (!isClient) {
-      const pro = new Pro({ email: email, password: hashedPassword });
+      const pro = new Pro({
+        company: company,
+        email: email,
+        password: hashedPassword,
+      });
       await pro.save();
       req.session.pro = pro;
       req.session.user = null;
@@ -163,7 +175,7 @@ exports.postLogin = async (req, res, next) => {
       req.session.pro = pro;
       req.session.user = null;
     }
-    
+
     await req.session.save();
     return res.redirect('/');
   } catch (err) {

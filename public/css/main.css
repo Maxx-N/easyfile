@@ -259,3 +259,10 @@ span.email {
 .no-file {
   background-color: var(--gray);
 }
+
+/* SIGN UP */
+
+.horizontal-row {
+  height: 1px;
+  background-color: var(--gray-dark);
+}

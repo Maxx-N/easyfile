@@ -11,15 +11,44 @@ const helpers = require('../helpers');
 
 const router = express.Router();
 
-// router.get('', (req, res, next) => {
-//   res.redirect('/login');
-// });
-
 router.get('/signup', authController.getSignup);
 
 router.post(
   '/signup',
   [
+    body('firstName')
+      .trim()
+      .custom((value, { req }) => {
+        const isClient = req.body.isPro !== '1';
+        if (isClient && (value.length < 2 || value.length > 16)) {
+          return Promise.reject(
+            'Votre prénom doit contenir entre 2 et 16 caractères.'
+          );
+        }
+        return true;
+      }),
+    body('lastName')
+      .trim()
+      .custom((value, { req }) => {
+        const isClient = req.body.isPro !== '1';
+        if (isClient && (value.length < 2 || value.length > 32)) {
+          return Promise.reject(
+            'Votre nom doit contenir entre 2 et 32 caractères.'
+          );
+        }
+        return true;
+      }),
+    body('company')
+      .trim()
+      .custom((value, { req }) => {
+        const isPro = req.body.isPro === '1';
+        if (isPro && (value.length < 2 || value.length > 32)) {
+          return Promise.reject(
+            'Le nom de votre entreprise doit contenir entre 2 et 32 caractères.'
+          );
+        }
+        return true;
+      }),
     body('email')
       .normalizeEmail({ gmail_remove_dots: false })
       .isEmail()
@@ -33,14 +62,13 @@ router.post(
                 'Un utilisateur avec cet e-mail est déjà inscrit.'
               );
             }
+            return true;
           });
         }
         if (!isClient) {
           return Pro.findOne({ email: value }).then((proDoc) => {
             if (proDoc) {
-              return Promise.reject(
-                'Un professionnel avec cet e-mail est déjà inscrit.'
-              );
+              return 'Un professionnel avec cet e-mail est déjà inscrit.';
             }
           });
         }
