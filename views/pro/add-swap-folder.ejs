@@ -2,42 +2,16 @@
 <html lang="en">
   <head>
     <%- include('../includes/head') %>
-    <link rel="stylesheet" href="/css/forms.css" />
   </head>
   <body>
-    <%- include('../includes/navbar') %>
-    <%- include('../includes/page-title') %>
+    <%- include('../includes/navbar') %> <%- include('../includes/page-title')
+    %>
     <main class="text-center">
-<div class="top-btn-container">
-      <form
-        class="text-center center-half"
-        method="POST"
-        action="/pro/add-swap-folder"
-      >
-        <fieldset>
-          <div class="form-group"></div>
-          <input type="hidden" name="userId" value="<%= user._id %>" />
-          <button
-            type="submit"
-            class="btn btn-info"
-            name="choiceOfAction"
-            value="editRequest"
-          >
-            Valider et demander des documents
-          </button>
-          <button
-            type="submit"
-            class="btn btn-primary"
-            name="choiceOfAction"
-            value="backHome"
-          >
-            Valider et retourner à l'accueil
-          </button>
-        </fieldset>
+      <form id="addSwapFolderForm" method="POST" action="/pro/add-swap-folder">
+        <input type="hidden" name="userId" value="<%= user._id %>" />
       </form>
-    </div>
     </main>
     <%- include('../includes/scripts') %>
-    <script src="/js/forms.js"></script>
+    <script src="/js/add-swap-folder.js"></script>
   </body>
 </html>

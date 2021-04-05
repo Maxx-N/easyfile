@@ -353,7 +353,6 @@ exports.getAddSwapFolder = async (req, res, next) => {
 };
 
 exports.postAddSwapFolder = async (req, res, next) => {
-  const choice = req.body.choiceOfAction;
   const pro = req.pro;
 
   try {
@@ -382,10 +381,6 @@ exports.postAddSwapFolder = async (req, res, next) => {
 
     pro.swapFolderIds.push(swapFolder._id);
     await pro.save();
-
-    if (choice === 'backHome') {
-      return res.redirect('/');
-    }
 
     await swapFolder.populate('userId').execPopulate();
 
