@@ -370,7 +370,7 @@ exports.getSwapFolders = async (req, res, next) => {
 
     for (let swapFolderId of user.swapFolderIds) {
       let sf = await SwapFolder.findById(swapFolderId)
-        .populate('proId', 'email')
+        .populate('proId', 'email company')
         .populate({
           path: 'proRequestId',
           populate: {
@@ -411,11 +411,7 @@ exports.getSwapFolder = async (req, res, next) => {
     const allDoctypes = await Doctype.find();
 
     const swapFolder = await SwapFolder.findById(swapFolderId)
-      .populate('userId')
-      .populate({
-        path: 'proId',
-        select: 'email',
-      })
+      .populate('userId proId')
       .populate({
         path: 'proRequestId userRequestId',
         populate: {
@@ -449,7 +445,11 @@ exports.getSwapFolder = async (req, res, next) => {
     );
 
     res.render('user/swap-folder', {
-      pageTitle: `Professionnel : ${swapFolder.proId.email} - Dossier d'échange n° ${swapFolder._id}`,
+      pageTitle: `Professionnel : ${
+        swapFolder.proId.company
+          ? swapFolder.proId.company
+          : swapFolder.proId.email
+      } - Dossier d'échange n° ${swapFolder._id}`,
       path: '/swap-folders',
       swapFolder: swapFolder,
       userDocuments: userDocuments,

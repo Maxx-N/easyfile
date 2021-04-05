@@ -218,10 +218,13 @@ exports.getEditProfile = (req, res, next) => {
   }
 
   if (req.pro) {
-    return res.render('auth/edit-profile', {
-      pageTitle: 'Modification du profil',
+    const pro = req.pro;
+    return res.render('auth/edit-pro-profile', {
+      pageTitle: `Modification du profil - ${pro.email}`,
       path: '/edit-profile',
       errorMessages: [],
+      oldInput: { company: pro.company },
+      validationErrors: [],
     });
   }
 };
@@ -243,7 +246,7 @@ exports.postEditProfile = async (req, res, next) => {
       return err.msg;
     });
     return res.render('auth/edit-profile', {
-      pageTitle: 'Modification du profil',
+      pageTitle: `Modification du profil - ${user.email}`,
       path: '/edit-profile',
       email: user.email,
       errorMessages: errorMessages,
@@ -276,6 +279,46 @@ exports.postEditProfile = async (req, res, next) => {
     });
 
     res.redirect('/documents');
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.postEditProProfile = async (req, res, next) => {
+  const pro = req.pro;
+
+  const company = req.body.company ? req.body.company : null;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map((err) => {
+      return err.msg;
+    });
+    return res.render('auth/edit-pro-profile', {
+      pageTitle: `Modification du profil - ${pro.email}`,
+      path: '/edit-profile',
+      email: pro.email,
+      errorMessages: errorMessages,
+      validationErrors: errors.array(),
+      oldInput: {
+        company: company,
+      },
+    });
+  }
+
+  pro.company = company;
+
+  try {
+    await pro.save((err) => {
+      if (err) {
+        err.message =
+          "Un problème est survenu et les modifications n'ont pu être enregistrées. Nous travaillons sur ce problème et vous prions de nous excuser.";
+        throw err;
+      }
+    });
+
+    res.redirect('/swap-folders');
   } catch (err) {
     return next(err);
   }

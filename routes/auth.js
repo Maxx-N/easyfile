@@ -5,6 +5,7 @@ const authController = require('../controllers/auth');
 const User = require('../models/user');
 const Pro = require('../models/pro');
 const isAuth = require('../middleware/is-auth');
+const isProAuth = require('../middleware/is-pro-auth');
 const helpers = require('../helpers');
 
 //
@@ -146,6 +147,20 @@ router.post(
       ),
   ],
   authController.postEditProfile
+);
+
+router.post(
+  '/edit-pro-profile',
+  isProAuth,
+  [
+    body(
+      'company',
+      'Le nom de votre entreprise doit contenir entre 2 et 32 caractères.'
+    )
+      .trim()
+      .isLength({ min: 2, max: 32 }),
+  ],
+  authController.postEditProProfile
 );
 
 router.get('/edit-password', authController.getEditPassword);

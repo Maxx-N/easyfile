@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+    <link rel="stylesheet" href="/css/forms.css" />
+  </head>
+  <body>
+    <%- include('../includes/navbar') %>
+    <%- include('../includes/page-title') %>
+    <main class="text-center">
+
+      <%- include('../includes/error-feedback') %>
+      <% if (isProAuthenticated) { %>
+        <div class="full-height">
+            <form class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>" method="POST" action="/edit-pro-profile">
+                <div class="top-btn-container">
+                    <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
+                    <button type="submit" class="btn btn-primary">Valider !</button>
+                </div>
+                <div class="scroll-container-if-top-btn">           
+                    <div class="form-group">
+                        <label for="company">Entreprise</label>
+                        <input
+                        type="text"
+                        name="company"
+                        id="company"
+                        value="<%= oldInput.company %>"
+                        class="form-control text-center <%= validationErrors.some(err => err.param === 'company') ? 'invalid' : '' %>"
+                        />
+                        <small class="form-text text-muted"
+                        >Entre 2 et 32 caractères.</small
+                        >
+                    </div>
+                </div>
+            </form>
+            </div>
+      <% } %>
+    </main>
+    <%- include('../includes/scripts') %>
+    <script src="/js/forms.js"></script>
+  </body>
+</html>
