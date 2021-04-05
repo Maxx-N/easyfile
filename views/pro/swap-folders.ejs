@@ -20,7 +20,7 @@
                 >
                     <div>N° <%= sf._id %></div>
                     <div>
-                        <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.email %></a>
+                        <a href="/pro/swap-folders/<%= sf._id %>"><%= sf.userId.lastName? `${sf.userId.firstName} ${sf.userId.lastName}` : sf.userId.email %></a>
                         <% if (isSwapFolderPartOf(sf, swapFoldersWithMissingFiles)) { %>
                             <div class="text-danger">
                                 <i class="fas fa-exclamation-triangle"></i>

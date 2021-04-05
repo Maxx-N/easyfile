@@ -19,7 +19,7 @@ exports.getSwapFolders = async (req, res, next) => {
 
     for (let swapFolderId of pro.swapFolderIds) {
       let sf = await SwapFolder.findById(swapFolderId)
-        .populate('userId', 'email')
+        .populate('userId', 'email firstName lastName')
         .populate({
           path: 'proRequestId',
           populate: {
@@ -93,7 +93,11 @@ exports.getSwapFolder = async (req, res, next) => {
     );
 
     res.render('pro/swap-folder', {
-      pageTitle: `Client : ${swapFolder.userId.email} - Dossier d'échange n° ${swapFolder._id}`,
+      pageTitle: `Client : ${
+        swapFolder.userId.lastName
+          ? swapFolder.userId.firstName + ' ' + swapFolder.userId.lastName
+          : swapFolder.userId.email
+      } - Dossier d'échange n° ${swapFolder._id}`,
       path: '/swap-folders',
       swapFolder: swapFolder,
       swapFolderDocuments: swapFolderDocuments,
@@ -148,7 +152,7 @@ exports.getDocument = async (req, res, next) => {
       error.statusCode = 403;
       throw error;
     }
-    
+
     const doesFileExist = await helpers.doesFileExist(document);
 
     res.render('pro/document', {
@@ -403,8 +407,15 @@ exports.getEditRequest = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+
+    const swapFolder = await helpers.getSwapFolderOfRequest(request);
+
+    const user = await User.findById(swapFolder.userId);
+
     res.render('pro/edit-request', {
-      pageTitle: 'Demande de documents',
+      pageTitle: `Demande de documents - ${
+        user.lastName ? user.firstName + ' ' + user.lastName : user.email
+      }`,
       path: '/swap-folders',
       doctypes: helpers.sortByTitle(doctypes),
       request: request,

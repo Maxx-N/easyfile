@@ -94,7 +94,9 @@
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          ><%= isAuthenticated ? user.email : pro.email %></a
+          ><%= isAuthenticated ? (user.lastName? `${user.firstName}
+          ${user.lastName}` :user.email) : (pro.company? pro.company :
+          pro.email) %></a
         >
         <div class="dropdown-menu">
           <a

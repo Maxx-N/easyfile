@@ -111,20 +111,12 @@ router.post(
   '/edit-profile',
   isAuth,
   [
-    body(
-      'firstName',
-      'Si vous indiquez un prénom, sa longueur doit être comprise en 2 et 50 caractères.'
-    )
-      .if(body('firstName').notEmpty())
+    body('firstName', 'Votre prénom doit contenir entre 2 et 16 caractères.')
       .trim()
-      .isLength({ min: 2, max: 50 }),
-    body(
-      'lastName',
-      'Si vous indiquez un nom, sa longueur doit être comprise en 2 et 50 caractères.'
-    )
-      .if(body('lastName').notEmpty())
+      .isLength({ min: 2, max: 16 }),
+    body('lastName', 'Votre nom doit contenir entre 2 et 32 caractères.')
       .trim()
-      .isLength({ min: 2, max: 50 }),
+      .isLength({ min: 2, max: 32 }),
     body('birthDate').custom((value, { req }) => {
       if (value) {
         const birthDate = new Date(value);

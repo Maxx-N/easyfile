@@ -13,7 +13,7 @@ const proSchema = new Schema({
     type: String,
     required: true,
   },
-  company: { type: String, required: true },
+  company: { type: String},
   swapFolderIds: [
     { type: Schema.Types.ObjectId, ref: 'SwapFolder', required: true },
   ],

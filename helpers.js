@@ -431,10 +431,15 @@ exports.getNumberOfCompletedGroups = (requestedDocs) => {
 
 exports.getSwapFolderOfRequestedDocId = async (requestedDocId) => {
   const request = await Request.findOne({ requestedDocIds: requestedDocId });
-  const swapFolder = await SwapFolder.findOne({
+  const swapFolder = this.getSwapFolderOfRequest(request);
+  return swapFolder;
+};
+
+exports.getSwapFolderOfRequest = async (request) => {
+  const sf = await SwapFolder.findOne({
     $or: [{ userRequestId: request._id }, { proRequestId: request._id }],
   });
-  return swapFolder;
+  return sf;
 };
 
 exports.getSwapFolderDocumentIds = async (swapFolder) => {
