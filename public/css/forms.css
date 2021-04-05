@@ -16,6 +16,14 @@ select.invalid {
   margin: 0 auto;
 }
 
+#noAccountLinkContainer {
+  margin: auto;
+  text-align: center;
+  width: 50%;
+  padding-top: 1rem;
+  text-decoration: underline;
+}
+
 /* alerts */
 
 .user-messages {
