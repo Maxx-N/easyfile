@@ -284,6 +284,8 @@ exports.getAddClient = (req, res, next) => {
 
 exports.postAddClient = async (req, res, next) => {
   const email = req.body.email;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
@@ -297,6 +299,8 @@ exports.postAddClient = async (req, res, next) => {
       path: '/clients',
       email: email,
       oldInput: {
+        firstName: firstName,
+        lastName: lastName,
         password: password,
         confirmPassword: confirmPassword,
       },
@@ -310,6 +314,8 @@ exports.postAddClient = async (req, res, next) => {
     const user = new User({
       email: email,
       password: hashedPassword,
+      firstName: firstName,
+      lastName: lastName,
     });
     await user.save((err) => {
       if (err) {

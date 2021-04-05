@@ -40,6 +40,12 @@ router.post(
   '/add-client',
   isProAuth,
   [
+    body('firstName', 'Le prénom doit contenir entre 2 et 16 caractères.')
+    .trim()
+    .isLength({ min: 2, max: 16 }),
+  body('lastName', 'Le nom doit contenir entre 2 et 32 caractères.')
+    .trim()
+    .isLength({ min: 2, max: 32 }),
     body('password')
       .trim()
       .isStrongPassword()
