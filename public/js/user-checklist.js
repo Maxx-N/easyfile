@@ -129,10 +129,14 @@ function add(requestedDocElement) {
   } catch (error) {
     unSelect(requestedDocElement);
     alert('Ajout impossible.');
+    console.log(error);
   }
 }
 
 function addDocumentsToRequestedDoc(requestedDocElement) {
+  const checkContainer = requestedDocElement.querySelector('.check-container');
+  addSpinner(checkContainer);
+
   const requestedDoc = getRequestedDoc(requestedDocElement);
 
   const data = {
@@ -271,18 +275,19 @@ function unAdd(requestedDocElement) {
     documentIds: requestedDocElement.getAttribute('documentIds'),
   };
 
+  const checkContainer = requestedDocElement.querySelector('.check-container');
+
+  addSpinner(checkContainer);
+
   $.post(
     `/delete-documents-from-requested-doc/${requestedDoc._id}`,
     data,
     () => {
-      const checkContainer = requestedDocElement.querySelector(
-        '.check-container'
-      );
-
       requestedDocElement.setAttribute('isAdded', 'false');
 
       requestedDocElement.removeAttribute('documentIds');
-      checkContainer.classList.remove('check-success');
+      // checkContainer.classList.remove('check-success');
+      removeCheckContainer(requestedDocElement);
 
       const titleList = requestedDocElement.querySelector('.list-group');
 
@@ -322,6 +327,14 @@ function addCheckContainer(requestedDocElement) {
     check.classList.add('fas', 'fa-check');
 
     checkContainer.addEventListener('click', onCheckClick);
+  }
+}
+
+function removeCheckContainer(requestedDocElement) {
+  const checkContainer = requestedDocElement.querySelector('.check-container');
+
+  if (checkContainer) {
+    checkContainer.remove();
   }
 }
 
@@ -621,7 +634,8 @@ function addSpinner(element) {
 
   element.textContent = '';
   element.classList.add('spinner-container');
+  element.classList.remove('pointer');
+  element.removeEventListener('click', onCheckClick);
   element.appendChild(div);
 
-  console.log(element);
 }

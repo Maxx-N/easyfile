@@ -41,10 +41,13 @@
 }
 
 .user-requested-doc .spinner-container {
-  position: absolute;
   top: 50%;
-  transform: translateY(-50%) scale(0.5);
+  transform: translateY(-50%) scale(0.8);
   z-index: 1;
+}
+
+.user-requested-doc .spinner-container .spinner-border {
+  color: var(--info);
 }
 
 .check-container.check-success {
