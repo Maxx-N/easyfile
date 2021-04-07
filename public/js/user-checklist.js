@@ -6,8 +6,6 @@ const allDoctypes = JSON.parse(
   document.getElementById('allDoctypes').getAttribute('allDoctypes')
 );
 
-// const swapFolderDocumentsIds = getSwapFolderDocumentIds();
-
 const checkContainers = [...document.getElementsByClassName('check-container')];
 
 const requestedDocElements = [
@@ -609,4 +607,21 @@ function isDocumentStillAvailableInThisSwapFolder(
 function isPast(date) {
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
   return date < today;
+}
+
+function addSpinner(element) {
+  const div = document.createElement('div');
+  div.classList.add('spinner-border');
+  div.setAttribute('role', 'status');
+
+  const span = document.createElement('span');
+  span.classList.add('sr-only');
+  span.textContent = 'Loading...';
+  div.appendChild(span);
+
+  element.textContent = '';
+  element.classList.add('spinner-container');
+  element.appendChild(div);
+
+  console.log(element);
 }

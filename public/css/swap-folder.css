@@ -26,6 +26,7 @@
 
 .user-requested-doc {
   position: relative;
+  vertical-align: middle;
 }
 
 .user-requested-doc .check-container {
@@ -37,6 +38,13 @@
   position: absolute;
   left: 1rem;
   color: var(--warning);
+}
+
+.user-requested-doc .spinner-container {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scale(0.5);
+  z-index: 1;
 }
 
 .check-container.check-success {

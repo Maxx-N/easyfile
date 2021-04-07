@@ -484,8 +484,6 @@ exports.getSwapFolderRequests = async (swapFolder) => {
   return [populatedSwapFolder.proRequestId, populatedSwapFolder.userRequestId];
 };
 
-//
-
 // PRIVATE
 
 function sortDocumentsByDoctypeTitle(documents) {
