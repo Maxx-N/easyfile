@@ -29,6 +29,12 @@ for (let requestedDocElement of requestedDocElements) {
 
 showAddedGroupsOfRequestedDocs();
 
+addAlertToAllRequestedDocsWithDocumentsThatAreNotValidsAnymore();
+
+for (let checkContainer of checkContainers) {
+  checkContainer.addEventListener('click', onCheckClick);
+}
+
 function addListOfExistingTitles(requestedDocElement) {
   const requestedDoc = getRequestedDoc(requestedDocElement);
 
@@ -66,10 +72,6 @@ function addListOfExistingTitles(requestedDocElement) {
     li.textContent = title;
     ul.appendChild(li);
   }
-}
-
-for (let checkContainer of checkContainers) {
-  checkContainer.addEventListener('click', onCheckClick);
 }
 
 function onCheckClick() {
@@ -286,7 +288,6 @@ function unAdd(requestedDocElement) {
       requestedDocElement.setAttribute('isAdded', 'false');
 
       requestedDocElement.removeAttribute('documentIds');
-      // checkContainer.classList.remove('check-success');
       removeCheckContainer(requestedDocElement);
 
       const titleList = requestedDocElement.querySelector('.list-group');
@@ -294,10 +295,6 @@ function unAdd(requestedDocElement) {
       if (titleList) {
         titleList.remove();
       }
-
-      // for (let id of data.documentIds) {
-      //   swapFolderDocumentsIds.splice(swapFolderDocumentsIds.indexOf(id), 1);
-      // }
 
       removeDocumentFromTheLeftColumn(requestedDoc);
 
@@ -485,8 +482,6 @@ function calculateAgeInMonths(stringDate) {
   return monthsBack;
 }
 
-////////
-
 function hasUserTheRightDocuments(requestedDocElement) {
   const requestedDoc = getRequestedDoc(requestedDocElement);
   const swapFolderDocuments = userDocuments.filter((doc) => {
@@ -617,8 +612,9 @@ function isDocumentStillAvailableInThisSwapFolder(
   return !isDocumentUnavailable;
 }
 
-function isPast(date) {
+function isPast(dateString) {
   const today = new Date(new Date().setUTCHours(0, 0, 0, 0));
+  const date = new Date(dateString);
   return date < today;
 }
 
@@ -637,5 +633,100 @@ function addSpinner(element) {
   element.classList.remove('pointer');
   element.removeEventListener('click', onCheckClick);
   element.appendChild(div);
+}
 
+function areDocumentsStillValid(requestedDocElement) {
+  const requestedDoc = getRequestedDoc(requestedDocElement);
+  const requestedDoctype = allDoctypes.find((dt) => {
+    return dt._id.toString() === requestedDoc.doctypeId._id.toString();
+  });
+  const requestedDocDocuments = requestedDoc.documentIds;
+
+  let answer;
+
+  if (requestedDoc.age !== null && requestedDoc.age !== undefined) {
+    switch (requestedDoctype.periodicity) {
+      case 'month':
+        answer = true;
+        for (let i = requestedDoc.age; i > 0; i--) {
+          if (
+            !requestedDocDocuments.some((doc) => {
+              return getMonthsBack(doc.month, doc.year) === i;
+            })
+          ) {
+            answer = false;
+            break;
+          }
+        }
+        break;
+      case 'year':
+        answer = true;
+        const currentYear = new Date().getFullYear();
+        if (requestedDoc.age > 0) {
+          for (let i = requestedDoc.age; i > 0; i--) {
+            if (
+              !requestedDocDocuments.some((doc) => {
+                return currentYear - doc.year === i;
+              })
+            ) {
+              answer = false;
+              break;
+            }
+          }
+        } else {
+          answer = requestedDocDocuments.some((doc) => {
+            return currentYear - doc.year === requestedDoc.age;
+          });
+        }
+        break;
+      default:
+        if (
+          requestedDocDocuments.some((doc) => {
+            return calculateAgeInMonths(doc.issuanceDate) < requestedDoc.age;
+          })
+        ) {
+          answer = true;
+        }
+    }
+  } else {
+    if (
+      requestedDocDocuments.some((doc) => {
+        return doc.expirationDate ? !isPast(doc.expirationDate) : true;
+      })
+    ) {
+      answer = true;
+    }
+  }
+
+  if (!answer) {
+    answer = false;
+  }
+
+  return answer;
+}
+
+function addAlertToAllRequestedDocsWithDocumentsThatAreNotValidsAnymore() {
+  const completedRequestedDocElements = requestedDocElements.filter((d) => {
+    return d.getAttribute('isAdded') === 'true';
+  });
+
+  for (let requestedDocEl of completedRequestedDocElements) {
+    if (!areDocumentsStillValid(requestedDocEl)) {
+      addAlertToRequestedDocElement(requestedDocEl);
+    }
+  }
+}
+
+function addAlertToRequestedDocElement(requestedDocElement) {
+  const div = document.createElement('div');
+  requestedDocElement.prepend(div);
+  div.classList.add('text-danger');
+
+  const span = document.createElement('span');
+  div.appendChild(span);
+  span.textContent = 'Date(s) dépassée(s) ';
+
+  const i = document.createElement('i');
+  div.appendChild(i);
+  i.classList.add('fas', 'fa-exclamation-triangle');
 }
