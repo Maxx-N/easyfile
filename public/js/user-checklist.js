@@ -721,7 +721,7 @@ function addAlertToAllRequestedDocsWithDocumentsThatAreNotValidsAnymore() {
 function addAlertToRequestedDocElement(requestedDocElement) {
   const div = document.createElement('div');
   requestedDocElement.appendChild(div);
-  div.classList.add('text-warning', 'date-alert');
+  div.classList.add('text-muted', 'date-alert');
 
   const i = document.createElement('i');
   div.appendChild(i);
@@ -729,7 +729,7 @@ function addAlertToRequestedDocElement(requestedDocElement) {
 
   const span = document.createElement('span');
   div.appendChild(span);
-  span.textContent = ' Date(s) dépassée(s)';
+  span.textContent = " Date(s) dépassée(s) depuis l'ajout";
 }
 
 function removeAlertFromRequestedDocElement(requestedDocElement) {
