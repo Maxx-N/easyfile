@@ -444,6 +444,8 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolderDocuments
     );
 
+    helpers.sortDocuments(swapFolderDocuments);
+
     res.render('user/swap-folder', {
       pageTitle: `Professionnel : ${
         swapFolder.proId.company

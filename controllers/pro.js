@@ -92,6 +92,8 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolderDocuments
     );
 
+    helpers.sortDocuments(swapFolderDocuments);
+
     res.render('pro/swap-folder', {
       pageTitle: `Client : ${
         swapFolder.userId.lastName
