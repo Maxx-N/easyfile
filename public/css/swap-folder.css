@@ -32,6 +32,8 @@
 .user-requested-doc .check-container {
   position: absolute;
   right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .user-requested-doc .cross-container {

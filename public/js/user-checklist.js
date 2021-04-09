@@ -289,6 +289,7 @@ function unAdd(requestedDocElement) {
 
       requestedDocElement.removeAttribute('documentIds');
       removeCheckContainer(requestedDocElement);
+      removeAlertFromRequestedDocElement(requestedDocElement);
 
       const titleList = requestedDocElement.querySelector('.list-group');
 
@@ -298,10 +299,10 @@ function unAdd(requestedDocElement) {
 
       removeDocumentFromTheLeftColumn(requestedDoc);
 
-      for (let requestedDocElement of requestedDocElements) {
-        unSelect(requestedDocElement);
-        if (hasUserTheRightDocuments(requestedDocElement)) {
-          addCheckContainer(requestedDocElement);
+      for (let requestedDocEl of requestedDocElements) {
+        unSelect(requestedDocEl);
+        if (hasUserTheRightDocuments(requestedDocEl)) {
+          addCheckContainer(requestedDocEl);
         }
       }
 
@@ -719,14 +720,21 @@ function addAlertToAllRequestedDocsWithDocumentsThatAreNotValidsAnymore() {
 
 function addAlertToRequestedDocElement(requestedDocElement) {
   const div = document.createElement('div');
-  requestedDocElement.prepend(div);
-  div.classList.add('text-danger');
-
-  const span = document.createElement('span');
-  div.appendChild(span);
-  span.textContent = 'Date(s) dépassée(s) ';
+  requestedDocElement.appendChild(div);
+  div.classList.add('text-warning', 'date-alert');
 
   const i = document.createElement('i');
   div.appendChild(i);
   i.classList.add('fas', 'fa-exclamation-triangle');
+
+  const span = document.createElement('span');
+  div.appendChild(span);
+  span.textContent = ' Date(s) dépassée(s)';
+}
+
+function removeAlertFromRequestedDocElement(requestedDocElement) {
+  const alert = requestedDocElement.querySelector('.date-alert');
+  if (alert) {
+    alert.remove();
+  }
 }
