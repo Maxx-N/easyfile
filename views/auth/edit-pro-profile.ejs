@@ -31,12 +31,21 @@
                         >Entre 2 et 32 caractères.</small
                         >
                     </div>
+                    <div class="form-group">
+                      <button id="unsubscribingButton" type="button" class="btn btn-danger">
+                          Supprimer mon profil
+                      </button>
+                  </div>
                 </div>
             </form>
             </div>
       <% } %>
     </main>
+    <form id="unsubscribingForm" class="hidden" method="POST" action="/unsubscribe">
+
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>
+    <script src="/js/edit-profile.js"></script>
+
   </body>
 </html>

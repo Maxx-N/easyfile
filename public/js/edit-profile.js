@@ -1,5 +1,4 @@
 const button = document.getElementById('unsubscribingButton');
-console.log(document.getElementById('unsubscribingForm'));
 
 button.addEventListener('click', () => {
   const form = document.getElementById('unsubscribingForm');

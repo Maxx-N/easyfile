@@ -3,6 +3,10 @@ const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 const Pro = require('../models/pro');
+const Document = require('../models/document');
+const SwapFolder = require('../models/swap-folder');
+const Request = require('../models/request');
+const RequestedDoc = require('../models/requested-doc');
 const helpers = require('../helpers');
 
 //
@@ -195,18 +199,82 @@ exports.postLogout = (req, res, next) => {
   });
 };
 
-exports.postUnsubscribe = (req, res, next) => {
-  
-  // si utilisateur
-  // ses documents
-  // ses dossiers
-  // les requêtes de ses dossiers (pro et user)
-  // les requestedDocs des requêtes de ses dossiers
+exports.postUnsubscribe = async (req, res, next) => {
+  const user = req.user;
+  const pro = req.pro;
 
-  // si professionnel
-  // ses dossiers de prêts
-  // les requêtes de ses dossiers (pro et user)
-  // les requested docs des requêtes de ses dossiers
+  try {
+    if (!user && !pro) {
+      throw new Error('Aucun profil connecté.');
+    }
+
+    // si utilisateur
+    if (user) {
+      // effacer ses documents et leurs fichiers
+      const documentsToDelete = await Document.find({ userId: user._id });
+      for (const docToDelete of documentsToDelete) {
+        helpers.deleteFile(process.env.AWS_PATH + docToDelete.fileUrl);
+      }
+      await Document.deleteMany({ userId: user._id });
+
+      // ses swapFolders, leurs références chez les pros, leurs requêtes et leurs requestedDocs
+      const swapFoldersToDelete = await SwapFolder.find({ userId: user._id });
+      for (const sf of swapFoldersToDelete) {
+        const connectedPros = await Pro.find({ swapFolderIds: sf._id });
+        for (const pro of connectedPros) {
+          pro.swapFolderIds.splice(pro.swapFolderIds.indexOf(sf._id), 1);
+          await pro.save();
+        }
+
+        const requestsToDelete = await helpers.getSwapFolderRequests(sf);
+        const requestedDocsToDelete = await helpers.getSwapFolderRequestedDocs(
+          sf
+        );
+        await Request.deleteMany({ _id: requestsToDelete.map((r) => r._id) });
+        await RequestedDoc.deleteMany({
+          _id: requestedDocsToDelete.map((r) => r._id),
+        });
+      }
+      await SwapFolder.deleteMany({ userId: user._id });
+
+      // L'utilisateur
+      await User.deleteOne({ _id: user._id });
+    }
+
+    if (pro) {
+      // ses swapFolders, leurs références chez les users, leurs requêtes et leurs requestedDocs
+      const swapFoldersToDelete = await SwapFolder.find({ proId: pro._id });
+      for (const sf of swapFoldersToDelete) {
+        const connectedUsers = await User.find({ swapFolderIds: sf._id });
+        for (const user of connectedUsers) {
+          user.swapFolderIds.splice(user.swapFolderIds.indexOf(sf._id), 1);
+          await user.save();
+        }
+        const requestsToDelete = await helpers.getSwapFolderRequests(sf);
+        const requestedDocsToDelete = await helpers.getSwapFolderRequestedDocs(
+          sf
+        );
+        await Request.deleteMany({ _id: requestsToDelete.map((r) => r._id) });
+        await RequestedDoc.deleteMany({
+          _id: requestedDocsToDelete.map((r) => r._id),
+        });
+      }
+      await SwapFolder.deleteMany({ proId: pro._id });
+
+      // Le pro
+      await Pro.deleteOne({ _id: pro._id });
+    }
+
+    req.session.destroy((err) => {
+      if (err) {
+        err.message = "Nous n'avons pas réussi à vous déconnecter";
+        return next(err);
+      }
+      res.redirect('/');
+    });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.getEditProfile = (req, res, next) => {

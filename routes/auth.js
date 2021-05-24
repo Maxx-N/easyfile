@@ -107,7 +107,7 @@ router.post(
 
 router.post('/logout', authController.postLogout);
 
-router.post('/unsubscribe', authController.postUnsubscribe);
+router.post('/unsubscribe', isAuth, authController.postUnsubscribe);
 
 router.get('/edit-profile', authController.getEditProfile);
 
