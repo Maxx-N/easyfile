@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('../includes/head') %>
-    <link rel="stylesheet" href="/css/forms.css" />
-  </head>
-  <body>
-    <%- include('../includes/navbar') %>
-    <%- include('../includes/page-title') %>
-    <main class="text-center">
-
-      <%- include('../includes/error-feedback') %>
-      <% if (isClientAuthenticated) { %>
+<head>
+  <%- include('../includes/head') %>
+  <link rel="stylesheet" href="/css/forms.css" />
+</head>
+<body>
+<%- include('../includes/navbar') %> 
+<%- include('../includes/page-title')%>
+<main class="text-center">
+    <%- include('../includes/error-feedback') %> 
+    <% if (isClientAuthenticated) { %>
         <div class="full-height">
-            <form class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>" method="POST" action="/edit-profile">
+            <form
+              class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>"
+              method="POST"
+              action="/edit-profile"
+            >
                 <div class="top-btn-container">
                     <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
                     <button type="submit" class="btn btn-primary">Valider !</button>
@@ -25,41 +28,34 @@
                           id="gender"
                           name="gender"
                           lastChoice="<%= oldInput.gender %>"
-                        >
-                          <option value="" disabled selected>
-                            -
-                          </option>
-                          <option value="female">Madame</option>
-                          <option value="male">Monsieur</option>
-                          <option value="other">Autre</option>
+                         >
+                            <option value="" disabled selected>-</option>
+                            <option value="female">Madame</option>
+                            <option value="male">Monsieur</option>
+                            <option value="other">Autre</option>
                         </select>
                     </div>
-            
                     <div class="form-group">
                         <label for="firstName">Prénom</label>
-                        <input
-                        type="text"
-                        name="firstName"
-                        id="firstName"
-                        value="<%= oldInput.firstName %>"
-                        class="form-control text-center <%= validationErrors.some(err => err.param === 'firstName') ? 'invalid' : '' %>"
-                        />
-                        <small class="form-text text-muted"
-                        >Entre 2 et 16 caractères.</small
-                        >
+                            <input
+                              type="text"
+                              name="firstName"
+                              id="firstName"
+                              value="<%= oldInput.firstName %>"
+                              class="form-control text-center <%= validationErrors.some(err => err.param === 'firstName') ? 'invalid' : '' %>"
+                            />
+                            <small class="form-text text-muted">Entre 2 et 16 caractères.</small>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Nom</label>
                         <input
-                        type="text"
-                        name="lastName"
-                        id="lastName"
-                        value="<%= oldInput.lastName %>"
-                        class="form-control text-center <%= validationErrors.some(err => err.param === 'lastName') ? 'invalid' : '' %>"
+                          type="text"
+                          name="lastName"
+                          id="lastName"
+                          value="<%= oldInput.lastName %>"
+                          class="form-control text-center <%= validationErrors.some(err => err.param === 'lastName') ? 'invalid' : '' %>"
                         />
-                        <small class="form-text text-muted"
-                        >Entre 2 et 32 caractères.</small
-                        >
+                        <small class="form-text text-muted">Entre 2 et 32 caractères.</small>
                     </div>
                     <div class="form-group">
                         <label for="birthDate">Date de naissance</label>
@@ -70,42 +66,43 @@
                           name="birthDate"
                           value="<%= oldInput.birthDate %>"
                         />
-                        <small class="form-text text-muted"
-                          >18 ans ou plus.</small
-                        >
-                      </div>
+                        <small class="form-text text-muted">18 ans ou plus.</small>
+                    </div>
                     <div class="form-group">
                         <label for="phoneNumber">Téléphone</label>
                         <input
-                        type="tel"
-                        name="phoneNumber"
-                        id="phoneNumber"
-                        value="<%= oldInput.phoneNumber %>"
-                        class="form-control text-center <%= validationErrors.some(err => err.param === 'phoneNumber') ? 'invalid' : '' %>"
+                          type="tel"
+                          name="phoneNumber"
+                          id="phoneNumber"
+                          value="<%= oldInput.phoneNumber %>"
+                          class="form-control text-center <%= validationErrors.some(err => err.param === 'phoneNumber') ? 'invalid' : '' %>"
                         />
-                        <small class="form-text text-muted"
-                        >Entre 6 et 20 chiffres, sans espace.</small
-                        >
+                      <small class="form-text text-muted">Entre 6 et 20 chiffres, sans espace.</small>
                     </div>
                     <div class="form-group">
                         <label for="address">Adresse</label>
                         <input
-                        type="text"
-                        name="address"
-                        id="address"
-                        value="<%= oldInput.address %>"
-                        class="form-control text-center <%= validationErrors.some(err => err.param === 'address') ? 'invalid' : '' %>"
+                          type="text"
+                          name="address"
+                          id="address"
+                          value="<%= oldInput.address %>"
+                          class="form-control text-center <%= validationErrors.some(err => err.param === 'address') ? 'invalid' : '' %>"
                         />
-                        <small class="form-text text-muted"
-                        >Entre 10 et 255 caractères.</small
-                        >
+                        <small class="form-text text-muted">Entre 10 et 255 caractères.</small>
+                    </div>
+                    <div class="form-group">
+                        <button id="unsubscribingButton" type="button" class="btn btn-danger">
+                            Supprimer mon profil
+                        </button>
+                    </div>
                 </div>
-            </div>
             </form>
-            </div>
-      <% } %>
-    </main>
-    <%- include('../includes/scripts') %>
-    <script src="/js/forms.js"></script>
-  </body>
+        </div>
+    <% } %>
+</main>
+<form id="unsubscribingForm" class="hidden" method="POST" action="/unsubscribe">
+<%- include('../includes/scripts') %>
+<script src="/js/forms.js"></script>
+<script src="/js/edit-profile.js"></script>
+</body>
 </html>

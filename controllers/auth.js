@@ -195,6 +195,20 @@ exports.postLogout = (req, res, next) => {
   });
 };
 
+exports.postUnsubscribe = (req, res, next) => {
+  
+  // si utilisateur
+  // ses documents
+  // ses dossiers
+  // les requêtes de ses dossiers (pro et user)
+  // les requestedDocs des requêtes de ses dossiers
+
+  // si professionnel
+  // ses dossiers de prêts
+  // les requêtes de ses dossiers (pro et user)
+  // les requested docs des requêtes de ses dossiers
+};
+
 exports.getEditProfile = (req, res, next) => {
   if (req.user) {
     const user = req.user;
