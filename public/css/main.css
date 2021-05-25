@@ -251,7 +251,10 @@ span.email {
 
 /* Edit document */
 
-.bold-italic {
-  font-weight: bold;
-  font-style: italic;
+.bold {
+  font-weight: bolder;
+}
+
+.underline {
+  text-decoration: underline;
 }

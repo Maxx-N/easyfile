@@ -223,7 +223,31 @@ function createAgeSelector(selectedOption) {
     }
 
     selectors.appendChild(select);
+
+    if (periodicity === 'year') {
+      createYearHelper(selectors);
+    }
   }
+}
+
+function createYearHelper(selectors) {
+  const div = document.createElement('div');
+  div.setAttribute('id', 'yearHelper');
+
+  const small1 = document.createElement('small');
+  small1.classList.add('form-text', 'text-muted');
+  small1.textContent =
+    "ATTENTION : Il s'agit de l'année d'émission du document !";
+  div.appendChild(small1);
+
+  const small2 = document.createElement('small');
+  small2.classList.add('form-text', 'text-muted');
+  small2.textContent = `Exemple : Pour un avis d'imposition sur les revenus de ${
+    new Date().getFullYear() - 1
+  }, l'année est ${new Date().getFullYear()}.`;
+  div.appendChild(small2);
+
+  selectors.appendChild(div);
 }
 
 function createMonthOption(select) {
@@ -319,6 +343,11 @@ function removeAgeSelector() {
   const ageSelector = document.getElementById('ageSelector');
   if (ageSelector) {
     ageSelector.remove();
+  }
+
+  const yearHelper = document.getElementById('yearHelper');
+  if (yearHelper) {
+    yearHelper.remove();
   }
 }
 

@@ -75,10 +75,17 @@
               >Entre 1 et 64 caractères.</small
             >
             <small class="form-text text-muted"
-              >Il est recommandé de définir un titre court et explicite.</small
+              >ATTENTION : Il est recommandé de définir un titre court et explicite !</small
             >
             <small class="form-text text-muted"
-              >Exemple pour un bulletin de salaire : <span class="bold-italic">"Entreprise - mois/année"</span></small
+              >Exemple : 
+                <span class="bold">
+                    Pour un bulletin de salaire - 
+                    <span class="underline">
+                      "Entreprise - mois/année"
+                    </span>
+                </span>
+            </small
             >
           </div>
           <div class="form-group" id="issuanceDateGroup">
@@ -128,6 +135,20 @@
               value="<%= oldInput.year %>"
             />
             <small class="form-text text-muted">Passée ou actuelle.</small>
+            <small class="form-text text-muted"
+            >ATTENTION : Il s'agit de l'année d'émission du document !</small
+          >
+            <small class="form-text text-muted"
+              >
+              Exemple : 
+              <span class="bold">
+                Pour un avis d'imposition sur les revenus de <%= new Date().getFullYear() - 1 %>, 
+                <span class="underline">
+                  l'année est <%= new Date().getFullYear() %>
+                </span>
+              </span>.
+            </small
+            >
           </div>
         </div>
           <% if (editMode) { %>
