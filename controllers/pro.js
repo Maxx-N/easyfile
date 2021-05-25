@@ -421,6 +421,20 @@ exports.getEditRequest = async (req, res, next) => {
 
     const swapFolder = await helpers.getSwapFolderOfRequest(request);
 
+    if (!swapFolder) {
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (swapFolder.proId.toString() !== req.pro._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à accéder au dossier d'échange demandé."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
     const user = await User.findById(swapFolder.userId);
 
     res.render('pro/edit-request', {
