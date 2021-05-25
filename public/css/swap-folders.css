@@ -9,3 +9,10 @@
 .swap-folder-item:hover {
   border: 0.2rem solid var(--info);
 }
+
+.correspondent-name {
+  max-width: 33%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

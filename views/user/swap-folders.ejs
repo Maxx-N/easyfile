@@ -16,7 +16,7 @@
             class="list-group-item d-flex justify-content-between pointer swap-folder-item"
             >
                 <div>N° <%= sf._id %></div>
-                <div>
+                <div class="correspondent-name" title="<%= sf.proId.company ? sf.proId.company : sf.proId.email %>">
                     <a href="/swap-folders/<%= sf._id %>"><%= sf.proId.company ? sf.proId.company : sf.proId.email %></a>
                     <% if (isSwapFolderPartOf(sf, swapFoldersWithMissingFiles)) { %>
                         <div class="text-danger">

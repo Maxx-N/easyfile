@@ -35,7 +35,7 @@
               class="form-control text-center <%= validationErrors.some(err => err.param === 'firstName') ? 'invalid' : '' %>"
             />
             <small class="form-text text-muted"
-              >Entre 2 et 16 caractères.</small
+              >Entre 1 et 64 caractères.</small
             >
           </div>
           <div class="form-group" id="lastNameFormGroup">
@@ -48,7 +48,7 @@
               class="form-control text-center <%= validationErrors.some(err => err.param === 'lastName') ? 'invalid' : '' %>"
             />
             <small class="form-text text-muted"
-              >Entre 2 et 32 caractères.</small
+              >Entre 1 et 64 caractères.</small
             >
           </div>
           <div class="form-group" id="companyFormGroup">
@@ -61,7 +61,7 @@
               class="form-control text-center <%= validationErrors.some(err => err.param === 'company') ? 'invalid' : '' %>"
             />
             <small class="form-text text-muted"
-              >Entre 2 et 32 caractères.</small
+              >Entre 1 et 128 caractères.</small
             >
           </div>
           <div class="form-group">

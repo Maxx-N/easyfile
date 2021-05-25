@@ -59,12 +59,12 @@ router.post(
           return true;
         });
       }),
-    body('firstName', 'Le prénom doit contenir entre 2 et 16 caractères.')
+    body('firstName', 'Le prénom doit contenir entre 1 et 64 caractères.')
       .trim()
-      .isLength({ min: 2, max: 16 }),
-    body('lastName', 'Le nom doit contenir entre 2 et 32 caractères.')
+      .isLength({ min: 1, max: 64 }),
+    body('lastName', 'Le nom doit contenir entre 1 et 64 caractères.')
       .trim()
-      .isLength({ min: 2, max: 32 }),
+      .isLength({ min: 1, max: 64 }),
     body('password')
       .trim()
       .isStrongPassword()

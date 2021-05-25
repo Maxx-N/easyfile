@@ -55,7 +55,7 @@
     </ul>
     <% } %>
 
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto navright">
       <% if (!isClientAuthenticated && !isProAuthenticated) { %>
       <li
         class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>"
@@ -94,9 +94,13 @@
           role="button"
           aria-haspopup="true"
           aria-expanded="false"
-          ><%= isClientAuthenticated ? (user.lastName? `${user.firstName}
-          ${user.lastName}` :user.email) : (pro.company? pro.company :
-          pro.email) %></a
+          >
+          <div class="nav-username">
+              <%= isClientAuthenticated ? (user.lastName? `${user.firstName}
+              ${user.lastName}` :user.email) : (pro.company? pro.company :
+              pro.email) %>
+          </div>
+          </a
         >
         <div class="dropdown-menu">
           <a

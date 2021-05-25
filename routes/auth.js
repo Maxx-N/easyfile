@@ -22,9 +22,9 @@ router.post(
       .trim()
       .custom((value, { req }) => {
         const isClient = req.body.isPro !== '1';
-        if (isClient && (value.length < 2 || value.length > 16)) {
+        if (isClient && (value.length < 1 || value.length > 64)) {
           return Promise.reject(
-            'Votre prénom doit contenir entre 2 et 16 caractères.'
+            'Votre prénom doit contenir entre 1 et 64 caractères.'
           );
         }
         return true;
@@ -33,9 +33,9 @@ router.post(
       .trim()
       .custom((value, { req }) => {
         const isClient = req.body.isPro !== '1';
-        if (isClient && (value.length < 2 || value.length > 32)) {
+        if (isClient && (value.length < 1 || value.length > 64)) {
           return Promise.reject(
-            'Votre nom doit contenir entre 2 et 32 caractères.'
+            'Votre nom doit contenir entre 1 et 64 caractères.'
           );
         }
         return true;
@@ -44,9 +44,9 @@ router.post(
       .trim()
       .custom((value, { req }) => {
         const isPro = req.body.isPro === '1';
-        if (isPro && (value.length < 2 || value.length > 32)) {
+        if (isPro && (value.length < 1 || value.length > 128)) {
           return Promise.reject(
-            'Le nom de votre entreprise doit contenir entre 2 et 32 caractères.'
+            'Le nom de votre entreprise doit contenir entre 1 et 128 caractères.'
           );
         }
         return true;
@@ -118,12 +118,12 @@ router.post(
   '/edit-profile',
   isClientAuth,
   [
-    body('firstName', 'Votre prénom doit contenir entre 2 et 16 caractères.')
+    body('firstName', 'Votre prénom doit contenir entre 1 et 64 caractères.')
       .trim()
-      .isLength({ min: 2, max: 16 }),
-    body('lastName', 'Votre nom doit contenir entre 2 et 32 caractères.')
+      .isLength({ min: 1, max: 64 }),
+    body('lastName', 'Votre nom doit contenir entre 1 et 64 caractères.')
       .trim()
-      .isLength({ min: 2, max: 32 }),
+      .isLength({ min: 1, max: 64 }),
     body('birthDate').custom((value, { req }) => {
       if (value) {
         const birthDate = new Date(value);
@@ -161,10 +161,10 @@ router.post(
   [
     body(
       'company',
-      'Le nom de votre entreprise doit contenir entre 2 et 32 caractères.'
+      'Le nom de votre entreprise doit contenir entre 1 et 128 caractères.'
     )
       .trim()
-      .isLength({ min: 2, max: 32 }),
+      .isLength({ min: 1, max: 128 }),
   ],
   authController.postEditProProfile
 );
