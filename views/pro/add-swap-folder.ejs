@@ -9,6 +9,7 @@
     <main class="text-center">
       <form id="addSwapFolderForm" method="POST" action="/pro/add-swap-folder">
         <input type="hidden" name="userId" value="<%= user._id %>" />
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       </form>
     </main>
     <%- include('../includes/scripts') %>

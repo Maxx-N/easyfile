@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
 // const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
@@ -31,6 +32,7 @@ const store = new MongoDBStore({
   uri: process.env.MONGODB_URI,
   collection: 'sessions',
 });
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -94,13 +96,17 @@ app.use(
   })
 );
 
+app.use(csrfProtection);
+
 app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
   res.locals.isClientAuthenticated = !!req.session.user;
   res.locals.isProAuthenticated = !!req.session.pro;
   res.locals.user = req.session.user;
   res.locals.pro = req.session.pro;
   res.locals.isAdmin =
     !!req.session.user && req.session.user.email === process.env.ADMIN_EMAIL;
+
   next();
 });
 

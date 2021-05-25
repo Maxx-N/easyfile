@@ -104,6 +104,7 @@
               class="form-control text-center <%= validationErrors.some(err => err.param === 'confirmPassword') ? 'invalid' : '' %>"
             />
           </div>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit" class="btn btn-primary">Je m'inscris !</button>
         </form>
       </div>

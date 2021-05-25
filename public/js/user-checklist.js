@@ -12,6 +12,8 @@ const requestedDocElements = [
   ...document.getElementsByClassName('user-requested-doc'),
 ];
 
+const csrfToken = document.getElementById('csrfToken').getAttribute('value');
+
 // Documents déjà présents
 for (let requestedDocElement of requestedDocElements) {
   const requestedDoc = getRequestedDoc(requestedDocElement);
@@ -156,8 +158,14 @@ function addDocumentsToRequestedDoc(requestedDocElement) {
   input.setAttribute('type', 'hidden');
   input.setAttribute('name', 'documentIds');
   input.setAttribute('value', data.documentIds);
-
   form.appendChild(input);
+
+  const csrfInput = document.createElement('input');
+  csrfInput.setAttribute('type', 'hidden');
+  csrfInput.setAttribute('name', '_csrf');
+  csrfInput.setAttribute('value', csrfToken);
+  form.appendChild(csrfInput);
+
   document.getElementsByTagName('main')[0].appendChild(form);
 
   form.submit();
@@ -275,6 +283,7 @@ function unAdd(requestedDocElement) {
 
   const data = {
     documentIds: requestedDocElement.getAttribute('documentIds'),
+    _csrf: csrfToken,
   };
 
   const checkContainer = requestedDocElement.querySelector('.check-container');

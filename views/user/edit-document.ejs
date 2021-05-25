@@ -15,9 +15,10 @@
         action="/edit-document<%= editMode ? '?edit=true' : '' %>"
         enctype="multipart/form-data"
       >
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="top-btn-container">
-      <button type="submit" class="btn btn-primary"><%= editMode ? 'Modifier !' : 'Ajouter !' %></button>
-    </div>
+          <button type="submit" class="btn btn-primary"><%= editMode ? 'Modifier !' : 'Ajouter !' %></button>
+      </div>
     <div class="scroll-container-if-top-btn">
           <div class="form-group">
             <label for="file">Fichier</label>

@@ -18,6 +18,7 @@
               action="/pro/delete-swap-folder/<%= swapFolder._id %>"
               method="POST"
             >
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               <button
               title="Supprimer le dossier d'échange"
               id="deletingButton"
@@ -104,6 +105,7 @@
                   action="/pro/reset-request/<%= swapFolder.proRequestId._id %>"
                   method="POST"
                 >
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                   <button
                     title="Supprimer tous les documents demandés"
                     id="resettingButton"

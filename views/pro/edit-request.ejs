@@ -42,7 +42,8 @@
             action="/pro/edit-request"
             id="addRequestedDocForm"
             class="top-btn-container"
-            >     
+            >  
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">   
             <input type="hidden" name="requestId" value="<%= request._id %>"/> 
                 <button id="submitBtn" type="button" class="btn btn-primary">
                   Valider la requête

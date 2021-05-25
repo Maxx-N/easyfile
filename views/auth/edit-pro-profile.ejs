@@ -15,6 +15,7 @@
             <form class="text-center center-half <%= errorMessages.length > 0 ? 'full-height-if-errors' : 'full-height'%>" method="POST" action="/edit-pro-profile">
                 <div class="top-btn-container">
                     <a class="btn btn-info" href="/edit-password">Changer mon mot de passe</a>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <button type="submit" class="btn btn-primary">Valider !</button>
                 </div>
                 <div class="scroll-container-if-top-btn">           
@@ -42,6 +43,8 @@
       <% } %>
     </main>
     <form id="unsubscribingForm" class="hidden" method="POST" action="/unsubscribe">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    </form>
 
     <%- include('../includes/scripts') %>
     <script src="/js/forms.js"></script>

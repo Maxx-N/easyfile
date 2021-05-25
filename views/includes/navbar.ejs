@@ -106,6 +106,7 @@
           >
           <div class="dropdown-divider"></div>
           <form method="POST" action="/logout">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="dropdown-item">Déconnexion</button>
           </form>
         </div>
