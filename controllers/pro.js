@@ -34,9 +34,8 @@ exports.getSwapFolders = async (req, res, next) => {
       swapFolders.push(sf);
     }
 
-    const swapFoldersWithMissingFiles = await helpers.getSwapFoldersWithMissingFiles(
-      swapFolders
-    );
+    const swapFoldersWithMissingFiles =
+      await helpers.getSwapFoldersWithMissingFiles(swapFolders);
 
     res.render('pro/swap-folders', {
       pageTitle: "Dossiers d'échange",
@@ -96,9 +95,8 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolderDocuments.push(...requestedDoc.documentIds);
     }
 
-    const swapFolderDocumentsWithMissingFiles = await helpers.getDocumentsWithMissingFiles(
-      swapFolderDocuments
-    );
+    const swapFolderDocumentsWithMissingFiles =
+      await helpers.getDocumentsWithMissingFiles(swapFolderDocuments);
 
     helpers.sortDocuments(swapFolderDocuments);
 
@@ -462,6 +460,22 @@ exports.postEditRequest = async (req, res, next) => {
       throw error;
     }
 
+    const swapFolder = await helpers.getSwapFolderOfRequest(request);
+
+    if (!swapFolder) {
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (swapFolder.proId.toString() !== req.pro._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à modifier cette requête."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
     let docInputs = req.body.requestedDocs;
 
     if (typeof docInputs === 'string') {
@@ -561,7 +575,6 @@ exports.postEditRequest = async (req, res, next) => {
     await request.save();
 
     // Redirection
-    const swapFolder = await SwapFolder.findOne({ proRequestId: requestId });
     res.redirect(`/pro/swap-folders/${swapFolder._id}`);
   } catch (err) {
     next(err);

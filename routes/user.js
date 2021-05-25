@@ -182,7 +182,11 @@ router.post(
 
 router.get('/swap-folders', isClientAuth, userController.getSwapFolders);
 
-router.get('/swap-folders/:swapFolderId', isClientAuth, userController.getSwapFolder);
+router.get(
+  '/swap-folders/:swapFolderId',
+  isClientAuth,
+  userController.getSwapFolder
+);
 
 router.post(
   '/add-documents-to-requested-doc/:requestedDocId',
