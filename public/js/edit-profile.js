@@ -5,7 +5,7 @@ button.addEventListener('click', () => {
 
   if (
     confirm(
-      `Êtes-vous sûr(e) de vouloir supprimer définitivement votre profil ? \nTous les documents et/ou dossiers d'échange liés seront perdus.`
+      `Êtes-vous sûr(e) de vouloir supprimer définitivement votre compte ? \nTous les documents et/ou dossiers d'échange liés seront perdus.`
     )
   ) {
     form.submit();
