@@ -70,8 +70,11 @@ router.post(
         if (!isClient) {
           return Pro.findOne({ email: value }).then((proDoc) => {
             if (proDoc) {
-              return 'Un professionnel avec cet e-mail est déjà inscrit.';
+              return Promise.reject(
+                'Un professionnel avec cet e-mail est déjà inscrit.'
+              );
             }
+            return true;
           });
         }
       }),
