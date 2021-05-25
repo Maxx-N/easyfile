@@ -21,9 +21,8 @@ exports.getDocuments = async (req, res, next) => {
     }
     helpers.sortDocuments(documents);
 
-    const documentsWithMissingFiles = await helpers.getDocumentsWithMissingFiles(
-      documents
-    );
+    const documentsWithMissingFiles =
+      await helpers.getDocumentsWithMissingFiles(documents);
 
     res.render('user/documents', {
       pageTitle: 'Mes documents',
@@ -247,9 +246,8 @@ exports.postEditDocument = async (req, res, next) => {
       }
       if (file) {
         helpers.deleteFile(process.env.AWS_PATH + document.fileUrl);
-        document.fileUrl = file.location.split('/')[
-          file.location.split('/').length - 1
-        ];
+        document.fileUrl =
+          file.location.split('/')[file.location.split('/').length - 1];
       }
       document.doctypeId = doctypeId;
     }
@@ -385,9 +383,8 @@ exports.getSwapFolders = async (req, res, next) => {
       swapFolders.push(sf);
     }
 
-    const swapFoldersWithMissingFiles = await helpers.getSwapFoldersWithMissingFiles(
-      swapFolders
-    );
+    const swapFoldersWithMissingFiles =
+      await helpers.getSwapFoldersWithMissingFiles(swapFolders);
 
     res.render('user/swap-folders', {
       pageTitle: "Mes dossiers d'échange",
@@ -425,9 +422,18 @@ exports.getSwapFolder = async (req, res, next) => {
           ],
         },
       });
+
     if (!swapFolder) {
       const error = new Error("Le dossier d'échange n'a pu être trouvé.");
       error.statusCode = 404;
+      throw error;
+    }
+
+    if (swapFolder.userId._id.toString() !== req.user._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à accéder au dossier d'échange demandé."
+      );
+      error.statusCode = 403;
       throw error;
     }
 
@@ -440,9 +446,8 @@ exports.getSwapFolder = async (req, res, next) => {
       swapFolderDocuments.push(...requestedDoc.documentIds);
     }
 
-    const swapFolderDocumentsWithMissingFiles = await helpers.getDocumentsWithMissingFiles(
-      swapFolderDocuments
-    );
+    const swapFolderDocumentsWithMissingFiles =
+      await helpers.getDocumentsWithMissingFiles(swapFolderDocuments);
 
     helpers.sortDocuments(swapFolderDocuments);
 
