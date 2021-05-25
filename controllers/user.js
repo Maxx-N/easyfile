@@ -488,6 +488,14 @@ exports.postAddDocumentsToRequestedDoc = async (req, res, next) => {
       requestedDocId
     );
 
+    if (swapFolder.userId.toString() !== req.user._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à modifier le dossier d'échange demandé."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
     const swapFolderDocumentIds = await helpers.getSwapFolderDocumentIds(
       swapFolder
     );
