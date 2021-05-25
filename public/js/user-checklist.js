@@ -312,9 +312,8 @@ function unAdd(requestedDocElement) {
 }
 
 function addCheckContainer(requestedDocElement) {
-  const existingContainer = requestedDocElement.querySelector(
-    '.check-container'
-  );
+  const existingContainer =
+    requestedDocElement.querySelector('.check-container');
 
   if (!existingContainer) {
     const checkContainer = document.createElement('span');

@@ -488,6 +488,12 @@ exports.postAddDocumentsToRequestedDoc = async (req, res, next) => {
       requestedDocId
     );
 
+    if (!swapFolder) {
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
     if (swapFolder.userId.toString() !== req.user._id.toString()) {
       const error = new Error(
         "Vous n'êtes pas autorisé à modifier le dossier d'échange demandé."
@@ -528,6 +534,24 @@ exports.postDeleteDocumentsFromRequestedDoc = async (req, res, next) => {
   const documentIds = req.body.documentIds.split(',');
 
   try {
+    const swapFolder = await helpers.getSwapFolderOfRequestedDocId(
+      requestedDocId
+    );
+
+    if (!swapFolder) {
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (swapFolder.userId.toString() !== req.user._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à modifier le dossier d'échange demandé."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
     const requestedDoc = await RequestedDoc.findById(requestedDocId);
 
     for (let id of documentIds) {
