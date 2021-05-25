@@ -188,6 +188,13 @@ exports.postDeleteSwapFolder = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
+    if (swapFolder.proId.toString() !== req.pro._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à supprimer ce dossier d'échange."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
 
     const user = await User.findById(swapFolder.userId);
     if (!user) {
