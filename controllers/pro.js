@@ -79,6 +79,14 @@ exports.getSwapFolder = async (req, res, next) => {
       throw error;
     }
 
+    if (swapFolder.proId.toString() !== req.pro._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à accéder au dossier d'échange demandé."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
     const swapFolderDocuments = [];
 
     for (let requestedDoc of [
