@@ -599,6 +599,22 @@ exports.postResetRequest = async (req, res, next) => {
       throw error;
     }
 
+    const swapFolder = await helpers.getSwapFolderOfRequest(request);
+
+    if (!swapFolder) {
+      const error = new Error("Le dossier d'échange n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (swapFolder.proId.toString() !== req.pro._id.toString()) {
+      const error = new Error(
+        "Vous n'êtes pas autorisé à modifier cette requête."
+      );
+      error.statusCode = 403;
+      throw error;
+    }
+
     for (let requestedDocId of request.requestedDocIds) {
       await RequestedDoc.deleteOne({ _id: requestedDocId });
     }
@@ -607,7 +623,6 @@ exports.postResetRequest = async (req, res, next) => {
 
     await request.save();
 
-    const swapFolder = await SwapFolder.findOne({ proRequestId: request._id });
     res.redirect(`/pro/swap-folders/${swapFolder._id}`);
   } catch (err) {
     next(err);
