@@ -65,9 +65,9 @@ router.post(
                 `Merci de donner un titre à votre ${doctype.title.toLowerCase()} : Vous pouvez en posséder plusieurs.`
               );
             }
-            if (value.length < 4 || value.length > 80) {
+            if (value.length < 1 || value.length > 64) {
               return Promise.reject(
-                'Le titre doit contenir entre 4 et 80 caractères.'
+                'Le titre doit contenir entre 1 et 64 caractères.'
               );
             }
           }

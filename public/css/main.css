@@ -60,11 +60,6 @@ main {
   overflow: auto;
 }
 
-/* .scroll-container-if-top-btn-and-errors {
-  height: calc(70% - 40px);
-  overflow: auto;
-} */
-
 ::-webkit-scrollbar {
   width: 1em;
 }
@@ -72,19 +67,6 @@ main {
   box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
-
-/* .scrollable {
-  overflow: auto;
-}
-
-.scrollable::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-.scrollable::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey;
-  border-radius: 10px;
-} */
 
 #pageTitle div {
   vertical-align: middle;
@@ -265,4 +247,11 @@ span.email {
 .horizontal-row {
   height: 1px;
   background-color: var(--gray-dark);
+}
+
+/* Edit document */
+
+.bold-italic {
+  font-weight: bold;
+  font-style: italic;
 }
