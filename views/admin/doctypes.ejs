@@ -19,6 +19,8 @@
             <th scope="col">Unique</th>
             <th scope="col">Date d'émission</th>
             <th scope="col">Date d'expiration</th>
+            <th scope="col">Documents liés</th>
+            <th scope="col">Documents requis liés</th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +31,8 @@
             <td><%= doctype.isUnique ? 'Oui' : 'Non' %></td>
             <td><%= doctype.hasIssuanceDate ? 'Oui' : 'Non' %></td>
             <td><%= doctype.hasExpirationDate ? 'Oui' : 'Non' %></td>
+            <td><%= documents.filter(doc => doc.doctypeId.toString() === doctype._id.toString()).length %></td>
+            <td><%= requestedDocs.filter(rd => rd.doctypeId.toString() === doctype._id.toString()).length %></td>
           </tr>
           <% } %>
         </tbody>

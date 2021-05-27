@@ -1,6 +1,8 @@
 const { validationResult } = require('express-validator');
 
 const Doctype = require('../models/doctype');
+const Document = require('../models/document');
+const RequestedDoc = require('../models/requested-doc');
 const helpers = require('../helpers');
 
 //
@@ -8,11 +10,15 @@ const helpers = require('../helpers');
 exports.getDoctypes = async (req, res, next) => {
   try {
     const doctypes = await Doctype.find();
+    const documents = await Document.find();
+    const requestedDocs = await RequestedDoc.find();
     helpers.sortByTitle(doctypes);
     res.render('admin/doctypes', {
       pageTitle: 'Les types de documents',
       path: '/admin/doctypes',
       doctypes: doctypes,
+      documents: documents,
+      requestedDocs: requestedDocs,
     });
   } catch (err) {
     err.message =
