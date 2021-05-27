@@ -23,7 +23,7 @@
         </thead>
         <tbody>
           <% for (let doctype of doctypes) { %>
-          <tr class="table-primary pointer">
+          <tr class="table-primary pointer doctype-item" id="<%= doctype._id %>">
             <td><%= doctype.title %></td>
             <td><%= doctype.periodicity === 'none' ? 'Aucune' : doctype.periodicity === 'month' ? 'Mois' : 'Année' %></td>
             <td><%= doctype.isUnique ? 'Oui' : 'Non' %></td>
@@ -36,5 +36,6 @@
     </div>
     </main>
     <%- include('../includes/scripts') %>
+    <script src="/js/doctypes.js"></script>
   </body>
 </html>

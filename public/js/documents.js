@@ -1,6 +1,6 @@
 const documents = document.getElementsByClassName('document-item');
 
-for (let doc of documents) {
+for (const doc of documents) {
   doc.addEventListener('click', onNavigateToDetail);
 }
 

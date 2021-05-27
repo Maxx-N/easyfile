@@ -25,4 +25,16 @@ router.post(
   adminController.postAddDoctype
 );
 
+router.get('/doctypes/:doctypeId', adminController.getEditDoctypeTitle);
+
+router.post(
+  '/doctypes/:doctypeId',
+  [
+    body('title', 'Le titre doit contenir entre 4 et 80 caractères.')
+      .trim()
+      .isLength({ min: '4', max: '80' }),
+  ],
+  adminController.postEditDoctypeTitle
+);
+
 module.exports = router;

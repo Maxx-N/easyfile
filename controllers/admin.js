@@ -82,3 +82,61 @@ exports.postAddDoctype = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getEditDoctypeTitle = async (req, res, next) => {
+  const doctypeId = req.params.doctypeId;
+  try {
+    const doctype = await Doctype.findById(doctypeId);
+
+    if (!doctype) {
+      const error = new Error("Le type de document n'a pu être trouvé.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.render('admin/edit-doctype-title', {
+      pageTitle: 'Modification de type de document',
+      path: '/admin/doctypes',
+      doctype: doctype,
+      validationErrors: [],
+      errorMessages: [],
+      oldInput: {
+        title: doctype.title,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postEditDoctypeTitle = async (req, res, next) => {
+  const doctypeId = req.params.doctypeId;
+  const errors = validationResult(req);
+
+  try {
+    const doctype = await Doctype.findById(doctypeId);
+
+    if (!errors.isEmpty()) {
+      const errorsArray = errors.array();
+      const errorMessages = errorsArray.map((err) => err.msg);
+
+      return res.render('admin/edit-doctype-title', {
+        pageTitle: 'Modification de type de document',
+        path: '/admin/doctypes',
+        doctype: doctype,
+        validationErrors: errorsArray,
+        errorMessages: errorMessages,
+        oldInput: {
+          title: req.body.title,
+        },
+      });
+    }
+
+    doctype.title = req.body.title;
+    await doctype.save();
+
+    res.redirect('/admin/doctypes');
+  } catch (err) {
+    next(err);
+  }
+};
