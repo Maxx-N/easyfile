@@ -21,16 +21,18 @@ exports.getSignup = (req, res, next) => {
       email: '',
       password: '',
       confirmPassword: '',
-      isPro: '0',
+      firstName: '',
+      lastName: '',
+      // isPro: '0',
     },
   });
 };
 
 exports.postSignup = async (req, res, next) => {
-  const isClient = req.body.isPro !== '1';
+  // const isClient = req.body.isPro !== '1';
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
-  const company = req.body.company;
+  // const company = req.body.company;
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -50,17 +52,17 @@ exports.postSignup = async (req, res, next) => {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-        isPro: req.body.isPro,
+        // isPro: req.body.isPro,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        company: req.body.company,
+        // company: req.body.company,
       },
     });
   }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
-    if (isClient) {
+    // if (isClient) {
       const user = new User({
         firstName: firstName,
         lastName: lastName,
@@ -76,23 +78,7 @@ exports.postSignup = async (req, res, next) => {
         }
         res.redirect('/documents');
       });
-    }
-    if (!isClient) {
-      const pro = new Pro({
-        company: company,
-        email: email,
-        password: hashedPassword,
-      });
-      await pro.save();
-      req.session.pro = pro;
-      req.session.user = null;
-      return req.session.save((err) => {
-        if (err) {
-          throw err;
-        }
-        res.redirect('/pro/loan-files');
-      });
-    }
+    // }
   } catch (err) {
     return next(err);
   }

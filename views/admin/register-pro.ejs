@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('../includes/head') %>
+    <link rel="stylesheet" href="/css/forms.css" />
+  </head>
+  <body>
+    <%- include('../includes/navbar') %> <%- include('../includes/page-title')
+    %>
+    <main>
+      <%- include('../includes/error-feedback') %>
+      <div
+        class="<%= errorMessages.length > 0 ? 'scroll-container-if-errors' : 'scroll-container' %>"
+      >
+        <form class="text-center center-half" method="POST" action="/admin/register-pro">
+          <div class="form-group" id="companyFormGroup">
+            <label for="email">Nom de l'entreprise</label>
+            <input
+              type="text"
+              name="company"
+              id="company"
+              value="<%= oldInput.company %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'company') ? 'invalid' : '' %>"
+            />
+            <small class="form-text text-muted"
+              >Entre 1 et 128 caractères.</small
+            >
+        </div>
+
+
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value="<%= oldInput.email %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'email') ? 'invalid' : '' %>"
+              aria-describedby="emailHelp"
+            />
+            <small class="form-text text-muted"
+              >Nous ne le divulguerons jamais.</small
+            >
+          </div>
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value="<%= oldInput.password %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'password') ? 'invalid' : '' %>"
+            />
+            <small class="form-text text-muted"
+              >Au moins 8 caractères dont : une majuscule, une minuscule, un
+              chiffre et un symbole.</small
+            >
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword"
+              >Confirmation du mot de passe</label
+            >
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              value="<%= oldInput.confirmPassword %>"
+              class="form-control text-center <%= validationErrors.some(err => err.param === 'confirmPassword') ? 'invalid' : '' %>"
+            />
+          </div>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit" class="btn btn-primary">Je créer le compte pro !</button>
+        </form>
+      </div>
+    </main>
+    <%- include('../includes/scripts') %>
+    <script src="/js/forms.js"></script>
+  </body>
+</html>
+
+
+

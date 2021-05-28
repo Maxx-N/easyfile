@@ -3,7 +3,6 @@ const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
 const User = require('../models/user');
-const Pro = require('../models/pro');
 const isAuth = require('../middleware/is-auth');
 const isClientAuth = require('../middleware/is-client-auth');
 const isProAuth = require('../middleware/is-pro-auth');
@@ -21,8 +20,9 @@ router.post(
     body('firstName')
       .trim()
       .custom((value, { req }) => {
-        const isClient = req.body.isPro !== '1';
-        if (isClient && (value.length < 1 || value.length > 64)) {
+        // const isClient = req.body.isPro !== '1';
+        // if (isClient && (value.length < 1 || value.length > 64)) {
+        if (value.length < 1 || value.length > 64) {
           return Promise.reject(
             'Votre prénom doit contenir entre 1 et 64 caractères.'
           );
@@ -32,21 +32,11 @@ router.post(
     body('lastName')
       .trim()
       .custom((value, { req }) => {
-        const isClient = req.body.isPro !== '1';
-        if (isClient && (value.length < 1 || value.length > 64)) {
+        // const isClient = req.body.isPro !== '1';
+        // if (isClient && (value.length < 1 || value.length > 64)) {
+        if (value.length < 1 || value.length > 64) {
           return Promise.reject(
             'Votre nom doit contenir entre 1 et 64 caractères.'
-          );
-        }
-        return true;
-      }),
-    body('company')
-      .trim()
-      .custom((value, { req }) => {
-        const isPro = req.body.isPro === '1';
-        if (isPro && (value.length < 1 || value.length > 128)) {
-          return Promise.reject(
-            'Le nom de votre entreprise doit contenir entre 1 et 128 caractères.'
           );
         }
         return true;
@@ -56,8 +46,8 @@ router.post(
       .isEmail()
       .withMessage('Merci de saisir un e-mail valide.')
       .custom((value, { req }) => {
-        const isClient = req.body.isPro !== '1';
-        if (isClient) {
+        // const isClient = req.body.isPro !== '1';
+        // if (isClient) {
           return User.findOne({ email: value }).then((userDoc) => {
             if (userDoc) {
               return Promise.reject(
@@ -66,17 +56,7 @@ router.post(
             }
             return true;
           });
-        }
-        if (!isClient) {
-          return Pro.findOne({ email: value }).then((proDoc) => {
-            if (proDoc) {
-              return Promise.reject(
-                'Un professionnel avec cet e-mail est déjà inscrit.'
-              );
-            }
-            return true;
-          });
-        }
+        // }
       }),
     body('password')
       .trim()

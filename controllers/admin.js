@@ -1,11 +1,70 @@
+const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 
+const Pro = require('../models/pro');
 const Doctype = require('../models/doctype');
 const Document = require('../models/document');
 const RequestedDoc = require('../models/requested-doc');
 const helpers = require('../helpers');
 
 //
+
+exports.getRegisterPro = (req, res, next) => {
+  res.render('admin/register-pro', {
+    pageTitle: 'Inscription de professionnel',
+    path: '/admin/register-pro',
+    errorMessages: [],
+    validationErrors: [],
+    oldInput: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+      company: '',
+    },
+  });
+};
+
+exports.postRegisterPro = async (req, res, next) => {
+  const company = req.body.company;
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map((err) => {
+      return err.msg;
+    });
+    return res.status(422).render('admin/register-pro', {
+      pageTitle: 'Inscription de professionnel',
+      path: '/admin/register-pro',
+      errorMessages: errorMessages,
+      validationErrors: errors.array(),
+      oldInput: {
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword,
+        company: req.body.company,
+      },
+    });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const pro = new Pro({
+      company: company,
+      email: email,
+      password: hashedPassword,
+    });
+    await pro.save();
+
+    res.redirect('/');
+  } catch (err) {
+    return next(err);
+  }
+};
 
 exports.getDoctypes = async (req, res, next) => {
   try {

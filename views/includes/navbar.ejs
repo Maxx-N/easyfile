@@ -1,121 +1,134 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="/documents"
-    ><%= isAdmin ? 'Admin' : 'SwapFile' %></a
-  >
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarColor02"
-    aria-controls="navbarColor02"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <a class="navbar-brand" href="/documents"><%= isAdmin ? 'Admin' : 'swapfile' %></a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarColor02"
+      aria-controls="navbarColor02"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarColor02">
-    <% if(isClientAuthenticated) { %>
-    <ul class="navbar-nav mr-auto">
-      <% if(isAdmin) { %>
-      <li class="nav-item">
-        <a
-          class="nav-link <%= path === '/admin/doctypes' ? 'active' : '' %>"
-          href="/admin/doctypes"
-          >DocTypes</a
-        >
-      </li>
-      <% } %>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <% if(isClientAuthenticated) { %>
+            <ul class="navbar-nav mr-auto">
+                <% if(isAdmin) { %>
+                    <li class="nav-item">
+                        <a
+                          class="nav-link <%= path === '/admin/doctypes' ? 'active' : '' %>"
+                          href="/admin/doctypes"
+                        >
+                            Types de document
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                          class="nav-link <%= path === '/admin/register-pro' ? 'active' : '' %>"
+                          href="/admin/register-pro"
+                        >
+                            Nouveau professionnel
+                        </a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                      <a
+                        class="nav-link <%= path === '/documents' ? 'active' : '' %>"
+                        href="/documents"
+                      >
+                          Mes documents
+                      </a>
+                </li>
 
-      <li class="nav-item">
-        <a
-          class="nav-link <%= path === '/documents' ? 'active' : '' %>"
-          href="/documents"
-          >Mes documents</a
-        >
-      </li>
+                <li class="nav-item">
+                    <a
+                      class="nav-link <%= path === '/swap-folders' ? 'active' : '' %>"
+                      href="/swap-folders"
+                    >
+                        Mes dossiers d'échange
+                    </a>
+                </li>
+                <% } %>
+            </ul>
+        <% } %> 
+        
+        <% if (isProAuthenticated) { %>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a
+                      class="nav-link <%= path === '/swap-folders' ? 'active' : '' %>"
+                      href="/swap-folders"
+                    >
+                        Dossiers d'échange
+                    </a>
+                </li>
+            </ul>
+        <% } %>
 
-      <li class="nav-item">
-        <a
-          class="nav-link <%= path === '/swap-folders' ? 'active' : '' %>"
-          href="/swap-folders"
-          >Mes dossiers d'échange</a
-        >
-      </li>
-    </ul>
-    <% } %> <% if (isProAuthenticated) { %>
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a
-          class="nav-link <%= path === '/swap-folders' ? 'active' : '' %>"
-          href="/swap-folders"
-          >Dossiers d'échange
-        </a>
-      </li>
-    </ul>
-    <% } %>
-
-    <ul class="navbar-nav ml-auto navright">
-      <% if (!isClientAuthenticated && !isProAuthenticated) { %>
-      <li
-        class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>"
-      >
-        <a
-          class="nav-link dropdown-toggle"
-          data-toggle="dropdown"
-          href="#"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          >Authentification</a
-        >
-        <div class="dropdown-menu">
-          <a
-            class="dropdown-item <%= path === '/login' ? 'active' : '' %>"
-            href="/login"
-            >Connexion</a
-          >
-          <div class="dropdown-divider"></div>
-          <a
-            class="dropdown-item <%= path === '/signup' ? 'active' : '' %>"
-            href="/signup"
-            >Inscription</a
-          >
-        </div>
-      </li>
-      <% } else { %>
-      <li
-        class="nav-item dropdown <%= path === '/edit-profile' ? 'active' : '' %>"
-      >
-        <a
-          class="nav-link dropdown-toggle"
-          data-toggle="dropdown"
-          href="#"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          >
-          <div class="nav-username">
-              <%= isClientAuthenticated ? (user.lastName? `${user.firstName}
-              ${user.lastName}` :user.email) : (pro.company? pro.company :
-              pro.email) %>
-          </div>
-          </a
-        >
-        <div class="dropdown-menu">
-          <a
-            class="dropdown-item <%= path === '/edit-profile' ? 'active' : '' %>"
-            href="/edit-profile"
-            >Profil</a
-          >
-          <div class="dropdown-divider"></div>
-          <form method="POST" action="/logout">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="dropdown-item">Déconnexion</button>
-          </form>
-        </div>
-      </li>
-      <% } %>
-    </ul>
-  </div>
+        <ul class="navbar-nav ml-auto navright">
+            <% if (!isClientAuthenticated && !isProAuthenticated) { %>
+                <li class="nav-item dropdown <%= path === '/login' || path === '/signup' ? 'active' : '' %>">
+                    <a
+                      class="nav-link dropdown-toggle"
+                      data-toggle="dropdown"
+                      href="#"
+                      role="button"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      >
+                        Authentification
+                    </a>
+                    <div class="dropdown-menu">
+                        <a
+                          class="dropdown-item <%= path === '/login' ? 'active' : '' %>"
+                          href="/login"
+                        >
+                            Connexion
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a
+                          class="dropdown-item <%= path === '/signup' ? 'active' : '' %>"
+                          href="/signup"
+                        >
+                            Inscription
+                        </a>
+                    </div>
+                </li>
+            <% } else { %>
+                <li
+                class="nav-item dropdown <%= path === '/edit-profile' ? 'active' : '' %>"
+                >
+                    <a
+                      class="nav-link dropdown-toggle"
+                      data-toggle="dropdown"
+                      href="#"
+                      role="button"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                        <div class="nav-username">
+                            <%= isClientAuthenticated ? (user.lastName? `${user.firstName}
+                            ${user.lastName}` :user.email) : (pro.company? pro.company :
+                            pro.email) %>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu">
+                    <a
+                      class="dropdown-item <%= path === '/edit-profile' ? 'active' : '' %>"
+                      href="/edit-profile"
+                    >
+                        Profil
+                    </a>
+                    <div class="dropdown-divider"></div>
+                        <form method="POST" action="/logout">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button class="dropdown-item">Déconnexion</button>
+                        </form>
+                    </div>
+                </li>
+            <% } %>
+        </ul>
+    </div>
 </nav>
