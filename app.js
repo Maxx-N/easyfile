@@ -73,9 +73,11 @@ const fileStorage = multerS3({
     cb(null, { fieldName: file.fieldname });
   },
   key: function (req, file, cb) {
+    const nameTransformedToArray = file.originalname.split('.');
+    const nameWithoutExtension = nameTransformedToArray.splice(0, 1).join('-');
     cb(
       null,
-      Date.now().toString() + '-' + file.originalname.replace(/[^\w]/g, '-')
+      Date.now().toString() + '-' + nameWithoutExtension.replace(/[^\w]/g, '-')
     );
   },
 });

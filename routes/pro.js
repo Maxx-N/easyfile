@@ -104,4 +104,6 @@ router.post(
 
 router.get('/documents/:documentId', isProAuth, proController.getDocument);
 
+router.post('/download-all/:swapFolderId', isProAuth, proController.postDownloadAll);
+
 module.exports = router;

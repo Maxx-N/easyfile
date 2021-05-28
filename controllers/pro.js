@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
+const zip = require('express-zip');
 
 const User = require('../models/user');
 const SwapFolder = require('../models/swap-folder');
@@ -7,7 +8,6 @@ const Doctype = require('../models/doctype');
 const RequestedDoc = require('../models/requested-doc');
 const Request = require('../models/request');
 const Document = require('../models/document');
-
 const helpers = require('../helpers');
 
 //
@@ -624,6 +624,24 @@ exports.postResetRequest = async (req, res, next) => {
     await request.save();
 
     res.redirect(`/pro/swap-folders/${swapFolder._id}`);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postDownloadAll = async (req, res, next) => {
+  try {
+    const swapFolder = await SwapFolder.findById(req.params.swapFolderId);
+    const documentIds = await helpers.getSwapFolderDocumentIds(swapFolder);
+    const swapfFolderDocuments = await Document.find({ _id: documentIds });
+    const zipObjects = swapfFolderDocuments.map((doc) => {
+      return {
+        path: process.env.AWS_PATH + doc.fileUrl,
+        name: doc.fileUrl,
+      };
+    });
+    console.log(zipObjects);
+    res.zip(zipObjects);
   } catch (err) {
     next(err);
   }
