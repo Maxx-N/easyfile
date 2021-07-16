@@ -56,7 +56,7 @@ const s3 = new aws.S3({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'application/pdf') {
+  if (file.mimetype === 'application/pdf' || 'image/jpeg') {
     cb(null, true);
   } else {
     cb(null, false);

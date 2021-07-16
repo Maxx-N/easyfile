@@ -27,7 +27,7 @@ body {
   right: 0;
   left: 0;
   background-color: var(--blue);
-  border : 1px solid white
+  border: 1px solid white;
 }
 
 .dropdown-item {
@@ -177,16 +177,19 @@ a:hover {
 
 /* documents */
 
-.embed-doc {
-  height: 100%;
-  width: 100%;
-  border: none;
-}
-
 .embed-doc-container {
   width: 100%;
   height: 70%;
 }
+
+.embed-doc {
+  height: 100%;
+  width: 100%;
+  border: none;
+  width: 75%;
+  margin: auto;
+}
+
 
 .embed-doc-container.under-top-btn {
   height: calc(63% - 14px);

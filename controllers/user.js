@@ -183,7 +183,7 @@ exports.postEditDocument = async (req, res, next) => {
         helpers.deleteFile(file.location);
       } else if (!editMode) {
         validationErrors.push({
-          msg: 'Vous devez sélectionner un fichier au format PDF.',
+          msg: 'Vous devez sélectionner un fichier au format PDF (JPG et JPEG acceptés aussi, mais déconseillés).',
           param: 'file',
         });
       }
