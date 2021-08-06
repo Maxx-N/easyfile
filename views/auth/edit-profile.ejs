@@ -101,6 +101,7 @@
         </div>
     <% } %>
 </main>
+<%- include('../includes/footer') %>
 <form id="unsubscribingForm" class="hidden" method="POST" action="/unsubscribe">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 </form>

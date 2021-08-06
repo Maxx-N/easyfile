@@ -59,7 +59,7 @@ body {
 }
 
 main {
-  height: calc(100vh - 170px);
+  height: calc(100vh - 200px);
   margin: 20px;
   margin-bottom: 10px;
 }
